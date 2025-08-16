@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Employee Cost Actions -->
+    <record id="action_employee_cost" model="ir.actions.act_window">
+        <field name="name">Employee Costs</field>
+        <field name="res_model">cost.employee</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Cost Pool Actions -->
+    <record id="action_cost_pool" model="ir.actions.act_window">
+        <field name="name">Cost Pools</field>
+        <field name="res_model">cost.pool</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Cost Driver Actions -->
+    <record id="action_cost_driver" model="ir.actions.act_window">
+        <field name="name">Cost Drivers</field>
+        <field name="res_model">cost.driver</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Client Allocation Actions -->
+    <record id="action_client_allocation" model="ir.actions.act_window">
+        <field name="name">Client Cost Allocations</field>
+        <field name="res_model">client.cost.allocation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Service Category Actions -->
+    <record id="action_service_category" model="ir.actions.act_window">
+        <field name="name">Service Categories</field>
+        <field name="res_model">service.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Service Catalog Actions -->
+    <record id="action_service_catalog" model="ir.actions.act_window">
+        <field name="name">Service Catalog</field>
+        <field name="res_model">service.catalog</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <!-- Client Service Actions -->
+    <record id="action_client_service" model="ir.actions.act_window">
+        <field name="name">Client Services</field>
+        <field name="res_model">client.service</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Client Service Subscription Actions -->
+    <record id="action_client_service_subscription" model="ir.actions.act_window">
+        <field name="name">Service Subscriptions</field>
+        <field name="res_model">client.service.subscription</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service subscription!
+            </p>
+            <p>
+                Manage recurring services for your clients.
+                Automatically generate invoices every month.
+            </p>
+        </field>
+    </record>
+
+    <!-- Wizard Actions -->
+    <record id="action_allocation_wizard" model="ir.actions.act_window">
+        <field name="name">Create Cost Allocations</field>
+        <field name="res_model">allocation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_cost_report_wizard" model="ir.actions.act_window">
+        <field name="name">Cost Allocation Report</field>
+        <field name="res_model">cost.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

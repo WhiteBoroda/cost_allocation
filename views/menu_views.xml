@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_cost_allocation_root"
+              name="Service Costing"
+              sequence="50"
+              web_icon="cost_allocation,static/description/icon.png"/>
+
+    <!-- Service Catalog Menus -->
+    <menuitem id="menu_service_catalog"
+              name="Service Catalog"
+              parent="menu_cost_allocation_root"
+              sequence="20"/>
+
+    <menuitem id="menu_service_categories"
+              name="Service Categories"
+              parent="menu_service_catalog"
+              action="action_service_category"
+              sequence="10"/>
+
+    <menuitem id="menu_services"
+              name="Services"
+              parent="menu_service_catalog"
+              action="action_service_catalog"
+              sequence="20"/>
+
+    <menuitem id="menu_client_services"
+              name="Client Services"
+              parent="menu_service_catalog"
+              action="action_client_service"
+              sequence="30"/>
+
+    <!-- Subscription Menus -->
+    <menuitem id="menu_subscriptions"
+              name="Subscriptions"
+              parent="menu_cost_allocation_root"
+              sequence="25"/>
+
+    <menuitem id="menu_service_subscriptions"
+              name="Service Subscriptions"
+              parent="menu_subscriptions"
+              action="action_client_service_subscription"
+              sequence="10"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_cost_allocation_config"
+              name="Configuration"
+              parent="menu_cost_allocation_root"
+              sequence="30"/>
+
+    <menuitem id="menu_setup_wizard"
+              name="Setup Wizard"
+              parent="menu_cost_allocation_config"
+              action="action_service_costing_setup_wizard"
+              sequence="5"/>
+
+    <menuitem id="menu_employee_costs"
+              name="Employee Costs"
+              parent="menu_cost_allocation_config"
+              action="action_employee_cost"
+              sequence="10"
+              groups="group_cost_allocation_financial"/>
+
+    <menuitem id="menu_cost_pools"
+              name="Cost Pools"
+              parent="menu_cost_allocation_config"
+              action="action_cost_pool"
+              sequence="20"/>
+
+    <menuitem id="menu_cost_drivers"
+              name="Cost Drivers"
+              parent="menu_cost_allocation_config"
+              action="action_cost_driver"
+              sequence="30"/>
+
+    <!-- Operations Menu -->
+    <menuitem id="menu_cost_allocation_operations"
+              name="Cost Analysis"
+              parent="menu_cost_allocation_root"
+              sequence="40"/>
+
+    <menuitem id="menu_client_allocations"
+              name="Client Allocations"
+              parent="menu_cost_allocation_operations"
+              action="action_client_allocation"
+              sequence="10"/>
+
+    <menuitem id="menu_allocation_wizard"
+              name="Create Allocations"
+              parent="menu_cost_allocation_operations"
+              action="action_allocation_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_cost_report"
+              name="Reports"
+              parent="menu_cost_allocation_operations"
+              action="action_cost_report_wizard"
+              sequence="30"/>
+
+</odoo>

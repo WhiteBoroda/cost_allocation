@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Billing Automation Cron Job -->
+    <record id="cron_billing_automation" model="ir.cron">
+        <field name="name">Billing Automation Runner</field>
+        <field name="model_id" ref="model_billing_automation"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_run_billing_automations()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">0</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <!-- Cost Driver Update Cron Job -->
+    <record id="cron_cost_driver_update" model="ir.cron">
+        <field name="name">Update Cost Drivers from Services</field>
+        <field name="model_id" ref="model_cost_driver"/>
+        <field name="state">code</field>
+        <field name="code">
+drivers = model.search([('auto_update', '=', True)])
+for driver in drivers:
+    driver.action_update_from_services()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">0</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <!-- Contract Cost Update Cron Job -->
+    <record id="cron_payroll_cost_update" model="ir.cron">
+        <field name="name">Update Employee Costs from Contracts</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="state">code</field>
+        <field name="code">
+employees = model.search([('use_manual', '=', False)])
+for emp in employees:
+    emp._compute_payroll_data()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">0</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <!-- Employee Workload Update Cron Job -->
+    <record id="cron_employee_workload_update" model="ir.cron">
+        <field name="name">Update Employee Workload Analysis</field>
+        <field name="model_id" ref="model_employee_workload"/>
+        <field name="state">code</field>
+        <field name="code">model.update_all_workloads()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">0</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+</odoo>

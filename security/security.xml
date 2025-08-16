@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Security Categories -->
+    <record id="module_cost_allocation" model="ir.module.category">
+        <field name="name">Cost Allocation</field>
+        <field name="description">Manage cost allocation and service pricing</field>
+        <field name="sequence">16</field>
+    </record>
+
+    <!-- User Groups -->
+    <record id="group_cost_allocation_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_cost_allocation"/>
+        <field name="comment">Basic access to cost allocation - can view allocations and reports</field>
+    </record>
+
+    <record id="group_cost_allocation_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_cost_allocation"/>
+        <field name="implied_ids" eval="[(4, ref('group_cost_allocation_user'))]"/>
+        <field name="comment">Can manage cost pools, drivers, and service catalog</field>
+    </record>
+
+    <record id="group_cost_allocation_financial" model="res.groups">
+        <field name="name">Financial Manager</field>
+        <field name="category_id" ref="module_cost_allocation"/>
+        <field name="implied_ids" eval="[(4, ref('group_cost_allocation_manager'))]"/>
+        <field name="comment">Can access employee salaries and financial data - only for directors and accountants</field>
+    </record>
+
+    <!-- Record Rules for Employee Costs -->
+    <record id="rule_employee_cost_financial_only" model="ir.rule">
+        <field name="name">Employee Cost: Financial Access Only</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="groups" eval="[(4, ref('group_cost_allocation_financial'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read">True</field>
+        <field name="perm_write">True</field>
+        <field name="perm_create">True</field>
+        <field name="perm_unlink">True</field>
+    </record>
+
+    <record id="rule_employee_cost_no_access" model="ir.rule">
+        <field name="name">Employee Cost: No Access for Regular Users</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="groups" eval="[(4, ref('group_cost_allocation_user')), (4, ref('group_cost_allocation_manager'))]"/>
+        <field name="domain_force">[(1, '=', 0)]</field>
+        <field name="perm_read">False</field>
+        <field name="perm_write">False</field>
+        <field name="perm_create">False</field>
+        <field name="perm_unlink">False</field>
+    </record>
+
+</odoo>

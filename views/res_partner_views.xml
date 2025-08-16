@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Partner Form View Extension -->
+    <record id="view_partner_form_cost_allocation" model="ir.ui.view">
+        <field name="name">res.partner.form.cost_allocation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Service Costing" name="service_costing" invisible="not is_company">
+                    <group>
+                        <group string="Service Statistics">
+                            <field name="service_count"/>
+                            <field name="subscription_count"/>
+                            <field name="last_monthly_cost" widget="monetary"/>
+                            <field name="last_cost_date"/>
+                            <field name="cost_trend" widget="badge"/>
+                        </group>
+                        <group string="Cost Driver Quantities">
+                            <field name="workstation_count"/>
+                            <field name="user_count"/>
+                            <field name="server_count"/>
+                            <field name="phone_count"/>
+                            <field name="printer_count"/>
+                        </group>
+                    </group>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_services" type="object"
+                                class="oe_stat_button" icon="fa-cogs">
+                            <field name="service_count" widget="statinfo" string="Services"/>
+                        </button>
+                        <button name="action_view_subscriptions" type="object"
+                                class="oe_stat_button" icon="fa-refresh">
+                            <field name="subscription_count" widget="statinfo" string="Subscriptions"/>
+                        </button>
+                        <button name="action_view_cost_allocations" type="object"
+                                class="oe_stat_button" icon="fa-pie-chart">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="last_monthly_cost" widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text">Last Cost</span>
+                            </div>
+                        </button>
+                        <button name="action_create_subscription" type="object"
+                                class="oe_stat_button" icon="fa-plus-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">New Subscription</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <notebook>
+                        <page string="Services">
+                            <field name="client_service_ids">
+                                <tree editable="bottom">
+                                    <field name="service_id"/>
+                                    <field name="quantity"/>
+                                    <field name="total_price" widget="monetary"/>
+                                    <field name="active"/>
+                                    <field name="brand"/>
+                                    <field name="model"/>
+                                    <field name="location"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cost Drivers">
+                            <field name="cost_driver_ids">
+                                <tree editable="bottom">
+                                    <field name="driver_id"/>
+                                    <field name="quantity"/>
+                                    <field name="allocated_cost" widget="monetary"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cost Allocations">
+                            <field name="cost_allocation_ids">
+                                <tree>
+                                    <field name="period_date"/>
+                                    <field name="direct_cost" widget="monetary"/>
+                                    <field name="indirect_cost" widget="monetary"/>
+                                    <field name="total_cost" widget="monetary"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <div class="oe_clear">
+                        <button name="update_cost_drivers" type="object"
+                                string="Update Cost Drivers" class="btn-secondary"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner Tree View Extension -->
+    <record id="view_partner_tree_cost_allocation" model="ir.ui.view">
+        <field name="name">res.partner.tree.cost_allocation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="service_count" optional="hide"/>
+                <field name="last_monthly_cost" widget="monetary" optional="hide"/>
+                <field name="cost_trend" widget="badge" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner Kanban View Extension -->
+    <record id="view_partner_kanban_cost_allocation" model="ir.ui.view">
+        <field name="name">res.partner.kanban.cost_allocation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_kanban_partner_categories')]" position="after">
+                <div t-if="record.is_company.raw_value and record.service_count.raw_value > 0"
+                     class="mt-1">
+                    <span class="badge badge-pill badge-info">
+                        <i class="fa fa-cogs"/> <t t-esc="record.service_count.value"/> Services
+                    </span>
+                    <span t-if="record.last_monthly_cost.raw_value > 0"
+                          class="badge badge-pill badge-success">
+                        <i class="fa fa-money"/> <t t-esc="record.last_monthly_cost.value"/>
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View Extension -->
+    <record id="view_partner_search_cost_allocation" model="ir.ui.view">
+        <field name="name">res.partner.search.cost_allocation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='supplier']" position="after">
+                <separator/>
+                <filter string="Has Services" name="has_services"
+                        domain="[('service_count', '>', 0)]"/>
+                <filter string="Active Subscriptions" name="has_subscriptions"
+                        domain="[('subscription_count', '>', 0)]"/>
+                <filter string="High Cost Clients" name="high_cost"
+                        domain="[('last_monthly_cost', '>', 5000)]"/>
+                <separator/>
+                <filter string="Cost Increasing" name="cost_up"
+                        domain="[('cost_trend', '=', 'up')]"/>
+                <filter string="Cost Decreasing" name="cost_down"
+                        domain="[('cost_trend', '=', 'down')]"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="Cost Trend" name="group_cost_trend"
+                        context="{'group_by': 'cost_trend'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

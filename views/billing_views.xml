@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Billing Automation Views -->
+    <record id="view_billing_automation_tree" model="ir.ui.view">
+        <field name="name">billing.automation.tree</field>
+        <field name="model">billing.automation</field>
+        <field name="arch" type="xml">
+            <tree string="Billing Automations" decoration-success="active==True" decoration-muted="active==False">
+                <field name="name"/>
+                <field name="billing_period"/>
+                <field name="next_run_date"/>
+                <field name="last_run_date"/>
+                <field name="last_invoice_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_billing_automation_form" model="ir.ui.view">
+        <field name="name">billing.automation.form</field>
+        <field name="model">billing.automation</field>
+        <field name="arch" type="xml">
+            <form string="Billing Automation">
+                <header>
+                    <button name="action_run_billing" type="object" string="Run Now" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_toggle"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="billing_period"/>
+                            <field name="billing_day"/>
+                        </group>
+                        <group>
+                            <field name="next_run_date"/>
+                            <field name="last_run_date"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Scope">
+                            <group>
+                                <field name="client_ids" widget="many2many_tags"/>
+                                <field name="subscription_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+
+                        <page string="Automation Settings">
+                            <group>
+                                <group>
+                                    <field name="auto_confirm_invoices"/>
+                                    <field name="auto_send_invoices"/>
+                                    <field name="auto_create_acts"/>
+                                </group>
+                                <group>
+                                    <field name="include_cost_allocation"/>
+                                    <field name="cost_calculation_delay"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="notify_user_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+
+                        <page string="Statistics">
+                            <group>
+                                <group>
+                                    <field name="last_invoice_count"/>
+                                    <field name="total_invoices_created"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_billing_automation" model="ir.actions.act_window">
+        <field name="name">Billing Automation</field>
+        <field name="res_model">billing.automation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Set up automated billing
+            </p>
+            <p>
+                Create automated billing rules to generate invoices and work completion acts
+                for your IT service subscriptions on a regular schedule.
+            </p>
+        </field>
+    </record>
+</odoo>

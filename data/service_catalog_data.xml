@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- IT Services Categories -->
+    <record id="category_it_hardware" model="service.category">
+        <field name="name">IT Hardware</field>
+        <field name="service_type">hardware</field>
+        <field name="sequence">10</field>
+        <field name="description">Computer equipment, servers, network devices</field>
+    </record>
+
+    <record id="category_it_software" model="service.category">
+        <field name="name">IT Software &amp; SaaS</field>
+        <field name="service_type">saas</field>
+        <field name="sequence">20</field>
+        <field name="description">Software licenses, cloud services, SaaS platforms</field>
+    </record>
+
+    <record id="category_it_infrastructure" model="service.category">
+        <field name="name">IT Infrastructure</field>
+        <field name="service_type">iaas</field>
+        <field name="sequence">30</field>
+        <field name="description">Infrastructure services, hosting, cloud platforms</field>
+    </record>
+
+    <record id="category_it_support" model="service.category">
+        <field name="name">IT Support</field>
+        <field name="service_type">support</field>
+        <field name="sequence">40</field>
+        <field name="description">Technical support, helpdesk, maintenance</field>
+    </record>
+
+    <!-- Legal Services Categories -->
+    <record id="category_legal_corporate" model="service.category">
+        <field name="name">Corporate Legal</field>
+        <field name="service_type">support</field>
+        <field name="sequence">110</field>
+        <field name="description">Corporate law, compliance, governance</field>
+    </record>
+
+    <record id="category_legal_contracts" model="service.category">
+        <field name="name">Contract Law</field>
+        <field name="service_type">support</field>
+        <field name="sequence">120</field>
+        <field name="description">Contract drafting, review, negotiation</field>
+    </record>
+
+    <record id="category_legal_litigation" model="service.category">
+        <field name="name">Litigation</field>
+        <field name="service_type">support</field>
+        <field name="sequence">130</field>
+        <field name="description">Court proceedings, dispute resolution</field>
+    </record>
+
+    <!-- Accounting Services Categories -->
+    <record id="category_accounting_bookkeeping" model="service.category">
+        <field name="name">Bookkeeping</field>
+        <field name="service_type">support</field>
+        <field name="sequence">210</field>
+        <field name="description">Daily bookkeeping, transaction recording</field>
+    </record>
+
+    <record id="category_accounting_tax" model="service.category">
+        <field name="name">Tax Services</field>
+        <field name="service_type">support</field>
+        <field name="sequence">220</field>
+        <field name="description">Tax preparation, planning, compliance</field>
+    </record>
+
+    <record id="category_accounting_audit" model="service.category">
+        <field name="name">Audit &amp; Review</field>
+        <field name="service_type">support</field>
+        <field name="sequence">230</field>
+        <field name="description">Financial audits, reviews, assurance</field>
+    </record>
+
+    <!-- Financial Services Categories -->
+    <record id="category_financial_consulting" model="service.category">
+        <field name="name">Financial Consulting</field>
+        <field name="service_type">support</field>
+        <field name="sequence">310</field>
+        <field name="description">Financial planning, investment advice</field>
+    </record>
+
+    <record id="category_financial_analysis" model="service.category">
+        <field name="name">Financial Analysis</field>
+        <field name="service_type">support</field>
+        <field name="sequence">320</field>
+        <field name="description">Financial modeling, valuations, due diligence</field>
+    </record>
+
+    <!-- Construction Services Categories -->
+    <record id="category_construction_design" model="service.category">
+        <field name="name">Design &amp; Planning</field>
+        <field name="service_type">support</field>
+        <field name="sequence">410</field>
+        <field name="description">Architectural design, project planning</field>
+    </record>
+
+    <record id="category_construction_execution" model="service.category">
+        <field name="name">Construction Work</field>
+        <field name="service_type">support</field>
+        <field name="sequence">420</field>
+        <field name="description">Building, renovation, construction management</field>
+    </record>
+
+    <!-- Technical Expertise Categories -->
+    <record id="category_expertise_technical" model="service.category">
+        <field name="name">Technical Expertise</field>
+        <field name="service_type">support</field>
+        <field name="sequence">510</field>
+        <field name="description">Technical assessments, expert opinions</field>
+    </record>
+
+    <!-- Sample IT Services -->
+    <record id="service_workstation_support" model="service.catalog">
+        <field name="name">Workstation Support</field>
+        <field name="code">IT001</field>
+        <field name="category_id" ref="category_it_support"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">medium</field>
+        <field name="support_hours">3</field>
+        <field name="base_cost">200</field>
+    </record>
+
+    <record id="service_server_management" model="service.catalog">
+        <field name="name">Server Management</field>
+        <field name="code">IT002</field>
+        <field name="category_id" ref="category_it_infrastructure"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">critical</field>
+        <field name="support_hours">8</field>
+        <field name="base_cost">800</field>
+    </record>
+
+    <record id="service_user_support" model="service.catalog">
+        <field name="name">User Support</field>
+        <field name="code">IT003</field>
+        <field name="category_id" ref="category_it_support"/>
+        <field name="unit_of_measure">user</field>
+        <field name="complexity_level">medium</field>
+        <field name="support_hours">1</field>
+        <field name="base_cost">25</field>
+    </record>
+
+    <!-- Sample Legal Services -->
+    <record id="service_contract_review" model="service.catalog">
+        <field name="name">Contract Review</field>
+        <field name="code">LAW001</field>
+        <field name="category_id" ref="category_legal_contracts"/>
+        <field name="unit_of_measure">hour</field>
+        <field name="complexity_level">high</field>
+        <field name="support_hours">1</field>
+        <field name="base_cost">150</field>
+    </record>
+
+    <record id="service_corporate_compliance" model="service.catalog">
+        <field name="name">Corporate Compliance</field>
+        <field name="code">LAW002</field>
+        <field name="category_id" ref="category_legal_corporate"/>
+        <field name="unit_of_measure">month</field>
+        <field name="complexity_level">high</field>
+        <field name="support_hours">10</field>
+        <field name="base_cost">2000</field>
+    </record>
+
+    <!-- Sample Accounting Services -->
+    <record id="service_monthly_bookkeeping" model="service.catalog">
+        <field name="name">Monthly Bookkeeping</field>
+        <field name="code">ACC001</field>
+        <field name="category_id" ref="category_accounting_bookkeeping"/>
+        <field name="unit_of_measure">month</field>
+        <field name="complexity_level">medium</field>
+        <field name="support_hours">20</field>
+        <field name="base_cost">1500</field>
+    </record>
+
+    <record id="service_tax_preparation" model="service.catalog">
+        <field name="name">Tax Return Preparation</field>
+        <field name="code">ACC002</field>
+        <field name="category_id" ref="category_accounting_tax"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">high</field>
+        <field name="support_hours">8</field>
+        <field name="base_cost">800</field>
+    </record>
+
+    <!-- Sample Financial Services -->
+    <record id="service_financial_planning" model="service.catalog">
+        <field name="name">Financial Planning</field>
+        <field name="code">FIN001</field>
+        <field name="category_id" ref="category_financial_consulting"/>
+        <field name="unit_of_measure">hour</field>
+        <field name="complexity_level">high</field>
+        <field name="support_hours">1</field>
+        <field name="base_cost">200</field>
+    </record>
+
+    <record id="service_due_diligence" model="service.catalog">
+        <field name="name">Due Diligence</field>
+        <field name="code">FIN002</field>
+        <field name="category_id" ref="category_financial_analysis"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">critical</field>
+        <field name="support_hours">40</field>
+        <field name="base_cost">5000</field>
+    </record>
+
+    <!-- Sample Construction Services -->
+    <record id="service_architectural_design" model="service.catalog">
+        <field name="name">Architectural Design</field>
+        <field name="code">CON001</field>
+        <field name="category_id" ref="category_construction_design"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">high</field>
+        <field name="support_hours">80</field>
+        <field name="base_cost">8000</field>
+    </record>
+
+    <record id="service_project_management" model="service.catalog">
+        <field name="name">Construction Project Management</field>
+        <field name="code">CON002</field>
+        <field name="category_id" ref="category_construction_execution"/>
+        <field name="unit_of_measure">month</field>
+        <field name="complexity_level">critical</field>
+        <field name="support_hours">160</field>
+        <field name="base_cost">12000</field>
+    </record>
+
+    <!-- Sample Technical Expertise -->
+    <record id="service_technical_assessment" model="service.catalog">
+        <field name="name">Technical Assessment</field>
+        <field name="code">EXP001</field>
+        <field name="category_id" ref="category_expertise_technical"/>
+        <field name="unit_of_measure">unit</field>
+        <field name="complexity_level">critical</field>
+        <field name="support_hours">16</field>
+        <field name="base_cost">2400</field>
+    </record>
+
+</odoo>

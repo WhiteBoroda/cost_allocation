@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Allocation Wizard Views -->
+    <record id="view_allocation_wizard_form" model="ir.ui.view">
+        <field name="name">allocation.wizard.form</field>
+        <field name="model">allocation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Cost Allocations">
+                <div class="alert alert-info mb-3">
+                    <h4>Create Cost Allocations</h4>
+                    <p>This wizard will create cost allocations for selected clients for the specified period.</p>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="period_date"/>
+                        <field name="auto_calculate"/>
+                    </group>
+                </group>
+
+                <group string="Select Clients">
+                    <field name="client_ids" widget="many2many_tags" placeholder="Select clients..."/>
+                </group>
+
+                <footer>
+                    <button name="action_create_allocations" type="object" string="Create Allocations" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_allocation_wizard" model="ir.actions.act_window">
+        <field name="name">Create Cost Allocations</field>
+        <field name="res_model">allocation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Cost Report Wizard Views -->
+    <record id="view_cost_report_wizard_form" model="ir.ui.view">
+        <field name="name">cost.report.wizard.form</field>
+        <field name="model">cost.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cost Allocation Report">
+                <div class="alert alert-info mb-3">
+                    <h4>Generate Cost Report</h4>
+                    <p>Select period and clients to generate cost allocation reports.</p>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="period_from"/>
+                        <field name="period_to"/>
+                    </group>
+                    <group>
+                        <field name="report_type"/>
+                    </group>
+                </group>
+
+                <group string="Select Clients (Optional)">
+                    <field name="client_ids" widget="many2many_tags" placeholder="Leave empty for all clients"/>
+                </group>
+
+                <footer>
+                    <button name="action_generate_report" type="object" string="Generate Report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cost_report_wizard" model="ir.actions.act_window">
+        <field name="name">Cost Allocation Report</field>
+        <field name="res_model">cost.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Setup Wizard Views -->
+    <record id="view_service_costing_setup_wizard" model="ir.ui.view">
+        <field name="name">service.costing.setup.wizard.form</field>
+        <field name="model">service.costing.setup.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Service Costing Setup">
+                <div class="alert alert-info mb-3">
+                    <h4>Welcome to Service Costing Module!</h4>
+                    <p>This wizard will help you set up the module for your business type. Choose your business category and select what you want to configure.</p>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="company_type" widget="radio"/>
+                    </group>
+                    <group>
+                        <h5>Setup Options:</h5>
+                        <field name="setup_employees"/>
+                        <field name="setup_pools"/>
+                        <field name="setup_drivers"/>
+                        <field name="setup_services"/>
+                    </group>
+                </group>
+
+                <div class="alert alert-warning mt-3" invisible="company_type != 'custom'">
+                    <strong>Custom Setup:</strong> You will need to manually configure cost pools, drivers, and service categories after completing this wizard.
+                </div>
+
+                <footer>
+                    <button name="action_setup_company" type="object" string="Setup Company" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_service_costing_setup_wizard" model="ir.actions.act_window">
+        <field name="name">Service Costing Setup</field>
+        <field name="res_model">service.costing.setup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

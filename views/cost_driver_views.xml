@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cost Driver Views -->
+    <record id="view_cost_driver_tree" model="ir.ui.view">
+        <field name="name">cost.driver.tree</field>
+        <field name="model">cost.driver</field>
+        <field name="arch" type="xml">
+            <tree string="Cost Drivers">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="driver_category"/>
+                <field name="unit_name"/>
+                <field name="pool_id"/>
+                <field name="total_quantity"/>
+                <field name="cost_per_unit" widget="monetary"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cost_driver_form" model="ir.ui.view">
+        <field name="name">cost.driver.form</field>
+        <field name="model">cost.driver</field>
+        <field name="arch" type="xml">
+            <form string="Cost Driver">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="driver_category"/>
+                        </group>
+                        <group>
+                            <field name="pool_id"/>
+                            <field name="unit_name"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="total_quantity"/>
+                            <field name="cost_per_unit" widget="monetary"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Driver description..."/>
+                    </group>
+                    <notebook>
+                        <page string="Client Values">
+                            <field name="client_driver_ids">
+                                <tree editable="bottom">
+                                    <field name="client_id"/>
+                                    <field name="quantity"/>
+                                    <field name="allocated_cost" widget="monetary" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Client Cost Driver Views -->
+    <record id="view_client_cost_driver_tree" model="ir.ui.view">
+        <field name="name">client.cost.driver.tree</field>
+        <field name="model">client.cost.driver</field>
+        <field name="arch" type="xml">
+            <tree string="Client Cost Drivers" editable="bottom">
+                <field name="driver_id"/>
+                <field name="client_id"/>
+                <field name="quantity"/>
+                <field name="allocated_cost" widget="monetary" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

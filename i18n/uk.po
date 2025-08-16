@@ -1,0 +1,1243 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* cost_allocation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-01 12:00+0000\n"
+"PO-Revision-Date: 2025-01-01 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#. module: cost_allocation
+#: model:ir.module.category,name:cost_allocation.module_cost_allocation
+msgid "Cost Allocation"
+msgstr "Розподіл затрат"
+
+#. module: cost_allocation
+#: model:ir.module.category,description:cost_allocation.module_cost_allocation
+msgid "Manage cost allocation and service pricing"
+msgstr "Управління розподілом затрат та ціноутворенням послуг"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_user
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_manager
+msgid "Manager"
+msgstr "Менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_financial
+msgid "Financial Manager"
+msgstr "Фінансовий менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_user
+msgid "Basic access to cost allocation - can view allocations and reports"
+msgstr "Базовий доступ до розподілу затрат - може переглядати розподіли та звіти"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_manager
+msgid "Can manage cost pools, drivers, and service catalog"
+msgstr "Може управляти пулами затрат, драйверами та каталогом послуг"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_financial
+msgid "Can access employee salaries and financial data - only for directors and accountants"
+msgstr "Може отримувати доступ до зарплат співробітників та фінансових даних - тільки для директорів та бухгалтерів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_root
+msgid "Service Costing"
+msgstr "Вартість послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_config
+msgid "Configuration"
+msgstr "Налаштування"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_employee_costs
+msgid "Employee Costs"
+msgstr "Вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_pools
+msgid "Cost Pools"
+msgstr "Пули затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
+msgid "Cost Drivers"
+msgstr "Драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_catalog
+msgid "Service Catalog"
+msgstr "Каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_categories
+msgid "Service Categories"
+msgstr "Категорії послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_services
+msgid "Services"
+msgstr "Послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_services
+msgid "Client Services"
+msgstr "Послуги клієнтів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_subscriptions
+msgid "Subscriptions"
+msgstr "Підписки"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_subscriptions
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_operations
+msgid "Cost Analysis"
+msgstr "Аналіз затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_allocations
+msgid "Client Allocations"
+msgstr "Розподіли по клієнтах"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_allocation_wizard
+msgid "Create Allocations"
+msgstr "Створити розподіли"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_report
+msgid "Reports"
+msgstr "Звіти"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_setup_wizard
+msgid "Setup Wizard"
+msgstr "Майстер налаштування"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.employee_id
+msgid "Employee"
+msgstr "Співробітник"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_salary
+msgid "Monthly Salary"
+msgstr "Місячна зарплата"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_taxes
+msgid "Monthly Taxes (ESV)"
+msgstr "Місячні податки (ЄСВ)"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_benefits
+msgid "Monthly Benefits"
+msgstr "Місячні пільги"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_hours
+msgid "Monthly Working Hours"
+msgstr "Місячні робочі години"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.hourly_cost
+msgid "Hourly Cost"
+msgstr "Вартість години"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.manual_salary
+msgid "Manual Salary Override"
+msgstr "Ручне переопределення зарплати"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.manual_taxes
+msgid "Manual Taxes Override"
+msgstr "Ручне переопределення податків"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.manual_benefits
+msgid "Manual Benefits Override"
+msgstr "Ручне переопределення пільг"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.use_manual
+msgid "Use Manual Values"
+msgstr "Використовувати ручні значення"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.monthly_benefits
+msgid "Vacation, sick leave, training, etc."
+msgstr "Відпустка, лікарняний, навчання тощо"
+
+#. module: cost_allocation
+#: model:allocation.wizard,field:cost_allocation.period_date
+msgid "Period"
+msgstr "Період"
+
+#. module: cost_allocation
+#: model:allocation.wizard,field:cost_allocation.client_ids
+msgid "Clients"
+msgstr "Клієнти"
+
+#. module: cost_allocation
+#: model:allocation.wizard,field:cost_allocation.auto_calculate
+msgid "Auto Calculate Costs"
+msgstr "Автоматично розраховувати затрати"
+
+#. module: cost_allocation
+#: model:cost.report.wizard,field:cost_allocation.period_from
+msgid "From"
+msgstr "З"
+
+#. module: cost_allocation
+#: model:cost.report.wizard,field:cost_allocation.period_to
+msgid "To"
+msgstr "До"
+
+#. module: cost_allocation
+#: model:cost.report.wizard,field:cost_allocation.report_type
+msgid "Report Type"
+msgstr "Тип звіту"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.service_count
+msgid "Active Services"
+msgstr "Активні послуги"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.subscription_count
+msgid "Active Subscriptions"
+msgstr "Активні підписки"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.workstation_count
+msgid "Workstations"
+msgstr "Робочі станції"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.user_count
+msgid "Users"
+msgstr "Користувачі"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.server_count
+msgid "Servers"
+msgstr "Сервери"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.phone_count
+msgid "IP Phones"
+msgstr "IP телефони"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.printer_count
+msgid "Printers"
+msgstr "Принтери"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.last_monthly_cost
+msgid "Last Monthly Cost"
+msgstr "Остання місячна вартість"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.last_cost_date
+msgid "Last Cost Date"
+msgstr "Дата останньої вартості"
+
+#. module: cost_allocation
+#: model:res.partner,field:cost_allocation.cost_trend
+msgid "Cost Trend"
+msgstr "Тренд вартості"
+
+#. module: cost_allocation
+#: selection:res.partner,cost_trend:0
+msgid "Increasing"
+msgstr "Зростає"
+
+#. module: cost_allocation
+#: selection:res.partner,cost_trend:0
+msgid "Decreasing"
+msgstr "Зменшується"
+
+#. module: cost_allocation
+#: selection:res.partner,cost_trend:0
+msgid "Stable"
+msgstr "Стабільно"
+
+#. module: cost_allocation
+#: selection:res.partner,cost_trend:0
+msgid "New Client"
+msgstr "Новий клієнт"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Create Cost Allocations"
+msgstr "Створити розподіли затрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "This wizard will create cost allocations for selected clients for the specified period."
+msgstr "Цей майстер створить розподіли затрат для вибраних клієнтів за зазначений період."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Select Clients"
+msgstr "Вибрати клієнтів"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Create Allocations"
+msgstr "Створити розподіли"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Cost Allocation Report"
+msgstr "Звіт розподілу затрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Generate Cost Report"
+msgstr "Створити звіт по затратах"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Select period and clients to generate cost allocation reports."
+msgstr "Виберіть період та клієнтів для створення звітів розподілу затрат."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Select Clients (Optional)"
+msgstr "Вибрати клієнтів (опціонально)"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Leave empty for all clients"
+msgstr "Залиште порожнім для всіх клієнтів"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Generate Report"
+msgstr "Створити звіт"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_cost_allocation
+msgid "Service Costing"
+msgstr "Вартість послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_cost_allocation
+msgid "Service Statistics"
+msgstr "Статистика послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_cost_allocation
+msgid "Cost Driver Quantities"
+msgstr "Кількості драйверів затрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_cost_allocation
+msgid "Update Cost Drivers"
+msgstr "Оновити драйвери затрат"
+
+#. module: cost_allocation
+#: selection:cost.report.wizard,report_type:0
+msgid "Summary Report"
+msgstr "Зведений звіт"
+
+#. module: cost_allocation
+#: selection:cost.report.wizard,report_type:0
+msgid "Detailed Report"
+msgstr "Детальний звіт"
+
+#. module: cost_allocation
+#: selection:cost.report.wizard,report_type:0
+msgid "Period Comparison"
+msgstr "Порівняння періодів"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizard/allocation_wizard.py:0
+#, python-format
+msgid "No Data"
+msgstr "Немає даних"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizard/allocation_wizard.py:0
+#, python-format
+msgid "No allocations found for the selected period."
+msgstr "Не знайдено розподілів для вибраного періоду."
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_allocation_wizard
+msgid "Create Cost Allocations"
+msgstr "Створити розподіли затрат"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_report_wizard
+msgid "Cost Allocation Report"
+msgstr "Звіт розподілу затрат"
+
+# Existing translations continue here...
+# (Previous translations from the original file)
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.name
+msgid "Pool Name"
+msgstr "Назва пулу"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.description
+msgid "Description"
+msgstr "Опис"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.pool_type
+msgid "Pool Type"
+msgstr "Тип пулу"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.total_cost
+msgid "Total Pool Cost"
+msgstr "Загальна вартість пулу"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.allocation_ids
+msgid "Employee Allocations"
+msgstr "Розподіли співробітників"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.name
+msgid "Driver Name"
+msgstr "Назва драйвера"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.description
+msgid "Description"
+msgstr "Опис"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.unit_of_measure
+msgid "Unit of Measure"
+msgstr "Одиниця виміру"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.total_quantity
+msgid "Total Quantity"
+msgstr "Загальна кількість"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.cost_per_unit
+msgid "Cost per Unit"
+msgstr "Вартість за одиницю"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.name
+msgid "Name"
+msgstr "Назва"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.sequence
+msgid "Sequence"
+msgstr "Послідовність"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.description
+msgid "Description"
+msgstr "Опис"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.service_type
+msgid "Service Type"
+msgstr "Тип послуги"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.service_ids
+msgid "Services"
+msgstr "Послуги"
+
+#. module: cost_allocation
+#: model:service.category,field:cost_allocation.active
+msgid "Active"
+msgstr "Активний"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.name
+msgid "Service Name"
+msgstr "Назва послуги"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.code
+msgid "Service Code"
+msgstr "Код послуги"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.category_id
+msgid "Category"
+msgstr "Категорія"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.base_cost
+msgid "Base Monthly Cost"
+msgstr "Базова місячна вартість"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.markup_percent
+msgid "Markup %"
+msgstr "Націнка %"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.sales_price
+msgid "Sales Price"
+msgstr "Ціна продажу"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.complexity_level
+msgid "Complexity Level"
+msgstr "Рівень складності"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.support_hours
+msgid "Monthly Support Hours"
+msgstr "Місячні години підтримки"
+
+#. module: cost_allocation
+#: model:service.catalog,field:cost_allocation.sla_response_time
+msgid "SLA Response Time (minutes)"
+msgstr "Час відгуку SLA (хвилини)"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.client_id
+msgid "Client"
+msgstr "Клієнт"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.service_id
+msgid "Service"
+msgstr "Послуга"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.quantity
+msgid "Quantity"
+msgstr "Кількість"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.unit_price
+msgid "Unit Price"
+msgstr "Ціна за одиницю"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.total_price
+msgid "Total Price"
+msgstr "Загальна ціна"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.start_date
+msgid "Start Date"
+msgstr "Дата початку"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.end_date
+msgid "End Date"
+msgstr "Дата закінчення"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.brand
+msgid "Brand"
+msgstr "Бренд"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.model
+msgid "Model"
+msgstr "Модель"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.serial_number
+msgid "Serial Number"
+msgstr "Серійний номер"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.location
+msgid "Location"
+msgstr "Розташування"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.license_type
+msgid "License Type"
+msgstr "Тип ліцензії"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.users_count
+msgid "Users Count"
+msgstr "Кількість користувачів"
+
+#. module: cost_allocation
+#: model:client.service,field:cost_allocation.notes
+msgid "Notes"
+msgstr "Примітки"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.name
+msgid "Subscription Name"
+msgstr "Назва підписки"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.client_id
+msgid "Client"
+msgstr "Клієнт"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.start_date
+msgid "Start Date"
+msgstr "Дата початку"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.end_date
+msgid "End Date"
+msgstr "Дата закінчення"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.recurring_interval
+msgid "Recurring Interval"
+msgstr "Інтервал повторення"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.recurring_rule_type
+msgid "Recurring Rule Type"
+msgstr "Тип правила повторення"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.total_amount
+msgid "Monthly Amount"
+msgstr "Місячна сума"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.currency_id
+msgid "Currency"
+msgstr "Валюта"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.state
+msgid "Status"
+msgstr "Статус"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.service_line_ids
+msgid "Service Lines"
+msgstr "Рядки послуг"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.auto_invoice
+msgid "Auto Invoice"
+msgstr "Автоматичний рахунок"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.invoice_day
+msgid "Invoice Day"
+msgstr "День виставлення рахунку"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.last_invoice_date
+msgid "Last Invoice Date"
+msgstr "Дата останнього рахунку"
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.external_subscription_id
+msgid "External Subscription ID"
+msgstr "Зовнішній ID підписки"
+
+#. module: cost_allocation
+#: model:client.service.subscription,help:cost_allocation.external_subscription_id
+msgid "Reference to external subscription system"
+msgstr "Посилання на зовнішню систему підписок"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Pause"
+msgstr "Призупинити"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Terminate"
+msgstr "Припинити"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/models/subscription.py:0
+#, python-format
+msgid "Cannot activate subscription without service lines."
+msgstr "Неможливо активувати підписку без рядків послуг."
+
+#. module: cost_allocation
+#: model:client.service.subscription,field:cost_allocation.next_invoice_date
+msgid "Next Invoice Date"
+msgstr "Дата наступного рахунку"
+
+#. module: cost_allocation
+#: model:client.service.subscription,help:cost_allocation.invoice_day
+msgid "Day of month to generate invoice"
+msgstr "День місяця для створення рахунку"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.company_type
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_employees
+msgid "Setup Employee Costs"
+msgstr "Налаштувати вартість співробітників"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_pools
+msgid "Setup Cost Pools"
+msgstr "Налаштувати пули затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_drivers
+msgid "Setup Cost Drivers"
+msgstr "Налаштувати драйвери затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_services
+msgid "Setup Service Catalog"
+msgstr "Налаштувати каталог послуг"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per Unit"
+msgstr "За одиницю"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per User"
+msgstr "За користувача"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per Month"
+msgstr "За місяць"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per Hour"
+msgstr "За годину"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per GB"
+msgstr "За ГБ"
+
+#. module: cost_allocation
+#: selection:service.catalog,unit_of_measure:0
+msgid "Per License"
+msgstr "За ліцензію"
+
+#. module: cost_allocation
+#: selection:service.catalog,complexity_level:0
+msgid "Low"
+msgstr "Низький"
+
+#. module: cost_allocation
+#: selection:service.catalog,complexity_level:0
+msgid "Medium"
+msgstr "Середній"
+
+#. module: cost_allocation
+#: selection:service.catalog,complexity_level:0
+msgid "High"
+msgstr "Високий"
+
+#. module: cost_allocation
+#: selection:service.catalog,complexity_level:0
+msgid "Critical"
+msgstr "Критичний"
+
+#. module: cost_allocation
+#: selection:service.category,service_type:0
+msgid "Hardware"
+msgstr "Обладнання"
+
+#. module: cost_allocation
+#: selection:service.category,service_type:0
+msgid "SaaS"
+msgstr "SaaS"
+
+#. module: cost_allocation
+#: selection:service.category,service_type:0
+msgid "IaaS"
+msgstr "IaaS"
+
+#. module: cost_allocation
+#: selection:service.category,service_type:0
+msgid "Support"
+msgstr "Підтримка"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,recurring_rule_type:0
+msgid "Day(s)"
+msgstr "День(і)"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,recurring_rule_type:0
+msgid "Week(s)"
+msgstr "Тиждень(і)"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,recurring_rule_type:0
+msgid "Month(s)"
+msgstr "Місяць(і)"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,recurring_rule_type:0
+msgid "Year(s)"
+msgstr "Рік(и)"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,state:0
+msgid "Draft"
+msgstr "Чернетка"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,state:0
+msgid "Active"
+msgstr "Активний"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,state:0
+msgid "Paused"
+msgstr "Призупинений"
+
+#. module: cost_allocation
+#: selection:client.service.subscription,state:0
+msgid "Terminated"
+msgstr "Припинений"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "IT Services"
+msgstr "ІТ послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_employee_cost
+msgid "Employee Costs"
+msgstr "Вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_pool
+msgid "Cost Pools"
+msgstr "Пули затрат"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_driver
+msgid "Cost Drivers"
+msgstr "Драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_category
+msgid "Service Categories"
+msgstr "Категорії послуг"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_catalog
+msgid "Service Catalog"
+msgstr "Каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_client_service
+msgid "Client Services"
+msgstr "Послуги клієнтів"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_client_service_subscription
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_costing_setup_wizard
+msgid "Service Costing Setup"
+msgstr "Налаштування вартості послуг"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,help:cost_allocation.action_client_service_subscription
+msgid ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Create your first service subscription!\n"
+"            </p>\n"
+"            <p>\n"
+"                Manage recurring IT services for your clients. \n"
+"                Automatically generate invoices every month.\n"
+"            </p>"
+msgstr ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Створіть вашу першу підписку на послуги!\n"
+"            </p>\n"
+"            <p>\n"
+"                Управляйте регулярними ІТ послугами для ваших клієнтів. \n"
+"                Автоматично створюйте рахунки щомісяця.\n"
+"            </p>"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Welcome to Service Costing Module!"
+msgstr "Ласкаво просимо до модулю вартості послуг!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "This wizard will help you set up the module for your business type. Choose your business category and select what you want to configure."
+msgstr "Цей майстер допоможе вам налаштувати модуль для вашого типу бізнесу. Оберіть категорію вашого бізнесу та виберіть, що ви хочете налаштувати."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options:"
+msgstr "Параметри налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Custom Setup:"
+msgstr "Власне налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "You will need to manually configure cost pools, drivers, and service categories after completing this wizard."
+msgstr "Вам потрібно буде вручну налаштувати пули затрат, драйвери та категорії послуг після завершення цього майстра."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Налаштувати компанію"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Update from Contract"
+msgstr "Оновити з контракту"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Employee Cost"
+msgstr "Вартість співробітника"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Salary Information"
+msgstr "Інформація про зарплату"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Calculated from Contract"
+msgstr "Розраховано з контракту"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Manual Override"
+msgstr "Ручне переопределення"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Activate"
+msgstr "Активувати"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Generate Invoice"
+msgstr "Створити рахунок"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Service Subscription"
+msgstr "Підписка на послугу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Subscription Name"
+msgstr "Назва підписки"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_tree
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizard/setup_wizard.py:0
+#, python-format
+msgid "Setup Complete"
+msgstr "Налаштування завершено"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizard/setup_wizard.py:0
+#, python-format
+msgid "%s costing setup completed successfully!"
+msgstr "Налаштування вартості %s успішно завершено!"
+
+#. module: cost_allocation
+#: model:ir.cron,name:cost_allocation.cron_generate_subscription_invoices
+msgid "Generate Subscription Invoices"
+msgstr "Створити рахунки по підписках"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_it_hardware
+msgid "IT Hardware"
+msgstr "ІТ обладнання"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_it_hardware
+msgid "Computer equipment, servers, network devices"
+msgstr "Комп'ютерне обладнання, сервери, мережеві пристрої"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_it_software
+msgid "IT Software & SaaS"
+msgstr "ІТ ПЗ та SaaS"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_it_software
+msgid "Software licenses, cloud services, SaaS platforms"
+msgstr "Ліцензії на ПЗ, хмарні сервіси, SaaS платформи"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_it_infrastructure
+msgid "IT Infrastructure"
+msgstr "ІТ інфраструктура"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_it_infrastructure
+msgid "Infrastructure services, hosting, cloud platforms"
+msgstr "Інфраструктурні сервіси, хостинг, хмарні платформи"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_it_support
+msgid "IT Support"
+msgstr "ІТ підтримка"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_it_support
+msgid "Technical support, helpdesk, maintenance"
+msgstr "Технічна підтримка, служба підтримки, обслуговування"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_legal_corporate
+msgid "Corporate Legal"
+msgstr "Корпоративне право"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_legal_corporate
+msgid "Corporate law, compliance, governance"
+msgstr "Корпоративне право, відповідність, управління"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_legal_contracts
+msgid "Contract Law"
+msgstr "Договірне право"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_legal_contracts
+msgid "Contract drafting, review, negotiation"
+msgstr "Складання договорів, перевірка, переговори"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_legal_litigation
+msgid "Litigation"
+msgstr "Судові процеси"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_legal_litigation
+msgid "Court proceedings, dispute resolution"
+msgstr "Судові засідання, вирішення спорів"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_accounting_bookkeeping
+msgid "Bookkeeping"
+msgstr "Бухгалтерський облік"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_accounting_bookkeeping
+msgid "Daily bookkeeping, transaction recording"
+msgstr "Щоденний облік, запис транзакцій"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_accounting_tax
+msgid "Tax Services"
+msgstr "Податкові послуги"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_accounting_tax
+msgid "Tax preparation, planning, compliance"
+msgstr "Підготовка податків, планування, відповідність"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_accounting_audit
+msgid "Audit & Review"
+msgstr "Аудит та перевірка"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_accounting_audit
+msgid "Financial audits, reviews, assurance"
+msgstr "Фінансові аудити, перевірки, гарантії"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_financial_consulting
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_financial_consulting
+msgid "Financial planning, investment advice"
+msgstr "Фінансове планування, інвестиційні поради"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_financial_analysis
+msgid "Financial Analysis"
+msgstr "Фінансовий аналіз"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_financial_analysis
+msgid "Financial modeling, valuations, due diligence"
+msgstr "Фінансове моделювання, оцінки, дью дилідженс"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_construction_design
+msgid "Design & Planning"
+msgstr "Проектування та планування"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_construction_design
+msgid "Architectural design, project planning"
+msgstr "Архітектурне проектування, планування проектів"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_construction_execution
+msgid "Construction Work"
+msgstr "Будівельні роботи"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_construction_execution
+msgid "Building, renovation, construction management"
+msgstr "Будівництво, ремонт, управління будівництвом"
+
+#. module: cost_allocation
+#: model:service.category,name:cost_allocation.category_expertise_technical
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: model:service.category,description:cost_allocation.category_expertise_technical
+msgid "Technical assessments, expert opinions"
+msgstr "Технічні оцінки, експертні висновки"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_workstation_support
+msgid "Workstation Support"
+msgstr "Підтримка робочих станцій"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_server_management
+msgid "Server Management"
+msgstr "Управління серверами"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_user_support
+msgid "User Support"
+msgstr "Підтримка користувачів"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_contract_review
+msgid "Contract Review"
+msgstr "Перевірка договорів"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_corporate_compliance
+msgid "Corporate Compliance"
+msgstr "Корпоративна відповідність"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_monthly_bookkeeping
+msgid "Monthly Bookkeeping"
+msgstr "Щомісячний облік"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_tax_preparation
+msgid "Tax Return Preparation"
+msgstr "Підготовка податкових декларацій"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_financial_planning
+msgid "Financial Planning"
+msgstr "Фінансове планування"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_due_diligence
+msgid "Due Diligence"
+msgstr "Дью дилідженс"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_architectural_design
+msgid "Architectural Design"
+msgstr "Архітектурне проектування"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_project_management
+msgid "Construction Project Management"
+msgstr "Управління будівельними проектами"
+
+#. module: cost_allocation
+#: model:service.catalog,name:cost_allocation.service_technical_assessment
+msgid "Technical Assessment"
+msgstr "Технічна оцінка"
