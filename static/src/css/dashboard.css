@@ -1,0 +1,301 @@
+/* Cost Allocation Dashboard Styles */
+
+.o_cost_allocation_dashboard {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.o_cost_dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* KPI Cards */
+.o_cost_dashboard .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.o_cost_dashboard .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.o_cost_dashboard .card.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.o_cost_dashboard .card.bg-success {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.o_cost_dashboard .card.bg-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.o_cost_dashboard .card.bg-warning {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+}
+
+/* Card Body Enhancements */
+.o_cost_dashboard .card-body h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.o_cost_dashboard .card-body h6 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.o_cost_dashboard .change-indicator {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Chart Cards */
+.o_cost_dashboard .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.o_cost_dashboard .card-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.o_cost_dashboard .card-header .btn-group .btn {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    background: transparent;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.o_cost_dashboard .card-header .btn:hover,
+.o_cost_dashboard .card-header .btn.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Chart Canvas */
+.o_cost_dashboard canvas {
+    border-radius: 8px;
+}
+
+/* Top Clients List */
+.o_cost_dashboard #top_clients_list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.o_cost_dashboard #top_clients_list .border-bottom {
+    border-color: #e9ecef !important;
+    transition: all 0.2s ease;
+}
+
+.o_cost_dashboard #top_clients_list .border-bottom:hover {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+.o_cost_dashboard .badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Quick Actions */
+.o_cost_dashboard .btn-outline-primary,
+.o_cost_dashboard .btn-outline-success {
+    border-width: 2px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.o_cost_dashboard .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.o_cost_dashboard .btn-outline-success:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+
+/* Statistics Overview */
+.o_cost_dashboard .alert-info {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: none;
+    border-radius: 8px;
+    color: #155724;
+}
+
+/* Header Enhancements */
+.o_cost_dashboard h2 {
+    font-weight: 700;
+    color: #2c3e50;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.o_cost_dashboard h2 i {
+    margin-right: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Dropdown Enhancements */
+.o_cost_dashboard .dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0;
+}
+
+.o_cost_dashboard .dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.o_cost_dashboard .dropdown-item:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.o_cost_dashboard .dropdown-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Loading States */
+.o_cost_dashboard .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .o_cost_allocation_dashboard {
+        padding: 10px;
+    }
+
+    .o_cost_dashboard .card-body h3 {
+        font-size: 1.8rem;
+    }
+
+    .o_cost_dashboard .card-body h6 {
+        font-size: 0.7rem;
+    }
+
+    .o_cost_dashboard canvas {
+        height: 250px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .o_cost_dashboard h2 {
+        font-size: 1.5rem;
+    }
+
+    .o_cost_dashboard .card-body h3 {
+        font-size: 1.5rem;
+    }
+
+    .o_cost_dashboard .btn-group {
+        flex-direction: column;
+    }
+
+    .o_cost_dashboard .btn-group .btn {
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Icon Animations */
+.o_cost_dashboard .fa-calculator,
+.o_cost_dashboard .fa-money,
+.o_cost_dashboard .fa-users,
+.o_cost_dashboard .fa-clock-o {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Gradient Text */
+.o_cost_dashboard .gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* Card Hover Effects */
+.o_cost_dashboard .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.o_cost_dashboard .card:hover::before {
+    opacity: 1;
+}
+
+/* Scrollbar Styling */
+.o_cost_dashboard *::-webkit-scrollbar {
+    width: 6px;
+}
+
+.o_cost_dashboard *::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.o_cost_dashboard *::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 3px;
+}
+
+.o_cost_dashboard *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}

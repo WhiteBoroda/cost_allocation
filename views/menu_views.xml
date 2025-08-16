@@ -6,6 +6,13 @@
               sequence="50"
               web_icon="cost_allocation,static/description/icon.png"/>
 
+        <!-- Dashboard Menu - First Item -->
+    <menuitem id="menu_cost_allocation_dashboard"
+              name="Dashboard"
+              parent="menu_cost_allocation_root"
+              action="action_cost_allocation_dashboard"
+              sequence="10"/>
+
     <!-- Service Catalog Menus -->
     <menuitem id="menu_service_catalog"
               name="Service Catalog"
