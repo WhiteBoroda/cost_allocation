@@ -11,7 +11,7 @@ class EmployeeCost(models.Model):
 
     # Auto-calculated from payroll
     monthly_salary = fields.Float(string='Monthly Salary', compute='_compute_payroll_data', store=True)
-    monthly_taxes = fields.Float(string='Monthly Taxes (ESV)', compute='_compute_payroll_data', store=True)
+    monthly_taxes = fields.Float(string='Monthly Taxes', compute='_compute_payroll_data', store=True)
     monthly_benefits = fields.Float(string='Monthly Benefits', compute='_compute_payroll_data', store=True)
 
     # Manual overrides
@@ -20,15 +20,26 @@ class EmployeeCost(models.Model):
     manual_benefits = fields.Float(string='Manual Benefits Override')
     use_manual = fields.Boolean(string='Use Manual Values', default=False)
 
+    # Tax settings
+    is_diia_city = fields.Boolean(string='Dія.City Resident', default=True,
+                                  help='Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage')
+    minimum_wage = fields.Float(string='Minimum Wage for ESV', default=7723.0,
+                                help='Current minimum wage in Ukraine for ESV calculation')
+
     monthly_hours = fields.Float(string='Monthly Working Hours', default=168.0, required=True)
     hourly_cost = fields.Float(string='Hourly Cost', compute='_compute_hourly_cost', store=True)
+
+    # Total cost field needed by cost pools
+    monthly_total_cost = fields.Float(string='Monthly Total Cost', compute='_compute_monthly_total_cost', store=True)
+
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     active = fields.Boolean(default=True)
 
     # Last payroll period for calculation
     last_payroll_period = fields.Date(string='Last Payroll Period', compute='_compute_payroll_data', store=True)
 
-    @api.depends('employee_id', 'use_manual', 'manual_salary', 'manual_taxes', 'manual_benefits')
+    @api.depends('employee_id', 'use_manual', 'manual_salary', 'manual_taxes', 'manual_benefits', 'is_diia_city',
+                 'minimum_wage')
     def _compute_payroll_data(self):
         for record in self:
             if record.use_manual:
@@ -37,7 +48,6 @@ class EmployeeCost(models.Model):
                 record.monthly_benefits = record.manual_benefits
                 record.last_payroll_period = False
             elif record.employee_id:
-                # Always use contract data for simplicity and compatibility
                 record._fallback_to_contract()
             else:
                 record.monthly_salary = 0
@@ -46,7 +56,7 @@ class EmployeeCost(models.Model):
                 record.last_payroll_period = False
 
     def _fallback_to_contract(self):
-        """Get data from employee contract"""
+        """Get data from employee contract with Dія.City tax calculation"""
         contract = None
 
         # Try different ways to get contract
@@ -58,9 +68,21 @@ class EmployeeCost(models.Model):
             contract = contracts[0] if contracts else self.employee_id.contract_ids[0]
 
         if contract and hasattr(contract, 'wage'):
-            self.monthly_salary = contract.wage
-            # Standard Ukrainian ESV rate is 22%
-            self.monthly_taxes = contract.wage * 0.22
+            wage = contract.wage
+            self.monthly_salary = wage
+
+            if self.is_diia_city:
+                # Dія.City tax calculation
+                income_tax = wage * 0.05  # 5% income tax
+                military_tax = wage * 0.05  # 5% military tax
+                esv_base = self.minimum_wage or 7723.0  # ESV from minimum wage
+                esv = esv_base * 0.22  # 22% ESV from minimum wage
+
+                self.monthly_taxes = income_tax + military_tax + esv
+            else:
+                # Standard Ukrainian tax calculation (22% ESV from full wage)
+                self.monthly_taxes = wage * 0.22
+
             self.monthly_benefits = 0
             self.last_payroll_period = False
         else:
@@ -79,16 +101,33 @@ class EmployeeCost(models.Model):
             else:
                 record.hourly_cost = 0.0
 
+    @api.depends('monthly_salary', 'monthly_taxes', 'monthly_benefits')
+    def _compute_monthly_total_cost(self):
+        for record in self:
+            record.monthly_total_cost = record.monthly_salary + record.monthly_taxes + record.monthly_benefits
+
     @api.constrains('monthly_hours')
     def _check_monthly_hours(self):
         for record in self:
             if record.monthly_hours <= 0:
                 raise ValidationError('Monthly hours must be greater than 0')
 
+    @api.constrains('minimum_wage')
+    def _check_minimum_wage(self):
+        for record in self:
+            if record.is_diia_city and record.minimum_wage <= 0:
+                raise ValidationError('Minimum wage must be greater than 0 for Dія.City residents')
+
     def action_update_from_payroll(self):
         """Manual action to update from contract"""
         self._compute_payroll_data()
         return True
+
+    @api.model
+    def get_default_minimum_wage(self):
+        """Get current minimum wage setting from company"""
+        # Can be extended to get from company settings
+        return 7723.0  # Current minimum wage in Ukraine as of 2024
 
     _sql_constraints = [
         ('unique_employee', 'unique(employee_id)', 'Employee cost configuration must be unique!')

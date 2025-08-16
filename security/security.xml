@@ -28,27 +28,6 @@
         <field name="comment">Can access employee salaries and financial data - only for directors and accountants</field>
     </record>
 
-    <!-- Record Rules for Employee Costs -->
-    <record id="rule_employee_cost_financial_only" model="ir.rule">
-        <field name="name">Employee Cost: Financial Access Only</field>
-        <field name="model_id" ref="model_cost_employee"/>
-        <field name="groups" eval="[(4, ref('group_cost_allocation_financial'))]"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="perm_read">True</field>
-        <field name="perm_write">True</field>
-        <field name="perm_create">True</field>
-        <field name="perm_unlink">True</field>
-    </record>
 
-    <record id="rule_employee_cost_no_access" model="ir.rule">
-        <field name="name">Employee Cost: No Access for Regular Users</field>
-        <field name="model_id" ref="model_cost_employee"/>
-        <field name="groups" eval="[(4, ref('group_cost_allocation_user')), (4, ref('group_cost_allocation_manager'))]"/>
-        <field name="domain_force">[(1, '=', 0)]</field>
-        <field name="perm_read">False</field>
-        <field name="perm_write">False</field>
-        <field name="perm_create">False</field>
-        <field name="perm_unlink">False</field>
-    </record>
 
 </odoo>

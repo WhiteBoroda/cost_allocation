@@ -1241,3 +1241,613 @@ msgstr "Управління будівельними проектами"
 #: model:service.catalog,name:cost_allocation.service_technical_assessment
 msgid "Technical Assessment"
 msgstr "Технічна оцінка"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.is_diia_city
+msgid "Dія.City Resident"
+msgstr "Резидент Дія.Сіті"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.minimum_wage
+msgid "Minimum Wage for ESV"
+msgstr "Мінімальна зарплата для ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.is_diia_city
+msgid "Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage"
+msgstr "Використовувати податкові ставки Дія.Сіті: 5% подоходний + 5% військовий збір + 22% ЄСВ з мінімальної зарплати"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.minimum_wage
+msgid "Current minimum wage in Ukraine for ESV calculation"
+msgstr "Поточна мінімальна зарплата в Україні для розрахунку ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_total_cost
+msgid "Monthly Total Cost"
+msgstr "Загальна місячна вартість"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_employees
+msgid "Setup Employee Costs"
+msgstr "Налаштувати вартість співробітників"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_pools
+msgid "Setup Cost Pools"
+msgstr "Налаштувати пули затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_drivers
+msgid "Setup Cost Drivers"
+msgstr "Налаштувати драйвери затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_services
+msgid "Setup Service Catalog"
+msgstr "Налаштувати каталог послуг"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.company_type
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "IT Services"
+msgstr "ІТ послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Welcome to Service Costing Module!"
+msgstr "Ласкаво просимо до модулю вартості послуг!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "This wizard will help you set up the module for your business type. Choose your business category and select what you want to configure."
+msgstr "Цей майстер допоможе вам налаштувати модуль для вашого типу бізнесу. Оберіть категорію вашого бізнесу та виберіть, що ви хочете налаштувати."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options:"
+msgstr "Параметри налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Custom Setup:"
+msgstr "Власне налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "You will need to manually configure cost pools, drivers, and service categories after completing this wizard."
+msgstr "Вам потрібно буде вручну налаштувати пули затрат, драйвери та категорії послуг після завершення цього майстра."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Налаштувати компанію"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.is_diia_city
+msgid "Dія.City Resident"
+msgstr "Резидент Дія.Сіті"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.minimum_wage
+msgid "Minimum Wage for ESV"
+msgstr "Мінімальна зарплата для ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.is_diia_city
+msgid "Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage"
+msgstr "Використовувати податкові ставки Дія.Сіті: 5% подоходний + 5% військовий збір + 22% ЄСВ з мінімальної зарплати"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.minimum_wage
+msgid "Current minimum wage in Ukraine for ESV calculation"
+msgstr "Поточна мінімальна зарплата в Україні для розрахунку ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_total_cost
+msgid "Monthly Total Cost"
+msgstr "Загальна місячна вартість"
+
+#. module: cost_allocation
+#: model:ir.module.category,name:cost_allocation.module_cost_allocation
+msgid "Cost Allocation"
+msgstr "Розподіл затрат"
+
+#. module: cost_allocation
+#: model:ir.module.category,description:cost_allocation.module_cost_allocation
+msgid "Manage cost allocation and service pricing"
+msgstr "Управління розподілом затрат та ціноутворенням послуг"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_user
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_manager
+msgid "Manager"
+msgstr "Менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_financial
+msgid "Financial Manager"
+msgstr "Фінансовий менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_user
+msgid "Basic access to cost allocation - can view allocations and reports"
+msgstr "Базовий доступ до розподілу затрат - може переглядати розподіли та звіти"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_manager
+msgid "Can manage cost pools, drivers, and service catalog"
+msgstr "Може управляти пулами затрат, драйверами та каталогом послуг"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_financial
+msgid "Can access employee salaries and financial data - only for directors and accountants"
+msgstr "Може отримувати доступ до зарплат співробітників та фінансових даних - тільки для директорів та бухгалтерів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_root
+msgid "Service Costing"
+msgstr "Вартість послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_config
+msgid "Configuration"
+msgstr "Налаштування"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_employee_costs
+msgid "Employee Costs"
+msgstr "Вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_pools
+msgid "Cost Pools"
+msgstr "Пули затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
+msgid "Cost Drivers"
+msgstr "Драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_catalog
+msgid "Service Catalog"
+msgstr "Каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_categories
+msgid "Service Categories"
+msgstr "Категорії послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_services
+msgid "Services"
+msgstr "Послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_services
+msgid "Client Services"
+msgstr "Послуги клієнтів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_subscriptions
+msgid "Subscriptions"
+msgstr "Підписки"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_subscriptions
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_operations
+msgid "Cost Analysis"
+msgstr "Аналіз затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_allocations
+msgid "Client Allocations"
+msgstr "Розподіли по клієнтах"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_allocation_wizard
+msgid "Create Allocations"
+msgstr "Створити розподіли"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_report
+msgid "Reports"
+msgstr "Звіти"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_setup_wizard
+msgid "Setup Wizard"
+msgstr "Майстер налаштування"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.name
+msgid "Pool Name"
+msgstr "Назва пулу"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.pool_type
+msgid "Pool Type"
+msgstr "Тип пулу"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.total_monthly_cost
+msgid "Total Monthly Cost"
+msgstr "Загальна місячна вартість"
+
+#. module: cost_allocation
+#: model:cost.pool,field:cost_allocation.description
+msgid "Description"
+msgstr "Опис"
+
+#. module: cost_allocation
+#: selection:cost.pool,pool_type:0
+msgid "Direct Costs"
+msgstr "Прямі затрати"
+
+#. module: cost_allocation
+#: selection:cost.pool,pool_type:0
+msgid "Indirect Costs"
+msgstr "Непрямі затрати"
+
+#. module: cost_allocation
+#: selection:cost.pool,pool_type:0
+msgid "Administrative Costs"
+msgstr "Адміністративні затрати"
+
+#. module: cost_allocation
+#: model:cost.pool.allocation,field:cost_allocation.employee_cost_id
+msgid "Employee"
+msgstr "Співробітник"
+
+#. module: cost_allocation
+#: model:cost.pool.allocation,field:cost_allocation.percentage
+msgid "Allocation %"
+msgstr "Розподіл %"
+
+#. module: cost_allocation
+#: model:cost.pool.allocation,field:cost_allocation.monthly_cost
+msgid "Monthly Cost"
+msgstr "Місячна вартість"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Employee Allocations"
+msgstr "Розподіл співробітників"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Related Cost Driver"
+msgstr "Пов'язаний драйвер затрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Describe what costs are included in this pool..."
+msgstr "Опишіть, які затрати включені в цей пул..."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Розподіліть зарплати співробітників по цьому пулу затрат. Можете вказати відсоток часу, який співробітник витрачає на цей пул."
+msgstr "Розподіліть зарплати співробітників по цьому пулу затрат. Можете вказати відсоток часу, який співробітник витрачає на цей пул."
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.name
+msgid "Driver Name"
+msgstr "Назва драйвера"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.code
+msgid "Code"
+msgstr "Код"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.driver_category
+msgid "Category"
+msgstr "Категорія"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.total_quantity
+msgid "Total Quantity"
+msgstr "Загальна кількість"
+
+#. module: cost_allocation
+#: model:cost.driver,field:cost_allocation.cost_per_unit
+msgid "Cost per Unit"
+msgstr "Вартість за одиницю"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_employees
+msgid "Setup Employee Costs"
+msgstr "Налаштувати вартість співробітників"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_pools
+msgid "Setup Cost Pools"
+msgstr "Налаштувати пули затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_drivers
+msgid "Setup Cost Drivers"
+msgstr "Налаштувати драйвери затрат"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.setup_services
+msgid "Setup Service Catalog"
+msgstr "Налаштувати каталог послуг"
+
+#. module: cost_allocation
+#: model:service.costing.setup.wizard,field:cost_allocation.company_type
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "IT Services"
+msgstr "ІТ послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: selection:service.costing.setup.wizard,company_type:0
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Welcome to Service Costing Module!"
+msgstr "Ласкаво просимо до модулю вартості послуг!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "This wizard will help you set up the module for your business type. Choose your business category and select what you want to configure."
+msgstr "Цей майстер допоможе вам налаштувати модуль для вашого типу бізнесу. Оберіть категорію вашого бізнесу та виберіть, що ви хочете налаштувати."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options:"
+msgstr "Параметри налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Custom Setup:"
+msgstr "Власне налаштування:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "You will need to manually configure cost pools, drivers, and service categories after completing this wizard."
+msgstr "Вам потрібно буде вручну налаштувати пули затрат, драйвери та категорії послуг після завершення цього майстра."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Налаштувати компанію"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.is_diia_city
+msgid "Dія.City Resident"
+msgstr "Резидент Дія.Сіті"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.minimum_wage
+msgid "Minimum Wage for ESV"
+msgstr "Мінімальна зарплата для ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.is_diia_city
+msgid "Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage"
+msgstr "Використовувати податкові ставки Дія.Сіті: 5% подоходний + 5% військовий збір + 22% ЄСВ з мінімальної зарплати"
+
+#. module: cost_allocation
+#: model:cost.employee,help:cost_allocation.minimum_wage
+msgid "Current minimum wage in Ukraine for ESV calculation"
+msgstr "Поточна мінімальна зарплата в Україні для розрахунку ЄСВ"
+
+#. module: cost_allocation
+#: model:cost.employee,field:cost_allocation.monthly_total_cost
+msgid "Monthly Total Cost"
+msgstr "Загальна місячна вартість"
+
+#. module: cost_allocation
+#: model:ir.module.category,name:cost_allocation.module_cost_allocation
+msgid "Cost Allocation"
+msgstr "Розподіл затрат"
+
+#. module: cost_allocation
+#: model:ir.module.category,description:cost_allocation.module_cost_allocation
+msgid "Manage cost allocation and service pricing"
+msgstr "Управління розподілом затрат та ціноутворенням послуг"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_user
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_manager
+msgid "Manager"
+msgstr "Менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_financial
+msgid "Financial Manager"
+msgstr "Фінансовий менеджер"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_user
+msgid "Basic access to cost allocation - can view allocations and reports"
+msgstr "Базовий доступ до розподілу затрат - може переглядати розподіли та звіти"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_manager
+msgid "Can manage cost pools, drivers, and service catalog"
+msgstr "Може управляти пулами затрат, драйверами та каталогом послуг"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_financial
+msgid "Can access employee salaries and financial data - only for directors and accountants"
+msgstr "Може отримувати доступ до зарплат співробітників та фінансових даних - тільки для директорів та бухгалтерів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_root
+msgid "Service Costing"
+msgstr "Вартість послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_config
+msgid "Configuration"
+msgstr "Налаштування"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_employee_costs
+msgid "Employee Costs"
+msgstr "Вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_pools
+msgid "Cost Pools"
+msgstr "Пули затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
+msgid "Cost Drivers"
+msgstr "Драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_catalog
+msgid "Service Catalog"
+msgstr "Каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_categories
+msgid "Service Categories"
+msgstr "Категорії послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_services
+msgid "Services"
+msgstr "Послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_services
+msgid "Client Services"
+msgstr "Послуги клієнтів"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_subscriptions
+msgid "Subscriptions"
+msgstr "Підписки"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_service_subscriptions
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_operations
+msgid "Cost Analysis"
+msgstr "Аналіз затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_allocations
+msgid "Client Allocations"
+msgstr "Розподіли по клієнтах"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_allocation_wizard
+msgid "Create Allocations"
+msgstr "Створити розподіли"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_report
+msgid "Reports"
+msgstr "Звіти"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_setup_wizard
+msgid "Setup Wizard"
+msgstr "Майстер налаштування"

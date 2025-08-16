@@ -8,13 +8,14 @@ class ClientCostAllocation(models.Model):
     _description = 'Client Cost Allocation'
     _order = 'period_date desc, client_id'
     _rec_name = 'display_name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     client_id = fields.Many2one('res.partner', string='Client', required=True,
-                                domain=[('is_company', '=', True)])
-    period_date = fields.Date(string='Period', required=True, default=fields.Date.today)
+                                domain=[('is_company', '=', True)], tracking=True)
+    period_date = fields.Date(string='Period', required=True, default=fields.Date.today, tracking=True)
 
     # Cost breakdown
-    direct_cost = fields.Float(string='Direct Costs')
+    direct_cost = fields.Float(string='Direct Costs', tracking=True)
     indirect_cost = fields.Float(string='Indirect Costs', compute='_compute_indirect_costs', store=True)
     admin_cost = fields.Float(string='Administrative Costs', compute='_compute_admin_costs', store=True)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost', store=True)
@@ -24,7 +25,7 @@ class ClientCostAllocation(models.Model):
         ('draft', 'Draft'),
         ('calculated', 'Calculated'),
         ('confirmed', 'Confirmed')
-    ], string='Status', default='draft', required=True)
+    ], string='Status', default='draft', required=True, tracking=True)
 
     # Relations
     indirect_cost_ids = fields.One2many('client.indirect.cost', 'allocation_id', string='Indirect Costs Detail')
@@ -87,6 +88,7 @@ class ClientCostAllocation(models.Model):
             # 3. Admin costs will be calculated automatically via depends
 
             record.state = 'calculated'
+            record.message_post(body="Cost calculation completed")
 
     def _calculate_direct_costs(self):
         """Calculate direct costs from timesheet entries"""
@@ -150,6 +152,7 @@ class ClientCostAllocation(models.Model):
     def action_confirm(self):
         """Confirm the allocation"""
         self.state = 'confirmed'
+        self.message_post(body="Cost allocation confirmed")
 
     _sql_constraints = [
         ('unique_client_period', 'unique(client_id, period_date)',

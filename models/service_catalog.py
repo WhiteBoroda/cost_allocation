@@ -7,6 +7,7 @@ class ServiceCategory(models.Model):
     _order = 'sequence, name'
 
     name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
     service_type = fields.Selection([
@@ -16,8 +17,31 @@ class ServiceCategory(models.Model):
         ('support', 'Support')
     ], string='Service Type', required=True)
 
+    # Relations
     service_ids = fields.One2many('service.catalog', 'category_id', string='Services')
+    cost_pool_id = fields.Many2one('cost.pool', string='Related Cost Pool')
+
+    # Responsible employees for this category
+    default_responsible_ids = fields.Many2many('hr.employee',
+                                               'category_employee_rel',
+                                               'category_id', 'employee_id',
+                                               string='Default Responsible Team')
+    primary_responsible_id = fields.Many2one('hr.employee', string='Primary Responsible')
+
+    # Statistics
+    service_type_count = fields.Integer(string='Service Types', compute='_compute_counts')
+    active_services_count = fields.Integer(string='Active Services', compute='_compute_counts')
+
     active = fields.Boolean(string='Active', default=True)
+
+    @api.depends('name')
+    def _compute_counts(self):
+        for category in self:
+            category.service_type_count = len(self.env['service.type'].search([('category_id', '=', category.id)]))
+            category.active_services_count = len(self.env['client.service'].search([
+                ('service_type_id.category_id', '=', category.id),
+                ('status', '=', 'active')
+            ]))
 
 
 class ServiceCatalog(models.Model):
@@ -67,37 +91,3 @@ class ServiceCatalog(models.Model):
                 record.sales_price = record.base_cost * (1 + record.markup_percent / 100)
             else:
                 record.sales_price = record.base_cost
-
-
-class ClientService(models.Model):
-    _name = 'client.service'
-    _description = 'Client Service Assignment'
-
-    client_id = fields.Many2one('res.partner', string='Client', required=True,
-                                domain=[('is_company', '=', True)])
-    service_id = fields.Many2one('service.catalog', string='Service', required=True)
-
-    quantity = fields.Float(string='Quantity', default=1.0, required=True)
-    unit_price = fields.Float(string='Unit Price', related='service_id.sales_price')
-    total_price = fields.Float(string='Total Price', compute='_compute_total_price', store=True)
-
-    start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today)
-    end_date = fields.Date(string='End Date')
-
-    # Equipment details for hardware services
-    brand = fields.Char(string='Brand')
-    model = fields.Char(string='Model')
-    serial_number = fields.Char(string='Serial Number')
-    location = fields.Char(string='Location')
-
-    # SaaS details
-    license_type = fields.Char(string='License Type')
-    users_count = fields.Integer(string='Users Count')
-
-    notes = fields.Text(string='Notes')
-    active = fields.Boolean(string='Active', default=True)
-
-    @api.depends('quantity', 'unit_price')
-    def _compute_total_price(self):
-        for record in self:
-            record.total_price = record.quantity * record.unit_price

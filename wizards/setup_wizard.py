@@ -37,14 +37,21 @@ class ServiceCostingSetupWizard(models.TransientModel):
         if self.setup_services:
             self._setup_service_categories()
 
+        # Show success message and redirect to cost pools
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Setup Complete',
-                'message': f'{dict(self._fields["company_type"].selection)[self.company_type]} costing setup completed successfully!',
+                'title': 'Налаштування завершено!',
+                'message': f'Базова конфігурація для {dict(self._fields["company_type"].selection)[self.company_type]} створена. Ви можете редагувати пули затрат та драйвери в меню "Налаштування".',
                 'type': 'success',
-                'sticky': False,
+                'sticky': True,
+                'next': {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Cost Pools',
+                    'res_model': 'cost.pool',
+                    'view_mode': 'tree,form',
+                }
             }
         }
 
@@ -57,25 +64,38 @@ class ServiceCostingSetupWizard(models.TransientModel):
                 self.env['cost.employee'].create({
                     'employee_id': employee.id,
                     'monthly_hours': 168.0,
+                    'is_diia_city': True,  # Default for Ukrainian companies
                 })
 
     def _setup_cost_pools(self):
-        """Setup cost pools based on company type"""
+        """Setup cost pools based on company type - EDITABLE"""
         pools_data = self._get_pools_data()
 
         for pool_data in pools_data:
             existing = self.env['cost.pool'].search([('name', '=', pool_data['name'])])
             if not existing:
+                # Create pool with description that it can be edited
+                pool_data['description'] = f"{pool_data.get('description', '')} (Створено майстром - можна редагувати)"
                 self.env['cost.pool'].create(pool_data)
 
     def _setup_cost_drivers(self):
-        """Setup cost drivers based on company type"""
+        """Setup cost drivers based on company type - EDITABLE"""
         drivers_data = self._get_drivers_data()
+
+        # Get created pools to link drivers
+        pools = self.env['cost.pool'].search([])
+        pool_mapping = {pool.name: pool.id for pool in pools}
 
         for driver_data in drivers_data:
             existing = self.env['cost.driver'].search([('name', '=', driver_data['name'])])
             if not existing:
-                self.env['cost.driver'].create(driver_data)
+                # Try to find matching pool
+                pool_name = self._get_driver_pool_mapping().get(driver_data['name'])
+                if pool_name and pool_name in pool_mapping:
+                    driver_data['pool_id'] = pool_mapping[pool_name]
+                    driver_data[
+                        'description'] = f"{driver_data.get('description', '')} (Створено майстром - можна редагувати)"
+                    self.env['cost.driver'].create(driver_data)
 
     def _setup_service_categories(self):
         """Activate relevant service categories based on company type"""
@@ -95,96 +115,91 @@ class ServiceCostingSetupWizard(models.TransientModel):
                 pass  # Category doesn't exist
 
     def _get_pools_data(self):
-        """Get cost pools data based on company type"""
+        """Get cost pools data based on company type - TEMPLATE DATA"""
         pools_mapping = {
             'it': [
-                {'name': 'Hardware Support', 'description': 'Computer equipment and hardware support'},
-                {'name': 'Software Support', 'description': 'Software and SaaS support'},
-                {'name': 'Infrastructure', 'description': 'Network and server infrastructure'},
-                {'name': 'User Support', 'description': 'End-user technical support'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
+                {'name': 'Підтримка обладнання', 'description': 'Комп\'ютерне обладнання та підтримка заліза',
+                 'pool_type': 'indirect'},
+                {'name': 'Підтримка ПЗ', 'description': 'Програмне забезпечення та SaaS підтримка',
+                 'pool_type': 'indirect'},
+                {'name': 'Інфраструктура', 'description': 'Мережева та серверна інфраструктура',
+                 'pool_type': 'indirect'},
+                {'name': 'Підтримка користувачів', 'description': 'Технічна підтримка кінцевих користувачів',
+                 'pool_type': 'indirect'},
+                {'name': 'Адміністрування', 'description': 'Адміністративні та управлінські затрати',
+                 'pool_type': 'admin'},
             ],
             'legal': [
-                {'name': 'Corporate Law', 'description': 'Corporate legal services'},
-                {'name': 'Contract Law', 'description': 'Contract drafting and review'},
-                {'name': 'Litigation', 'description': 'Court proceedings and disputes'},
-                {'name': 'Compliance', 'description': 'Legal compliance services'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
+                {'name': 'Корпоративне право', 'description': 'Корпоративні юридичні послуги', 'pool_type': 'indirect'},
+                {'name': 'Договірне право', 'description': 'Складання та перевірка договорів', 'pool_type': 'indirect'},
+                {'name': 'Судові процеси', 'description': 'Судові засідання та спори', 'pool_type': 'indirect'},
+                {'name': 'Compliance', 'description': 'Юридична відповідність', 'pool_type': 'indirect'},
+                {'name': 'Адміністрування', 'description': 'Адміністративні та управлінські затрати',
+                 'pool_type': 'admin'},
             ],
             'accounting': [
-                {'name': 'Bookkeeping', 'description': 'Daily bookkeeping and accounting'},
-                {'name': 'Tax Services', 'description': 'Tax preparation and planning'},
-                {'name': 'Audit', 'description': 'Audit and assurance services'},
-                {'name': 'Advisory', 'description': 'Financial advisory services'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
-            ],
-            'financial': [
-                {'name': 'Planning', 'description': 'Financial planning and strategy'},
-                {'name': 'Analysis', 'description': 'Financial analysis and modeling'},
-                {'name': 'Investment', 'description': 'Investment advisory services'},
-                {'name': 'Risk Management', 'description': 'Risk assessment and management'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
-            ],
-            'construction': [
-                {'name': 'Design', 'description': 'Architectural and engineering design'},
-                {'name': 'Project Management', 'description': 'Construction project management'},
-                {'name': 'Execution', 'description': 'Construction and building work'},
-                {'name': 'Quality Control', 'description': 'Quality assurance and control'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
-            ],
-            'expertise': [
-                {'name': 'Technical Assessment', 'description': 'Technical evaluations and assessments'},
-                {'name': 'Expert Testimony', 'description': 'Expert witness and testimony'},
-                {'name': 'Research', 'description': 'Technical research and analysis'},
-                {'name': 'Consulting', 'description': 'Technical consulting services'},
-                {'name': 'Administration', 'description': 'Administrative and management costs'},
+                {'name': 'Бухгалтерський облік', 'description': 'Щоденний облік та бухгалтерія',
+                 'pool_type': 'indirect'},
+                {'name': 'Податкові послуги', 'description': 'Підготовка податків та планування',
+                 'pool_type': 'indirect'},
+                {'name': 'Аудит', 'description': 'Аудиторські та гарантійні послуги', 'pool_type': 'indirect'},
+                {'name': 'Консультації', 'description': 'Фінансові консультаційні послуги', 'pool_type': 'indirect'},
+                {'name': 'Адміністрування', 'description': 'Адміністративні та управлінські затрати',
+                 'pool_type': 'admin'},
             ],
         }
 
-        return pools_mapping.get(self.company_type, pools_mapping['consulting'])
+        return pools_mapping.get(self.company_type, [
+            {'name': 'Основні послуги', 'description': 'Основні операційні послуги', 'pool_type': 'indirect'},
+            {'name': 'Адміністрування', 'description': 'Адміністративні затрати', 'pool_type': 'admin'},
+        ])
 
     def _get_drivers_data(self):
         """Get cost drivers data based on company type"""
         drivers_mapping = {
             'it': [
-                {'name': 'Workstations', 'description': 'Number of workstations'},
-                {'name': 'Users', 'description': 'Number of users'},
-                {'name': 'Servers', 'description': 'Number of servers'},
-                {'name': 'Applications', 'description': 'Number of applications'},
+                {'name': 'Робочі станції', 'code': 'WORKSTATIONS', 'driver_category': 'Hardware', 'unit_name': 'ПК'},
+                {'name': 'Користувачі', 'code': 'USERS', 'driver_category': 'Users', 'unit_name': 'Користувач'},
+                {'name': 'Сервери', 'code': 'SERVERS', 'driver_category': 'Infrastructure', 'unit_name': 'Сервер'},
+                {'name': 'Застосунки', 'code': 'APPS', 'driver_category': 'Software', 'unit_name': 'Застосунок'},
             ],
             'legal': [
-                {'name': 'Cases', 'description': 'Number of legal cases'},
-                {'name': 'Contracts', 'description': 'Number of contracts'},
-                {'name': 'Hours', 'description': 'Legal hours'},
-                {'name': 'Documents', 'description': 'Number of documents'},
+                {'name': 'Справи', 'code': 'CASES', 'driver_category': 'Legal', 'unit_name': 'Справа'},
+                {'name': 'Договори', 'code': 'CONTRACTS', 'driver_category': 'Legal', 'unit_name': 'Договір'},
+                {'name': 'Години роботи', 'code': 'HOURS', 'driver_category': 'Time', 'unit_name': 'Година'},
+                {'name': 'Документи', 'code': 'DOCS', 'driver_category': 'Legal', 'unit_name': 'Документ'},
             ],
             'accounting': [
-                {'name': 'Transactions', 'description': 'Number of transactions'},
-                {'name': 'Accounts', 'description': 'Number of accounts'},
-                {'name': 'Reports', 'description': 'Number of reports'},
-                {'name': 'Entities', 'description': 'Number of legal entities'},
-            ],
-            'financial': [
-                {'name': 'Portfolios', 'description': 'Number of portfolios'},
-                {'name': 'Assets', 'description': 'Assets under management'},
-                {'name': 'Reports', 'description': 'Number of reports'},
-                {'name': 'Clients', 'description': 'Number of clients'},
-            ],
-            'construction': [
-                {'name': 'Projects', 'description': 'Number of projects'},
-                {'name': 'Square Meters', 'description': 'Construction area'},
-                {'name': 'Workers', 'description': 'Number of workers'},
-                {'name': 'Equipment', 'description': 'Construction equipment'},
-            ],
-            'expertise': [
-                {'name': 'Assessments', 'description': 'Number of assessments'},
-                {'name': 'Reports', 'description': 'Number of expert reports'},
-                {'name': 'Hours', 'description': 'Expert hours'},
-                {'name': 'Cases', 'description': 'Number of cases'},
+                {'name': 'Транзакції', 'code': 'TRANSACTIONS', 'driver_category': 'Accounting',
+                 'unit_name': 'Транзакція'},
+                {'name': 'Рахунки', 'code': 'ACCOUNTS', 'driver_category': 'Accounting', 'unit_name': 'Рахунок'},
+                {'name': 'Звіти', 'code': 'REPORTS', 'driver_category': 'Accounting', 'unit_name': 'Звіт'},
+                {'name': 'Юридичні особи', 'code': 'ENTITIES', 'driver_category': 'Accounting',
+                 'unit_name': 'ЮР особа'},
             ],
         }
 
-        return drivers_mapping.get(self.company_type, drivers_mapping.get('consulting', []))
+        return drivers_mapping.get(self.company_type, [
+            {'name': 'Основний драйвер', 'code': 'MAIN', 'driver_category': 'General', 'unit_name': 'Одиниця'},
+        ])
+
+    def _get_driver_pool_mapping(self):
+        """Map drivers to pools for linking"""
+        mapping = {
+            'Робочі станції': 'Підтримка обладнання',
+            'Користувачі': 'Підтримка користувачів',
+            'Сервери': 'Інфраструктура',
+            'Застосунки': 'Підтримка ПЗ',
+            'Справи': 'Корпоративне право',
+            'Договори': 'Договірне право',
+            'Години роботи': 'Судові процеси',
+            'Документи': 'Compliance',
+            'Транзакції': 'Бухгалтерський облік',
+            'Рахунки': 'Бухгалтерський облік',
+            'Звіти': 'Аудит',
+            'Юридичні особи': 'Консультації',
+        }
+        return mapping
 
     def _get_category_refs(self):
         """Get service category references to activate"""

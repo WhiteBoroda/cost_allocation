@@ -2,44 +2,6 @@ from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 
 
-class ServiceCategory(models.Model):
-    _name = 'service.category'
-    _description = 'IT Service Category'
-    _order = 'sequence, name'
-
-    name = fields.Char(string='Category Name', required=True)
-    code = fields.Char(string='Code', required=True)
-    sequence = fields.Integer(string='Sequence', default=10)
-    description = fields.Text(string='Description')
-    cost_pool_id = fields.Many2one('cost.pool', string='Related Cost Pool')
-
-    # Responsible employees for this category
-    default_responsible_ids = fields.Many2many('hr.employee',
-                                               'category_employee_rel',
-                                               'category_id', 'employee_id',
-                                               string='Default Responsible Team')
-    primary_responsible_id = fields.Many2one('hr.employee', string='Primary Responsible')
-
-    # Statistics
-    service_type_count = fields.Integer(string='Service Types', compute='_compute_counts')
-    active_services_count = fields.Integer(string='Active Services', compute='_compute_counts')
-
-    active = fields.Boolean(default=True)
-
-    @api.depends('name')
-    def _compute_counts(self):
-        for category in self:
-            category.service_type_count = len(self.env['service.type'].search([('category_id', '=', category.id)]))
-            category.active_services_count = len(self.env['client.service'].search([
-                ('service_type_id.category_id', '=', category.id),
-                ('status', '=', 'active')
-            ]))
-
-    _sql_constraints = [
-        ('unique_code', 'unique(code)', 'Category code must be unique!')
-    ]
-
-
 class ServiceType(models.Model):
     _name = 'service.type'
     _description = 'IT Service Type'

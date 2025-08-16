@@ -1,6 +1,6 @@
 {
     'name': 'Cost Allocation',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for IT Services',
     'description': """
@@ -9,6 +9,7 @@
     """,
     'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale'],
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'data/service_data.xml',
         'data/service_catalog_data.xml',

@@ -239,8 +239,8 @@ class BillingAutomation(models.Model):
         description = f"""
 Cost Breakdown:
 - Direct Costs: {cost_allocation.direct_cost:.2f}
-- Indirect Costs: {cost_allocation.total_indirect_cost:.2f} 
-- Administrative: {cost_allocation.administrative_cost:.2f}
+- Indirect Costs: {cost_allocation.indirect_cost:.2f} 
+- Administrative: {cost_allocation.admin_cost:.2f}
 - Total Cost: {cost_allocation.total_cost:.2f}
 """
 

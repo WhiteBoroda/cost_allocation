@@ -6,30 +6,29 @@
         <field name="arch" type="xml">
             <form string="Service Costing Setup">
                 <div class="alert alert-info mb-3">
-                    <h4>Welcome to Service Costing Module!</h4>
-                    <p>This wizard will help you set up the module for your business type. Choose your business category and select what you want to configure.</p>
+                    <h4>Ласкаво просимо до модулю вартості послуг!</h4>
+                    <p>Цей майстер допоможе вам налаштувати модуль для вашого типу бізнесу. Оберіть категорію вашого бізнесу та виберіть, що ви хочете налаштувати.</p>
                 </div>
 
                 <group>
-                    <group>
-                        <field name="company_type" widget="radio"/>
+                    <group string="Тип бізнесу">
+                        <field name="company_type" widget="radio" nolabel="1"/>
                     </group>
-                    <group>
-                        <h5>Setup Options:</h5>
-                        <field name="setup_employees"/>
-                        <field name="setup_pools"/>
-                        <field name="setup_drivers"/>
-                        <field name="setup_services"/>
+                    <group string="Параметри налаштування">
+                        <field name="setup_employees" string="Налаштувати вартість співробітників"/>
+                        <field name="setup_pools" string="Налаштувати пули затрат"/>
+                        <field name="setup_drivers" string="Налаштувати драйвери затрат"/>
+                        <field name="setup_services" string="Налаштувати каталог послуг"/>
                     </group>
                 </group>
 
                 <div class="alert alert-warning mt-3" invisible="company_type != 'custom'">
-                    <strong>Custom Setup:</strong> You will need to manually configure cost pools, drivers, and service categories after completing this wizard.
+                    <strong>Власне налаштування:</strong> Вам потрібно буде вручну налаштувати пули затрат, драйвери та категорії послуг після завершення цього майстра.
                 </div>
 
                 <footer>
-                    <button name="action_setup_company" type="object" string="Setup Company" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <button name="action_setup_company" type="object" string="Налаштувати компанію" class="btn-primary"/>
+                    <button string="Скасувати" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

@@ -5,11 +5,12 @@
         <field name="name">cost.pool.tree</field>
         <field name="model">cost.pool</field>
         <field name="arch" type="xml">
-            <tree string="Cost Pools">
+            <tree string="Cost Pools" decoration-info="pool_type=='admin'" decoration-success="pool_type=='indirect'" decoration-warning="pool_type=='direct'">
                 <field name="name"/>
-                <field name="pool_type"/>
+                <field name="pool_type" widget="badge"/>
                 <field name="total_monthly_cost" widget="monetary"/>
                 <field name="description"/>
+                <field name="active" widget="boolean_toggle"/>
             </tree>
         </field>
     </record>
@@ -20,32 +21,101 @@
         <field name="arch" type="xml">
             <form string="Cost Pool">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_toggle"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Pool Name"/>
+                        </h1>
+                    </div>
+
                     <group>
                         <group>
-                            <field name="name"/>
                             <field name="pool_type"/>
-                            <field name="active"/>
                         </group>
                         <group>
-                            <field name="total_monthly_cost" widget="monetary"/>
+                            <field name="total_monthly_cost" widget="monetary" readonly="1"/>
                         </group>
                     </group>
+
                     <group>
-                        <field name="description" placeholder="Pool description..."/>
+                        <field name="description" placeholder="Describe what costs are included in this pool..."/>
                     </group>
+
                     <notebook>
                         <page string="Employee Allocations">
+                            <p class="text-muted">
+                                Розподіліть зарплати співробітників по цьому пулу затрат.
+                                Можете вказати відсоток часу, який співробітник витрачає на цей пул.
+                            </p>
                             <field name="allocation_ids">
                                 <tree editable="bottom">
                                     <field name="employee_cost_id"/>
-                                    <field name="percentage"/>
-                                    <field name="monthly_cost" widget="monetary"/>
+                                    <field name="percentage" widget="percentage"/>
+                                    <field name="monthly_cost" widget="monetary" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Related Cost Driver">
+                            <field name="driver_id">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="driver_category"/>
+                                    <field name="total_quantity"/>
+                                    <field name="cost_per_unit" widget="monetary"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_cost_pool_search" model="ir.ui.view">
+        <field name="name">cost.pool.search</field>
+        <field name="model">cost.pool</field>
+        <field name="arch" type="xml">
+            <search string="Search Cost Pools">
+                <field name="name"/>
+                <field name="pool_type"/>
+                <separator/>
+                <filter string="Direct Costs" name="direct" domain="[('pool_type', '=', 'direct')]"/>
+                <filter string="Indirect Costs" name="indirect" domain="[('pool_type', '=', 'indirect')]"/>
+                <filter string="Administrative" name="admin" domain="[('pool_type', '=', 'admin')]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <group string="Group By">
+                    <filter string="Pool Type" name="group_type" context="{'group_by': 'pool_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_cost_pool" model="ir.actions.act_window">
+        <field name="name">Cost Pools</field>
+        <field name="res_model">cost.pool</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Створіть свій перший пул затрат!
+            </p>
+            <p>
+                Пули затрат групують затрати на зарплати співробітників за видами діяльності.
+                Наприклад: "Підтримка обладнання", "Розробка ПЗ", "Адміністрування".
+            </p>
+            <p>
+                <b>Підказка:</b> Використайте майстер налаштування для створення базових пулів під ваш тип бізнесу.
+            </p>
         </field>
     </record>
 

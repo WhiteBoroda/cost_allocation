@@ -7,25 +7,26 @@ class ClientServiceSubscription(models.Model):
     _name = 'client.service.subscription'
     _description = 'Client Service Subscription'
     _order = 'client_id, start_date desc'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Subscription Name', required=True)
+    name = fields.Char(string='Subscription Name', required=True, tracking=True)
     client_id = fields.Many2one('res.partner', string='Client', required=True,
-                                domain=[('is_company', '=', True)])
+                                domain=[('is_company', '=', True)], tracking=True)
 
     # Subscription details
     template_id = fields.Many2one('sale.subscription.template', string='Subscription Template')
     subscription_id = fields.Many2one('sale.subscription', string='Odoo Subscription')
 
     # Period
-    start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today)
-    end_date = fields.Date(string='End Date')
+    start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today, tracking=True)
+    end_date = fields.Date(string='End Date', tracking=True)
     recurring_interval = fields.Integer(string='Recurring Interval', default=1)
     recurring_rule_type = fields.Selection([
         ('daily', 'Day(s)'),
         ('weekly', 'Week(s)'),
         ('monthly', 'Month(s)'),
         ('yearly', 'Year(s)')
-    ], string='Recurring Rule Type', default='monthly', required=True)
+    ], string='Recurring Rule Type', default='monthly', required=True, tracking=True)
 
     # Pricing
     total_amount = fields.Float(string='Monthly Amount', compute='_compute_total_amount', store=True)
@@ -38,7 +39,7 @@ class ClientServiceSubscription(models.Model):
         ('active', 'Active'),
         ('paused', 'Paused'),
         ('terminated', 'Terminated')
-    ], string='Status', default='draft', required=True)
+    ], string='Status', default='draft', required=True, tracking=True)
 
     # Services
     service_line_ids = fields.One2many('client.service.subscription.line', 'subscription_id',
@@ -101,12 +102,14 @@ class ClientServiceSubscription(models.Model):
                     line._create_subscription_line()
 
             record.state = 'active'
+            record.message_post(body="Subscription activated")
 
     def action_generate_invoice(self):
         """Generate invoice for this period"""
         for record in self:
             if record.subscription_id and record.auto_invoice:
                 record.subscription_id.recurring_invoice()
+                record.message_post(body="Invoice generated")
 
     @api.model
     def cron_generate_invoices(self):
@@ -125,7 +128,7 @@ class ClientServiceSubscription(models.Model):
                 subscription._compute_next_invoice_date()
             except Exception as e:
                 # Log error but continue with other subscriptions
-                _logger.error(f"Failed to generate invoice for subscription {subscription.name}: {e}")
+                subscription.message_post(body=f"Failed to generate invoice: {e}")
 
 
 class ClientServiceSubscriptionLine(models.Model):
