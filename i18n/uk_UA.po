@@ -766,3 +766,159 @@ msgstr "Архітектурне проектування"
 #. module: cost_allocation
 msgid "Technical Assessment"
 msgstr "Технічна оцінка"
+
+# Dashboard translations
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Cost Allocation Dashboard"
+msgstr "Панель розподілу затрат"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Total Monthly Cost"
+msgstr "Загальні місячні затрати"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Monthly Revenue"
+msgstr "Місячний дохід"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Active Clients"
+msgstr "Активні клієнти"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Team Utilization"
+msgstr "Завантаження команди"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Cost Trends"
+msgstr "Тренди затрат"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Cost Pool Distribution"
+msgstr "Розподіл пулів затрат"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Top Clients by Cost"
+msgstr "Топ клієнтів за вартістю"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Quick Actions & Stats"
+msgstr "Швидкі дії та статистика"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Quick Actions"
+msgstr "Швидкі дії"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Create Allocation"
+msgstr "Створити розподіл"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Generate Invoices"
+msgstr "Створити рахунки"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Service Overview"
+msgstr "Огляд послуг"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Active Services"
+msgstr "Активні послуги"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Billing Status"
+msgstr "Статус рахунків"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "subscriptions due for invoice"
+msgstr "підписок для виставлення рахунків"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Refresh"
+msgstr "Оновити"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Period"
+msgstr "Період"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Last 3 months"
+msgstr "Останні 3 місяці"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Last 6 months"
+msgstr "Останні 6 місяців"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Last 12 months"
+msgstr "Останні 12 місяців"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Loading..."
+msgstr "Завантаження..."
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "No data available"
+msgstr "Немає даних"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Coverage"
+msgstr "Покриття"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Margin"
+msgstr "Маржа"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Overloaded"
+msgstr "Перевантажені"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Total"
+msgstr "Всього"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Breakdown"
+msgstr "Детально"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "vs last month"
+msgstr "проти мин. місяця"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "services"
+msgstr "послуг"
+
+#. module: cost_allocation
+#: model_terms:static/src/js/dashboard.js
+msgid "Unknown Client"
+msgstr "Невідомий клієнт"
