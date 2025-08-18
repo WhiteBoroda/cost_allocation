@@ -922,3 +922,331 @@ msgstr "послуг"
 #: model_terms:static/src/js/dashboard.js
 msgid "Unknown Client"
 msgstr "Невідомий клієнт"
+
+# Additional translations for setup wizard
+# Add these to i18n/uk_UA.po
+
+# Setup Wizard Business Types
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "IT Services"
+msgstr "ІТ послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+# Setup Options
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options"
+msgstr "Параметри налаштування"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Employee Costs"
+msgstr "Налаштувати вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Cost Pools"
+msgstr "Налаштувати пули затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Cost Drivers"
+msgstr "Налаштувати драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Service Catalog"
+msgstr "Налаштувати каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Налаштувати компанію"
+
+# Messages
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Setup Complete!"
+msgstr "Налаштування завершено!"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Basic configuration for %s created. You can edit cost pools and drivers in Configuration menu."
+msgstr "Базову конфігурацію для %s створено. Ви можете редагувати пули затрат та драйвери в меню Налаштування."
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Created by wizard - can be edited"
+msgstr "Створено майстром - можна редагувати"
+
+# Pool Names
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Hardware Support"
+msgstr "Підтримка обладнання"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Software Support"
+msgstr "Підтримка ПЗ"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Infrastructure"
+msgstr "Інфраструктура"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "User Support"
+msgstr "Підтримка користувачів"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Administration"
+msgstr "Адміністрування"
+
+# Driver Names
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Workstations"
+msgstr "Робочі станції"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Users"
+msgstr "Користувачі"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Servers"
+msgstr "Сервери"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Applications"
+msgstr "Застосунки"
+
+# Units
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "PC"
+msgstr "ПК"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Server"
+msgstr "Сервер"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Application"
+msgstr "Застосунок"
+
+# Additional translations for setup wizard
+# Add these to i18n/uk_UA.po
+
+# Setup Wizard Business Types
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "IT Services"
+msgstr "ІТ послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+# Setup Options
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options"
+msgstr "Параметри налаштування"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Employee Costs"
+msgstr "Налаштувати вартість співробітників"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Cost Pools"
+msgstr "Налаштувати пули затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Cost Drivers"
+msgstr "Налаштувати драйвери затрат"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Service Catalog"
+msgstr "Налаштувати каталог послуг"
+
+#. module: cost_allocation
+#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Налаштувати компанію"
+
+# Messages
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Setup Complete!"
+msgstr "Налаштування завершено!"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Basic configuration for %s created. You can edit cost pools and drivers in Configuration menu."
+msgstr "Базову конфігурацію для %s створено. Ви можете редагувати пули затрат та драйвери в меню Налаштування."
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Created by wizard - can be edited"
+msgstr "Створено майстром - можна редагувати"
+
+# Pool Names
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Hardware Support"
+msgstr "Підтримка обладнання"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Software Support"
+msgstr "Підтримка ПЗ"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Infrastructure"
+msgstr "Інфраструктура"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "User Support"
+msgstr "Підтримка користувачів"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Administration"
+msgstr "Адміністрування"
+
+# Driver Names
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Workstations"
+msgstr "Робочі станції"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Users"
+msgstr "Користувачі"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Servers"
+msgstr "Сервери"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Applications"
+msgstr "Застосунки"
+
+# Units
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "PC"
+msgstr "ПК"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Server"
+msgstr "Сервер"
+
+#. module: cost_allocation
+#: code:addons/cost_allocation/wizards/setup_wizard.py
+msgid "Application"
+msgstr "Застосунок"
