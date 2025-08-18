@@ -13,9 +13,9 @@ class ClientServiceSubscription(models.Model):
     client_id = fields.Many2one('res.partner', string='Client', required=True,
                                 domain=[('is_company', '=', True)], tracking=True)
 
-    # Subscription details
-    template_id = fields.Many2one('sale.subscription.template', string='Subscription Template')
-    subscription_id = fields.Many2one('sale.subscription', string='Odoo Subscription')
+    # Remove dependency on external subscription module
+    # template_id = fields.Many2one('sale.subscription.template', string='Subscription Template')
+    # subscription_id = fields.Many2one('sale.subscription', string='Odoo Subscription')
 
     # Period
     start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today, tracking=True)
@@ -50,6 +50,10 @@ class ClientServiceSubscription(models.Model):
     invoice_day = fields.Integer(string='Invoice Day', default=1, help='Day of month to generate invoice')
     next_invoice_date = fields.Date(string='Next Invoice Date', compute='_compute_next_invoice_date', store=True)
 
+    # Integration fields (optional)
+    external_subscription_id = fields.Char(string='External Subscription ID',
+                                           help='ID from external subscription system')
+
     active = fields.Boolean(default=True)
 
     @api.depends('service_line_ids.total_price')
@@ -72,44 +76,106 @@ class ClientServiceSubscription(models.Model):
             else:
                 record.next_invoice_date = False
 
+    @api.model
+    def _subscription_module_installed(self):
+        """Check if external subscription module is available"""
+        return 'sale.subscription' in self.env.registry._init_modules
+
     def action_activate(self):
-        """Activate subscription and create Odoo subscription"""
+        """Activate subscription"""
         for record in self:
-            if not record.subscription_id:
-                # Create subscription template if needed
-                if not record.template_id:
-                    template_vals = {
-                        'name': f'IT Services - {record.client_id.name}',
-                        'recurring_rule_type': record.recurring_rule_type,
-                        'recurring_interval': record.recurring_interval,
-                    }
-                    record.template_id = self.env['sale.subscription.template'].create(template_vals)
-
-                # Create subscription
-                subscription_vals = {
-                    'name': record.name,
-                    'partner_id': record.client_id.id,
-                    'template_id': record.template_id.id,
-                    'date_start': record.start_date,
-                    'recurring_rule_type': record.recurring_rule_type,
-                    'recurring_interval': record.recurring_interval,
-                }
-                subscription = self.env['sale.subscription'].create(subscription_vals)
-                record.subscription_id = subscription.id
-
-                # Create subscription lines
-                for line in record.service_line_ids:
-                    line._create_subscription_line()
+            # Try to integrate with external subscription module if available
+            if self._subscription_module_installed():
+                record._try_create_external_subscription()
 
             record.state = 'active'
             record.message_post(body="Subscription activated")
 
+    def _try_create_external_subscription(self):
+        """Try to create external subscription if module is available"""
+        try:
+            if 'sale.subscription' in self.env:
+                # Create subscription if external module is available
+                subscription_vals = {
+                    'name': self.name,
+                    'partner_id': self.client_id.id,
+                    'date_start': self.start_date,
+                    'recurring_rule_type': self.recurring_rule_type,
+                    'recurring_interval': self.recurring_interval,
+                }
+                subscription = self.env['sale.subscription'].create(subscription_vals)
+                self.external_subscription_id = str(subscription.id)
+
+                # Create subscription lines
+                for line in self.service_line_ids:
+                    line._try_create_external_subscription_line(subscription.id)
+        except Exception as e:
+            # Log error but don't fail activation
+            self.message_post(body=f"Could not create external subscription: {e}")
+
     def action_generate_invoice(self):
         """Generate invoice for this period"""
         for record in self:
-            if record.subscription_id and record.auto_invoice:
-                record.subscription_id.recurring_invoice()
-                record.message_post(body="Invoice generated")
+            # Try external subscription first
+            if record.external_subscription_id and self._subscription_module_installed():
+                try:
+                    external_sub = self.env['sale.subscription'].browse(int(record.external_subscription_id))
+                    if external_sub.exists():
+                        external_sub.recurring_invoice()
+                        record.message_post(body="Invoice generated via external subscription")
+                        return
+                except Exception:
+                    pass
+
+            # Fallback to manual invoice creation
+            record._create_manual_invoice()
+
+    def _create_manual_invoice(self):
+        """Create invoice manually without external subscription module"""
+        self.ensure_one()
+
+        # Create invoice
+        invoice_vals = {
+            'partner_id': self.client_id.id,
+            'move_type': 'out_invoice',
+            'invoice_date': fields.Date.today(),
+            'ref': f"{self.name} - {self.next_invoice_date.strftime('%m/%Y') if self.next_invoice_date else ''}",
+            'narration': f"Service subscription: {self.name}",
+        }
+
+        invoice = self.env['account.move'].create(invoice_vals)
+
+        # Add invoice lines
+        for line in self.service_line_ids:
+            product = line._get_or_create_product()
+
+            invoice_line_vals = {
+                'move_id': invoice.id,
+                'product_id': product.id,
+                'name': line.name or line.service_id.name,
+                'quantity': line.quantity,
+                'price_unit': line.unit_price,
+                'account_id': self._get_income_account().id,
+            }
+            self.env['account.move.line'].create(invoice_line_vals)
+
+        self.message_post(body=f"Manual invoice created: {invoice.name}")
+        return invoice
+
+    def _get_income_account(self):
+        """Get default income account"""
+        income_account = self.env['account.account'].search([
+            ('account_type', '=', 'income'),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+
+        if not income_account:
+            income_account = self.env['account.account'].search([
+                ('code', 'like', '7%'),
+                ('company_id', '=', self.env.company.id)
+            ], limit=1)
+
+        return income_account
 
     @api.model
     def cron_generate_invoices(self):
@@ -152,7 +218,9 @@ class ClientServiceSubscriptionLine(models.Model):
     # Links
     client_service_ids = fields.Many2many('client.service', string='Client Services',
                                           help='Physical services/equipment linked to this subscription line')
-    subscription_line_id = fields.Many2one('sale.subscription.line', string='Odoo Subscription Line')
+
+    # External integration (optional)
+    external_line_id = fields.Char(string='External Line ID', help='ID from external subscription system')
 
     @api.depends('quantity', 'unit_price')
     def _compute_total_price(self):
@@ -165,22 +233,25 @@ class ClientServiceSubscriptionLine(models.Model):
             self.unit_price = self.service_id.sales_price
             self.name = self.service_id.name
 
-    def _create_subscription_line(self):
-        """Create corresponding line in Odoo subscription"""
-        if self.subscription_id.subscription_id:
-            # Create product if not exists
-            product = self._get_or_create_product()
+    def _try_create_external_subscription_line(self, external_subscription_id):
+        """Try to create line in external subscription system"""
+        try:
+            if 'sale.subscription.line' in self.env:
+                product = self._get_or_create_product()
 
-            line_vals = {
-                'subscription_id': self.subscription_id.subscription_id.id,
-                'product_id': product.id,
-                'name': self.name or self.service_id.name,
-                'quantity': self.quantity,
-                'price_unit': self.unit_price,
-            }
+                line_vals = {
+                    'subscription_id': external_subscription_id,
+                    'product_id': product.id,
+                    'name': self.name or self.service_id.name,
+                    'quantity': self.quantity,
+                    'price_unit': self.unit_price,
+                }
 
-            subscription_line = self.env['sale.subscription.line'].create(line_vals)
-            self.subscription_line_id = subscription_line.id
+                subscription_line = self.env['sale.subscription.line'].create(line_vals)
+                self.external_line_id = str(subscription_line.id)
+        except Exception as e:
+            # Log error but don't fail
+            self.subscription_id.message_post(body=f"Could not create external subscription line: {e}")
 
     def _get_or_create_product(self):
         """Get or create product for this service"""
@@ -198,10 +269,21 @@ class ClientServiceSubscriptionLine(models.Model):
                 'name': self.service_id.name,
                 'default_code': self.service_id.code,
                 'type': 'service',
-                'recurring_invoice': True,
                 'list_price': self.service_id.sales_price,
-                'categ_id': self.env.ref('product.product_category_all').id,
+                'categ_id': self._get_service_category().id,
             }
             product = Product.create(product_vals)
 
         return product
+
+    def _get_service_category(self):
+        """Get or create IT Services product category"""
+        category = self.env['product.category'].search([
+            ('name', '=', 'IT Services')
+        ], limit=1)
+
+        if not category:
+            category = self.env['product.category'].create({
+                'name': 'IT Services',
+            })
+        return category

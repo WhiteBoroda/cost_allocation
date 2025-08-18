@@ -1,110 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Service Category Views -->
+    <!-- Employee Cost Views -->
     <record id="view_employee_cost_tree" model="ir.ui.view">
         <field name="name">cost.employee.tree</field>
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
-            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="'employee_id.company_id.is_diia_city_resident'==True">
+            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="is_diia_city==True">
                 <field name="employee_id"/>
                 <field name="monthly_salary" widget="monetary"/>
                 <field name="monthly_taxes" widget="monetary"/>
                 <field name="monthly_benefits" widget="monetary"/>
                 <field name="monthly_hours"/>
                 <field name="hourly_cost" widget="monetary"/>
+                <field name="is_diia_city" widget="boolean_toggle"/>
                 <field name="use_manual" widget="boolean_toggle"/>
                 <field name="last_payroll_period"/>
                 <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
+
     <record id="view_employee_cost_form" model="ir.ui.view">
-            <field name="name">cost.employee.form</field>
-            <field name="model">cost.employee</field>
-            <field name="arch" type="xml">
-                <form string="Employee Cost">
-                    <header>
-                        <button name="action_update_from_payroll" type="object" string="Update from Contract"
-                                class="btn-primary"/>
-                    </header>
-                    <sheet>
+        <field name="name">cost.employee.form</field>
+        <field name="model">cost.employee</field>
+        <field name="arch" type="xml">
+            <form string="Employee Cost">
+                <header>
+                    <button name="action_update_from_payroll" type="object" string="Update from Contract"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
                         <group>
-                            <group>
-                                <field name="employee_id"/>
-                                <field name="monthly_hours"/>
-                                <field name="use_manual"/>
-                                <field name="currency_id" column_invisible="1"/>
-                            </group>
-                            <group>
-                                <field name="last_payroll_period" readonly="1"/>
-                                <field name="hourly_cost" widget="monetary" readonly="1"/>
-                                <field name="monthly_total_cost" widget="monetary" readonly="1"/>
-                            </group>
+                            <field name="employee_id"/>
+                            <field name="monthly_hours"/>
+                            <field name="use_manual"/>
+                            <field name="currency_id" invisible="1"/>
                         </group>
-
-                        <group string="Tax Settings">
-                            <field name="is_diia_city"/>
-                            <field name="minimum_wage" widget="monetary" invisible="not employee_id.company_id.is_diia_city_resident"/>
+                        <group>
+                            <field name="last_payroll_period" readonly="1"/>
+                            <field name="hourly_cost" widget="monetary" readonly="1"/>
+                            <field name="monthly_total_cost" widget="monetary" readonly="1"/>
                         </group>
+                    </group>
 
-                        <notebook>
-                            <page string="Contract Data" invisible="use_manual">
+                    <group string="Tax Settings">
+                        <field name="is_diia_city" readonly="1"/>
+                        <field name="is_diia_city_own" string="Dія.City (Manual Setting)"
+                               help="Set this if external Dія.City module is not available"/>
+                        <field name="minimum_wage" widget="monetary" invisible="not is_diia_city"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Contract Data" invisible="use_manual">
+                            <group>
                                 <group>
-                                    <group>
-                                        <field name="monthly_salary" widget="monetary" readonly="1"/>
-                                        <field name="monthly_taxes" widget="monetary" readonly="1"/>
-                                        <field name="monthly_benefits" widget="monetary" readonly="1"/>
-                                    </group>
+                                    <field name="monthly_salary" widget="monetary" readonly="1"/>
+                                    <field name="monthly_taxes" widget="monetary" readonly="1"/>
+                                    <field name="monthly_benefits" widget="monetary" readonly="1"/>
                                 </group>
-                                <div class="alert alert-info" invisible="not is_diia_city">
-                                    <strong>Dія.City Tax Calculation:</strong>
-                                    <ul>
-                                        <li>5% Income Tax on full salary</li>
-                                        <li>5% Military Tax on full salary</li>
-                                        <li>22% ESV on minimum wage (<field name="minimum_wage" readonly="1"/> UAH)</li>
-                                    </ul>
-                                </div>
-                                <p class="text-muted" invisible="is_diia_city">
-                                    Data automatically calculated from employee contract.
-                                    Standard tax calculation: 22% ESV on full salary.
-                                </p>
-                            </page>
+                            </group>
+                            <div class="alert alert-info" invisible="not is_diia_city">
+                                <strong>Dія.City Tax Calculation:</strong>
+                                <ul>
+                                    <li>5% Income Tax on full salary</li>
+                                    <li>5% Military Tax on full salary</li>
+                                    <li>22% ESV on minimum wage (<field name="minimum_wage" readonly="1"/> UAH)</li>
+                                </ul>
+                            </div>
+                            <p class="text-muted" invisible="is_diia_city">
+                                Data automatically calculated from employee contract.
+                                Standard tax calculation: 22% ESV on full salary.
+                            </p>
+                        </page>
 
-                            <page string="Manual Override" invisible="not use_manual">
+                        <page string="Manual Override" invisible="not use_manual">
+                            <group>
                                 <group>
-                                    <group>
-                                        <field name="manual_salary" widget="monetary"/>
-                                        <field name="manual_taxes" widget="monetary"/>
-                                        <field name="manual_benefits" widget="monetary"/>
-                                    </group>
+                                    <field name="manual_salary" widget="monetary"/>
+                                    <field name="manual_taxes" widget="monetary"/>
+                                    <field name="manual_benefits" widget="monetary"/>
                                 </group>
-                                <p class="text-muted">
-                                    Manual values override automatic payroll calculation.
-                                    Enable "Use Manual Values" to use these figures.
-                                </p>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-    </record>
-
-    <record id="action_employee_cost" model="ir.actions.act_window">
-        <field name="name">Employee Costs</field>
-        <field name="res_model">cost.employee</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Configure employee hourly costs
-            </p>
-            <p>
-                Employee costs are automatically calculated from contract data.
-                The system supports both standard Ukrainian taxes and Dія.City special rates.
-                You can manually override values if needed.
-            </p>
+                            </group>
+                            <p class="text-muted">
+                                Manual values override automatic payroll calculation.
+                                Enable "Use Manual Values" to use these figures.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
     </record>
 
+    <!-- Service Category Views -->
     <record id="view_service_category_form" model="ir.ui.view">
         <field name="name">service.category.form</field>
         <field name="model">service.category</field>
@@ -212,7 +201,16 @@
         <field name="name">client.service.tree</field>
         <field name="model">client.service</field>
         <field name="arch" type="xml">
-            <tree string="Client Services" decoration-success="status=='active'" decoration-muted="status=='inactive'" decoration-warning="status=='maintenance'">
+            <tree string="Client Services"
+                  decoration-success="status=='active'"
+                  decoration-muted="status=='inactive'"
+                  decoration-warning="status=='maintenance'"
+                  create_text="Add Service"
+                  default_order="client_id, service_type_id">
+                <header>
+                    <button name="%(action_bulk_services_wizard)d" type="action"
+                            string="Bulk Add Services" class="btn-primary"/>
+                </header>
                 <field name="client_id"/>
                 <field name="service_type_id"/>
                 <field name="name"/>
@@ -220,7 +218,10 @@
                 <field name="quantity"/>
                 <field name="location"/>
                 <field name="estimated_monthly_hours"/>
-                <field name="status" widget="badge" decoration-success="status=='active'" decoration-warning="status=='maintenance'" decoration-danger="status=='retired'"/>
+                <field name="status" widget="badge"
+                       decoration-success="status=='active'"
+                       decoration-warning="status=='maintenance'"
+                       decoration-danger="status=='retired'"/>
                 <field name="last_maintenance"/>
                 <field name="subscription_line_id"/>
                 <field name="auto_assigned" column_invisible="1"/>
@@ -292,6 +293,57 @@
         </field>
     </record>
 
+    <record id="view_client_service_search" model="ir.ui.view">
+        <field name="name">client.service.search</field>
+        <field name="model">client.service</field>
+        <field name="arch" type="xml">
+            <search string="Search Client Services">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="service_type_id"/>
+                <field name="responsible_employee_id"/>
+                <field name="location"/>
+
+                <separator/>
+                <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
+                <filter string="Under Maintenance" name="maintenance" domain="[('status', '=', 'maintenance')]"/>
+                <filter string="Inactive" name="inactive" domain="[('status', '=', 'inactive')]"/>
+                <filter string="Retired" name="retired" domain="[('status', '=', 'retired')]"/>
+
+                <separator/>
+                <filter string="With Subscription" name="has_subscription"
+                        domain="[('subscription_line_id', '!=', False)]"/>
+                <filter string="Without Subscription" name="no_subscription"
+                        domain="[('subscription_line_id', '=', False)]"/>
+
+                <separator/>
+                <filter string="Auto Assigned" name="auto_assigned"
+                        domain="[('auto_assigned', '=', True)]"/>
+                <filter string="Manual Assignment" name="manual_assigned"
+                        domain="[('auto_assigned', '=', False)]"/>
+
+                <separator/>
+                <filter string="Maintenance Due" name="maintenance_due"
+                        domain="[('next_maintenance', '&lt;=', context_today())]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Client" name="group_client"
+                            context="{'group_by': 'client_id'}"/>
+                    <filter string="Service Type" name="group_service_type"
+                            context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Category" name="group_category"
+                            context="{'group_by': 'service_type_id.category_id'}"/>
+                    <filter string="Status" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Responsible" name="group_responsible"
+                            context="{'group_by': 'responsible_employee_id'}"/>
+                    <filter string="Location" name="group_location"
+                            context="{'group_by': 'location'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Employee Workload Views -->
     <record id="view_employee_workload_tree" model="ir.ui.view">
         <field name="name">employee.workload.tree</field>
@@ -343,85 +395,23 @@
         </field>
     </record>
 
-    <!-- Service Subscription Views -->
-    <record id="view_service_subscription_tree" model="ir.ui.view">
-        <field name="name">service.subscription.tree</field>
-        <field name="model">service.subscription</field>
-        <field name="arch" type="xml">
-            <tree string="Service Subscriptions" decoration-info="state=='draft'" decoration-success="state=='active'">
-                <field name="name"/>
-                <field name="client_id"/>
-                <field name="billing_period"/>
-                <field name="monthly_total" widget="monetary"/>
-                <field name="next_invoice_date"/>
-                <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='active'" decoration-warning="state=='suspended'" decoration-danger="state=='terminated'"/>
-                <field name="currency_id" column_invisible="1"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_service_subscription_form" model="ir.ui.view">
-        <field name="name">service.subscription.form</field>
-        <field name="model">service.subscription</field>
-        <field name="arch" type="xml">
-            <form string="Service Subscription">
-                <header>
-                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_suspend" type="object" string="Suspend" invisible="state != 'active'"/>
-                    <button name="action_terminate" type="object" string="Terminate" invisible="state not in ['active', 'suspended']"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,terminated"/>
-                </header>
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="client_id"/>
-                            <field name="billing_period"/>
-                            <field name="auto_renew"/>
-                        </group>
-                        <group>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                            <field name="next_invoice_date"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="total_cost" widget="monetary"/>
-                            <field name="total_price" widget="monetary"/>
-                        </group>
-                        <group>
-                            <field name="margin"/>
-                            <field name="currency_id" column_invisible="1"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Services">
-                            <field name="service_line_ids">
-                                <tree editable="bottom">
-                                    <field name="service_type_id"/>
-                                    <field name="name"/>
-                                    <field name="quantity"/>
-                                    <field name="unit_cost" readonly="1"/>
-                                    <field name="unit_price"/>
-                                    <field name="monthly_cost" readonly="1"/>
-                                    <field name="monthly_price" readonly="1"/>
-                                    <field name="currency_id" column_invisible="1"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
     <!-- Actions -->
+    <record id="action_employee_cost" model="ir.actions.act_window">
+        <field name="name">Employee Costs</field>
+        <field name="res_model">cost.employee</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure employee hourly costs
+            </p>
+            <p>
+                Employee costs are automatically calculated from contract data.
+                The system supports both standard Ukrainian taxes and Dія.City special rates.
+                You can manually override values if needed.
+            </p>
+        </field>
+    </record>
+
     <record id="action_service_category" model="ir.actions.act_window">
         <field name="name">Service Categories</field>
         <field name="res_model">service.category</field>
@@ -464,20 +454,6 @@
             <p>
                 Track all IT services and equipment for each client.
                 Assign responsible employees and track maintenance schedules.
-            </p>
-        </field>
-    </record>
-
-    <record id="action_service_subscription" model="ir.actions.act_window">
-        <field name="name">Service Subscriptions</field>
-        <field name="res_model">service.subscription</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create service subscriptions
-            </p>
-            <p>
-                Set up recurring billing for IT services with automatic invoicing.
             </p>
         </field>
     </record>

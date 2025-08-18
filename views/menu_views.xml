@@ -6,12 +6,12 @@
               sequence="50"
               web_icon="cost_allocation,static/description/icon.png"/>
 
-        <!-- Dashboard Menu - First Item -->
+        <!-- Dashboard Menu - First Item 
     <menuitem id="menu_cost_allocation_dashboard"
               name="Dashboard"
               parent="menu_cost_allocation_root"
               action="action_cost_allocation_dashboard"
-              sequence="10"/>
+              sequence="10"/> -->
 
     <!-- Service Catalog Menus -->
     <menuitem id="menu_service_catalog"
@@ -30,6 +30,12 @@
               parent="menu_service_catalog"
               action="action_service_catalog"
               sequence="20"/>
+
+    <menuitem id="menu_service_types"
+              name="Service Types"
+              parent="menu_service_catalog"
+              action="action_service_type"
+              sequence="25"/>
 
     <menuitem id="menu_client_services"
               name="Client Services"
@@ -79,6 +85,12 @@
               parent="menu_cost_allocation_config"
               action="action_cost_driver"
               sequence="30"/>
+
+    <menuitem id="menu_employee_workload"
+              name="Employee Workload"
+              parent="menu_cost_allocation_config"
+              action="action_employee_workload"
+              sequence="40"/>
 
     <!-- Operations Menu -->
     <menuitem id="menu_cost_allocation_operations"

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Company Form Extension for Cost Allocation -->
+    <record id="view_company_form_cost_allocation" model="ir.ui.view">
+        <field name="name">res.company.form.cost_allocation</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_settings']" position="after">
+                <page string="Cost Allocation" name="cost_allocation">
+                    <group>
+                        <group string="Business Information">
+                            <field name="business_type"/>
+                        </group>
+                        <group string="Tax Settings">
+                            <field name="is_diia_city_resident"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" invisible="not is_diia_city_resident">
+                        <h4><i class="fa fa-info-circle"/> Dія.City Tax Regime</h4>
+                        <p>This company operates under Dія.City special tax regime:</p>
+                        <ul>
+                            <li><strong>5%</strong> Income Tax (instead of 18%)</li>
+                            <li><strong>5%</strong> Military Tax (standard)</li>
+                            <li><strong>22% ESV</strong> calculated from minimum wage only (instead of full salary)</li>
+                        </ul>
+                        <p class="text-muted">
+                            This setting affects all employees of this company in cost calculations.
+                        </p>
+                    </div>
+
+                    <div class="alert alert-warning" invisible="is_diia_city_resident">
+                        <h4><i class="fa fa-exclamation-triangle"/> Standard Tax Regime</h4>
+                        <p>This company uses standard Ukrainian tax calculation:</p>
+                        <ul>
+                            <li><strong>22% ESV</strong> calculated from full salary</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Company Tree View Extension -->
+    <record id="view_company_tree_cost_allocation" model="ir.ui.view">
+        <field name="name">res.company.tree.cost_allocation</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree"/>
+        <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                <field name="business_type"/>
+                <field name="is_diia_city_resident" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

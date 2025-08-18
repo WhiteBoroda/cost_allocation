@@ -42,6 +42,13 @@
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
+    <!-- Service Type Actions -->
+    <record id="action_service_type" model="ir.actions.act_window">
+        <field name="name">Service Types</field>
+        <field name="res_model">service.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
     <!-- Client Service Actions -->
     <record id="action_client_service" model="ir.actions.act_window">
         <field name="name">Client Services</field>
@@ -49,7 +56,14 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Client Service Subscription Actions -->
+    <!-- Employee Workload Actions -->
+    <record id="action_employee_workload" model="ir.actions.act_window">
+        <field name="name">Employee Workload</field>
+        <field name="res_model">employee.workload</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Client Service Subscription Actions (MAIN) -->
     <record id="action_client_service_subscription" model="ir.actions.act_window">
         <field name="name">Service Subscriptions</field>
         <field name="res_model">client.service.subscription</field>

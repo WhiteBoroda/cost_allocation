@@ -14,7 +14,8 @@
                     <group string="Business Type">
                         <field name="company_type" widget="radio" nolabel="1"/>
                     </group>
-                    <group string="Setup Options">
+                    <group>
+                        <label for="setup_employees" string="Setup Options" colspan="2"/>
                         <field name="setup_employees" string="Setup Employee Costs"/>
                         <field name="setup_pools" string="Setup Cost Pools"/>
                         <field name="setup_drivers" string="Setup Cost Drivers"/>

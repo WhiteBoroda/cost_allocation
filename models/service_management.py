@@ -1,5 +1,4 @@
 from odoo import models, fields, api
-from dateutil.relativedelta import relativedelta
 
 
 class ServiceType(models.Model):
@@ -126,8 +125,8 @@ class ClientService(models.Model):
         ('retired', 'Retired')
     ], string='Status', default='active', required=True)
 
-    # Subscription link
-    subscription_line_id = fields.Many2one('service.subscription.line', string='Subscription Line')
+    # Subscription link - reference to subscription line
+    subscription_line_id = fields.Many2one('client.service.subscription.line', string='Subscription Line')
 
     # Display name
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
@@ -313,159 +312,3 @@ class EmployeeWorkload(models.Model):
                 # Trigger recomputation
                 workload._compute_workload()
                 workload._compute_utilization()
-
-
-class ServiceSubscription(models.Model):
-    _name = 'service.subscription'
-    _description = 'IT Service Subscription'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-
-    name = fields.Char(string='Subscription Name', required=True, tracking=True)
-    client_id = fields.Many2one('res.partner', string='Client',
-                                domain=[('is_company', '=', True)], required=True, tracking=True)
-
-    # Subscription details
-    start_date = fields.Date(string='Start Date', default=fields.Date.today, required=True, tracking=True)
-    end_date = fields.Date(string='End Date', tracking=True)
-
-    # Billing
-    billing_period = fields.Selection([
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('yearly', 'Yearly')
-    ], string='Billing Period', default='monthly', required=True, tracking=True)
-
-    next_invoice_date = fields.Date(string='Next Invoice Date', tracking=True)
-    auto_renew = fields.Boolean(string='Auto Renew', default=True, tracking=True)
-
-    # Services
-    service_line_ids = fields.One2many('service.subscription.line', 'subscription_id', string='Services')
-
-    # Totals
-    monthly_total = fields.Float(string='Monthly Total', compute='_compute_totals', store=True)
-    total_cost = fields.Float(string='Total Cost', compute='_compute_totals', store=True)
-    total_price = fields.Float(string='Total Price', compute='_compute_totals', store=True)
-    margin = fields.Float(string='Margin %', compute='_compute_totals', store=True)
-
-    # Status
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('suspended', 'Suspended'),
-        ('terminated', 'Terminated')
-    ], string='Status', default='draft', tracking=True)
-
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
-
-    @api.depends('service_line_ids.monthly_cost', 'service_line_ids.monthly_price')
-    def _compute_totals(self):
-        for subscription in self:
-            subscription.monthly_total = sum(subscription.service_line_ids.mapped('monthly_price'))
-            subscription.total_cost = sum(subscription.service_line_ids.mapped('monthly_cost'))
-            subscription.total_price = sum(subscription.service_line_ids.mapped('monthly_price'))
-
-            if subscription.total_cost > 0:
-                subscription.margin = ((
-                                                   subscription.total_price - subscription.total_cost) / subscription.total_price) * 100
-            else:
-                subscription.margin = 0
-
-    def action_activate(self):
-        self.state = 'active'
-        self._update_next_invoice_date()
-
-    def action_suspend(self):
-        self.state = 'suspended'
-
-    def action_terminate(self):
-        self.state = 'terminated'
-
-    def _update_next_invoice_date(self):
-        """Update next invoice date based on billing period"""
-        if self.billing_period == 'monthly':
-            if self.next_invoice_date:
-                self.next_invoice_date = self.next_invoice_date + relativedelta(months=1)
-            else:
-                self.next_invoice_date = fields.Date.today() + relativedelta(months=1)
-        elif self.billing_period == 'quarterly':
-            if self.next_invoice_date:
-                self.next_invoice_date = self.next_invoice_date + relativedelta(months=3)
-            else:
-                self.next_invoice_date = fields.Date.today() + relativedelta(months=3)
-        else:  # yearly
-            if self.next_invoice_date:
-                self.next_invoice_date = self.next_invoice_date + relativedelta(years=1)
-            else:
-                self.next_invoice_date = fields.Date.today() + relativedelta(years=1)
-
-
-class ServiceSubscriptionLine(models.Model):
-    _name = 'service.subscription.line'
-    _description = 'Service Subscription Line'
-
-    subscription_id = fields.Many2one('service.subscription', string='Subscription', required=True, ondelete='cascade')
-    service_type_id = fields.Many2one('service.type', string='Service Type', required=True)
-    name = fields.Char(string='Description')
-    quantity = fields.Float(string='Quantity', default=1.0, required=True)
-
-    # Pricing
-    unit_cost = fields.Float(string='Unit Cost', compute='_compute_costs', store=True)
-    unit_price = fields.Float(string='Unit Price', required=True)
-    monthly_cost = fields.Float(string='Monthly Cost', compute='_compute_costs', store=True)
-    monthly_price = fields.Float(string='Monthly Price', compute='_compute_costs', store=True)
-
-    # Links
-    client_service_ids = fields.One2many('client.service', 'subscription_line_id', string='Related Services')
-
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
-
-    @api.depends('quantity', 'unit_price', 'service_type_id')
-    def _compute_costs(self):
-        for line in self:
-            # Calculate cost from cost allocation
-            if line.service_type_id and line.subscription_id.client_id:
-                # Get latest allocation for client
-                allocation = self.env['client.cost.allocation'].search([
-                    ('client_id', '=', line.subscription_id.client_id.id),
-                    ('state', '=', 'confirmed')
-                ], order='period_date desc', limit=1)
-
-                if allocation:
-                    # Calculate proportional cost based on service type
-                    line.unit_cost = allocation.total_cost / max(allocation.client_id.service_count or 1, 1)
-                else:
-                    line.unit_cost = line.service_type_id.base_price * 0.7  # Default 70% cost ratio
-            else:
-                line.unit_cost = 0
-
-            line.monthly_cost = line.unit_cost * line.quantity
-            line.monthly_price = line.unit_price * line.quantity
-
-    def _get_service_product(self):
-        """Get or create product for service type"""
-        product = self.env['product.template'].search([
-            ('default_code', '=', f"SRV_{self.service_type_id.code}")
-        ], limit=1)
-
-        if not product:
-            product = self.env['product.template'].create({
-                'name': self.service_type_id.name,
-                'default_code': f"SRV_{self.service_type_id.code}",
-                'type': 'service',
-                'invoice_policy': 'order',
-                'list_price': self.service_type_id.base_price,
-                'categ_id': self._get_service_category().id,
-            })
-        return product.product_variant_id
-
-    def _get_service_category(self):
-        """Get or create IT Services product category"""
-        category = self.env['product.category'].search([
-            ('name', '=', 'IT Services')
-        ], limit=1)
-
-        if not category:
-            category = self.env['product.category'].create({
-                'name': 'IT Services',
-            })
-        return category

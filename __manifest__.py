@@ -1,13 +1,15 @@
 {
     'name': 'Розподіл затрат / Cost Allocation',
-    'version': '17.0.1.1.3',
+    'version': '17.0.1.2.0',
     'category': 'Accounting',
     'summary': 'ABC розрахунок собівартості IT послуг / ABC Cost Allocation for IT Services',
     'description': """
 
-                                              Модуль розрахунку собівартості послуг методом ABC (Activity-Based Costing) для сервісних компаній.
 
-                                              🎯 Підходить для різних типів бізнесу:
+
+                                                                                    Модуль розрахунку собівартості послуг методом ABC (Activity-Based Costing) для сервісних компаній.
+
+                                                                                    🎯 Підходить для різних типів бізнесу:
         • IT Services - технічна підтримка, обслуговування обладнання
         • Legal Services - юридичні послуги, консалтинг  
         • Accounting Services - бухгалтерські послуги, аудит
@@ -27,13 +29,22 @@
         Activity-Based Costing module for IT service companies.
         Allocates direct and indirect costs to clients based on cost drivers.
         Supports subscription billing and interactive dashboard with KPI analytics.
+
+        v1.2.0 MAJOR UPDATE:
+        - Multi-company support with proper data isolation
+        - Company-level Dія.City tax settings (instead of per-employee)
+        - Security rules for holding company structure
+        - Bulk services wizard for mass deployment
+        - Fixed subscription module dependencies
     """,
     'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale'],
     'data': [
         'security/security.xml',
+        'security/security_rules.xml',
         'security/ir.model.access.csv',
         'data/service_data.xml',
         'data/service_catalog_data.xml',
+        'data/service_templates_data.xml',
         'data/cron_data.xml',
         'views/actions.xml',
         'views/service_views.xml',
@@ -45,8 +56,11 @@
         'views/service_catalog_views.xml',
         'views/subscription_views.xml',
         'views/partner_views.xml',
+        'views/company_views.xml',
+        'views/holding_structure_views.xml',
         'views/dashboard_views.xml',
         'wizards/wizard_views.xml',
+        'wizards/bulk_services_wizard_views.xml',
         'views/menu_views.xml',
     ],
     'assets': {

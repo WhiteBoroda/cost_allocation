@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company security rules -->
+
+    <!-- Employee Cost Security -->
+    <record id="cost_employee_company_rule" model="ir.rule">
+        <field name="name">Employee Cost: company rule</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="domain_force">[('employee_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Cost Pool Security -->
+    <record id="cost_pool_company_rule" model="ir.rule">
+        <field name="name">Cost Pool: company rule</field>
+        <field name="model_id" ref="model_cost_pool"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Cost Driver Security -->
+    <record id="cost_driver_company_rule" model="ir.rule">
+        <field name="name">Cost Driver: company rule</field>
+        <field name="model_id" ref="model_cost_driver"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Client Cost Allocation Security -->
+    <record id="client_cost_allocation_company_rule" model="ir.rule">
+        <field name="name">Client Cost Allocation: company rule</field>
+        <field name="model_id" ref="model_client_cost_allocation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Service Category Security -->
+    <record id="service_category_company_rule" model="ir.rule">
+        <field name="name">Service Category: company rule</field>
+        <field name="model_id" ref="model_service_category"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Service Type Security -->
+    <record id="service_type_company_rule" model="ir.rule">
+        <field name="name">Service Type: company rule</field>
+        <field name="model_id" ref="model_service_type"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Client Service Security -->
+    <record id="client_service_company_rule" model="ir.rule">
+        <field name="name">Client Service: company rule</field>
+        <field name="model_id" ref="model_client_service"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Client Service Subscription Security -->
+    <record id="client_service_subscription_company_rule" model="ir.rule">
+        <field name="name">Client Service Subscription: company rule</field>
+        <field name="model_id" ref="model_client_service_subscription"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Employee Workload Security -->
+    <record id="employee_workload_company_rule" model="ir.rule">
+        <field name="name">Employee Workload: company rule</field>
+        <field name="model_id" ref="model_employee_workload"/>
+        <field name="domain_force">[('employee_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Financial data access restriction -->
+    <record id="cost_employee_salary_rule" model="ir.rule">
+        <field name="name">Employee Cost: salary access</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="domain_force">[('employee_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_cost_allocation_financial'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Non-financial users cannot see salary details -->
+    <record id="cost_employee_no_salary_rule" model="ir.rule">
+        <field name="name">Employee Cost: no salary access</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="domain_force">[('employee_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_cost_allocation_user')), (4, ref('group_cost_allocation_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>

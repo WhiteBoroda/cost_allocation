@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Holding Structure: Client Selection Context -->
+
+    <!-- Override client service views to filter clients -->
+    <record id="view_client_service_form_holding" model="ir.ui.view">
+        <field name="name">client.service.form.holding</field>
+        <field name="model">client.service</field>
+        <field name="inherit_id" ref="view_client_service_form"/>
+        <field name="arch" type="xml">
+            <field name="client_id" position="attributes">
+                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Override subscription views to filter clients -->
+    <record id="view_client_service_subscription_form_holding" model="ir.ui.view">
+        <field name="name">client.service.subscription.form.holding</field>
+        <field name="model">client.service.subscription</field>
+        <field name="inherit_id" ref="view_client_service_subscription_form"/>
+        <field name="arch" type="xml">
+            <field name="client_id" position="attributes">
+                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Override bulk services wizard to filter clients -->
+    <record id="view_bulk_services_wizard_form_holding" model="ir.ui.view">
+        <field name="name">bulk.services.wizard.form.holding</field>
+        <field name="model">bulk.services.wizard</field>
+        <field name="inherit_id" ref="view_bulk_services_wizard_form"/>
+        <field name="arch" type="xml">
+            <field name="client_ids" position="attributes">
+                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Override allocation wizard to filter clients -->
+    <record id="view_allocation_wizard_form_holding" model="ir.ui.view">
+        <field name="name">allocation.wizard.form.holding</field>
+        <field name="model">allocation.wizard</field>
+        <field name="inherit_id" ref="view_allocation_wizard_form"/>
+        <field name="arch" type="xml">
+            <field name="client_ids" position="attributes">
+                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Partner tree view with holding filter -->
+    <record id="view_partner_tree_holding_clients" model="ir.ui.view">
+        <field name="name">res.partner.tree.holding.clients</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="default_order">is_company desc, name</attribute>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Add action for viewing only client companies -->
+    <record id="action_holding_clients" model="ir.actions.act_window">
+        <field name="name">Client Companies</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('is_company', '=', True), ('id', '!=', user.company_id.id)]</field>
+        <field name="context">{
+            'default_is_company': True,
+            'search_default_customer': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first client company!
+            </p>
+            <p>
+                These are the companies you provide services to within the holding structure.
+                Your own company is excluded from this list.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu for client companies -->
+    <menuitem id="menu_holding_clients"
+              name="Client Companies"
+              parent="menu_service_catalog"
+              action="action_holding_clients"
+              sequence="5"/>
+
+</odoo>

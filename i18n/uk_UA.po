@@ -4,13 +4,13 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 17.0+e-20250624\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-16 12:00+0000\n"
-"PO-Revision-Date: 2025-08-18 13:46+0300\n"
+"POT-Creation-Date: 2025-08-18 11:31+0000\n"
+"PO-Revision-Date: 2025-08-18 15:56+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: uk_UA\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,50 +18,583 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 3.6\n"
 
-# Module Info
 #. module: cost_allocation
-#: model:ir.module.category,name:cost_allocation.module_cost_allocation
-msgid "Cost Allocation"
-msgstr "Розподіл затрат"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "22% ESV on minimum wage ("
+msgstr "22% ESV від мінімальної заробітної плати ("
 
 #. module: cost_allocation
-#: model:ir.module.category,description:cost_allocation.module_cost_allocation
-msgid "Manage cost allocation and service pricing"
-msgstr "Управління розподілом затрат та ціноутворенням послуг"
-
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Security Groups
-#. module: cost_allocation
-#: model:res.groups,name:cost_allocation.group_cost_allocation_user
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "User"
-msgstr "Користувач"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "5% Income Tax on full salary"
+msgstr "5% прибутковий податок на всю зарплату"
 
 #. module: cost_allocation
-#: model:res.groups,name:cost_allocation.group_cost_allocation_manager
-msgid "Manager"
-msgstr "Менеджер"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "5% Military Tax on full salary"
+msgstr "5% військового збору від повної зарплати"
 
 #. module: cost_allocation
-#: model:res.groups,name:cost_allocation.group_cost_allocation_financial
-msgid "Financial Manager"
-msgstr "Фінансовий менеджер"
-
-# Menu Items
-#. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_root
-msgid "Service Costing"
-msgstr "Вартість послуг"
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_cost_pool
+msgid ""
+"<b>Підказка:</b> Використайте майстер налаштування для створення базових "
+"пулів під ваш тип бізнесу."
+msgstr ""
+"<b>Підказка:</b> Використовуйте майстер налаштування для створення базових "
+"пулів під ваш тип бізнесу."
 
 #. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_service_catalog
-msgid "Service Catalog"
-msgstr "Каталог послуг"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_kanban
+msgid "<i class=\"fa fa-calendar\"/> Next:"
+msgstr "<i class=\"fa fa-calendar\"/> Наступний:"
 
 #. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_subscriptions
-msgid "Subscriptions"
-msgstr "Підписки"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_it_services
+msgid "<span class=\"o_stat_text\">Monthly Cost</span>"
+msgstr "<span class=\"o_stat_text\">Щомісячна вартість</span>"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid ""
+"<strong>Custom Setup:</strong> You will need to manually configure cost "
+"pools, drivers, and service categories after completing this wizard."
+msgstr ""
+"<strong>Індивідуальне налаштування:</strong> Після завершення цього майстра "
+"вам потрібно буде вручну налаштувати пули витрат, драйвери та категорії "
+"послуг."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "<strong>Dія.City Tax Calculation:</strong>"
+msgstr "<strong>Розрахунок податків Дія.Сіті:</strong>"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Account"
+msgstr "Обліковий запис"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__accounting
+#, python-format
+msgid "Accounting Services"
+msgstr "Бухгалтерські послуги"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Accounts"
+msgstr "Обліковий запис"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_needaction
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_needaction
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_needaction
+msgid "Action Needed"
+msgstr "Потрібна дія"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_form
+msgid "Activate"
+msgstr "Активувати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__active
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__active
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__active
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__active
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__active
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__active
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__active
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__active
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__active
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service__status__active
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__state__active
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__state__active
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Active"
+msgstr "Активно"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__service_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__service_count
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__active_services_count
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__active_services_count
+msgid "Active Services"
+msgstr "Активні послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_ids
+msgid "Activities"
+msgstr "Активність"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_exception_decoration
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_exception_decoration
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Оформлення винятків у діяльності"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_state
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_state
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_state
+msgid "Activity State"
+msgstr "Стан активності"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_type_icon
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_type_icon
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Піктограма типу діяльності"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_service
+msgid "Add client services and equipment"
+msgstr "Додайте клієнтські послуги та обладнання"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Administration"
+msgstr "Администрування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Administrative"
+msgstr "Адміністративний"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__admin_cost
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_pool__pool_type__admin
+msgid "Administrative Costs"
+msgstr "Адміністративні витрати"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Administrative and management costs"
+msgstr "Адміністративні та управлінські витрати"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Administrative costs"
+msgstr "Адміністративні витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__allocated_cost
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__allocated_cost
+msgid "Allocated Cost"
+msgstr "Розподілені витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__allocation_id
+msgid "Allocation"
+msgstr "Розподіл"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__percentage
+msgid "Allocation %"
+msgstr "Виділення % від загальної суми"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_employee_workload
+msgid "Analyze employee workload"
+msgstr "Аналізуйте завантаженість працівників"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Application"
+msgstr "Додаток"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Applications"
+msgstr "Додатки"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Archived"
+msgstr "Архівовано"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_attachment_count
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_attachment_count
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_attachment_count
+msgid "Attachment Count"
+msgstr "Кількість вкладень"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Audit"
+msgstr "Перевірку"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Audit and assurance services"
+msgstr "Послуги з аудиту та підтвердження достовірності інформації"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__auto_assign_responsible
+msgid "Auto Assign to New Services"
+msgstr "Автоматичне призначення на нові послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__auto_assigned
+msgid "Auto Assigned from Service Type"
+msgstr "Автоматично призначається з типу послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__auto_calculate
+msgid "Auto Calculate Costs"
+msgstr "Автоматичний розрахунок витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__auto_confirm_invoices
+msgid "Auto Confirm Invoices"
+msgstr "Автоматичне підтвердження рахунків-фактур"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__auto_create_acts
+msgid "Auto Create Work Acts"
+msgstr "Автоматичне створення актів виконаних робіт"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__auto_invoice
+msgid "Auto Invoice"
+msgstr "Автоматичний рахунок-фактура"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__auto_renew
+msgid "Auto Renew"
+msgstr "Автоматичне поновлення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__auto_send_invoices
+msgid "Auto Send Invoices"
+msgstr "Автоматичне надсилання рахунків-фактур"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_billing_automation
+msgid "Automated Billing for IT Services"
+msgstr "Автоматизоване виставлення рахунків за ІТ-послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__name
+msgid "Automation Name"
+msgstr "Назва автоматизації"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_form
+msgid "Automation Settings"
+msgstr "Налаштування автоматизації"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__availability_sla
+msgid "Availability SLA (%)"
+msgstr "Рівень доступності SLA (%)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__available_hours
+msgid "Available Hours per Month"
+msgstr "Доступні години на місяць"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__base_cost
+msgid "Base Monthly Cost"
+msgstr "Базова щомісячна вартість"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__base_price
+msgid "Base Price per Unit"
+msgstr "Базова ціна за одиницю"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__support_level__basic
+msgid "Basic Support"
+msgstr "Базова підтримка"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_user
+msgid "Basic access to cost allocation - can view allocations and reports"
+msgstr ""
+"Базовий доступ до розподілу витрат - можна переглядати розподіли та звіти"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid ""
+"Basic configuration for %s created. You can edit cost pools and drivers in "
+"Configuration menu."
+msgstr ""
+"Базова конфігурація для %s створена. Ви можете редагувати пули витрат і "
+"драйвери в меню Конфігурація."
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_billing_automation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_form
+msgid "Billing Automation"
+msgstr "Автоматизація білінгу"
+
+#. module: cost_allocation
+#: model:ir.actions.server,name:cost_allocation.cron_billing_automation_ir_actions_server
+msgid "Billing Automation Runner"
+msgstr "Білінговий автоматизатор Billing Automation Runner"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_tree
+msgid "Billing Automations"
+msgstr "Автоматизація білінгу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__billing_day
+msgid "Billing Day of Month"
+msgstr "Розрахунковий день місяця"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__billing_period
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__billing_period
+msgid "Billing Period"
+msgstr "Розрахунковий період"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__service_type
+msgid "Billing Type"
+msgstr "Тип білінгу"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Bookkeeping"
+msgstr "Бухгалтерія"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__company_type
+msgid "Business Type"
+msgstr "Тип бізнесу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
+msgid "Calculate Costs"
+msgstr "Розрахувати витрати"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_allocation
+msgid ""
+"Calculate total service costs for each client based on direct time tracking\n"
+"                and indirect cost allocation using ABC methodology."
+msgstr ""
+"Розрахувати загальну вартість послуг для кожного клієнта на основі прямого "
+"відстеження часу\n"
+"                та розподілу непрямих витрат за методологією ABC."
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_cost_allocation__state__calculated
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+msgid "Calculated"
+msgstr "Розраховано"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_financial
+msgid ""
+"Can access employee salaries and financial data - only for directors and "
+"accountants"
+msgstr ""
+"Доступ до зарплат працівників та фінансових даних - лише для директорів та "
+"бухгалтерів"
+
+#. module: cost_allocation
+#: model:res.groups,comment:cost_allocation.group_cost_allocation_manager
+msgid "Can manage cost pools, drivers, and service catalog"
+msgstr "Керування пулами витрат, драйверами та каталогом послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Case"
+msgstr "Справа"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Cases"
+msgstr ""
+"Містить параметри для спеціальних випадків використання, наприклад, за "
+"допомогою рядка повідомлень лише для простих сповіщень"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__driver_category
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__category_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__category_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Category"
+msgstr "Категорія"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_category_form
+msgid "Category description..."
+msgstr "Опис категорії..."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__client_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__client_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__client_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__client_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__client_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__client_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Client"
+msgstr "Клієнт"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_client_allocations
+msgid "Client Allocations"
+msgstr "Виділення коштів клієнтам"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
+msgid "Client Cost Allocation"
+msgstr "Розподіл витрат клієнта"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_client_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_tree
+msgid "Client Cost Allocations"
+msgstr "Розподіл витрат клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_cost_driver
+msgid "Client Cost Driver Values"
+msgstr "Вартість клієнта Цінності драйверів витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_driver_tree
+msgid "Client Cost Drivers"
+msgstr "Фактори, що впливають на витрати клієнта"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__client_driver_ids
+msgid "Client Driver Values"
+msgstr "Цінності клієнта-драйвера"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_service
+msgid "Client IT Services and Equipment"
+msgstr "ІТ-послуги та обладнання для клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_indirect_cost
+msgid "Client Indirect Cost Detail"
+msgstr "Деталізація непрямих витрат клієнта"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_form
+msgid "Client Service"
+msgstr "Обслуговування клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_service_subscription
+msgid "Client Service Subscription"
+msgstr "Підписка на обслуговування клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_client_service_subscription_line
+msgid "Client Service Subscription Line"
+msgstr "Абонентська лінія клієнтського сервісу"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_client_service
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__client_service_ids
+#: model:ir.ui.menu,name:cost_allocation.menu_client_services
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_tree
+msgid "Client Services"
+msgstr "Послуги для клієнтів"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+msgid "Client Values"
+msgstr "Цінності клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__client_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__client_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__client_ids
+msgid "Clients"
+msgstr "Клієнти"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__code
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__code
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__code
+msgid "Code"
+msgstr "Код"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_cost_employee__is_diia_city
+msgid ""
+"Company is Dія.City resident: 5% income tax + 5% military tax + 22% ESV from "
+"minimum wage"
+msgstr ""
+"Компанія є резидентом Дія.City: 5% i податок на прибуток + 5% військовий "
+"збір + 22% E ЄСВ з мінімальної зарплати"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Complexity"
+msgstr "Складність"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__complexity_level
+msgid "Complexity Level"
+msgstr "Рівень складності"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Compliance"
+msgstr "Конфіденційність"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Computer equipment and hardware support"
+msgstr "Комп'ютерне обладнання та апаратна підтримка"
 
 #. module: cost_allocation
 #: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_config
@@ -69,943 +602,2386 @@ msgid "Configuration"
 msgstr "Налаштування"
 
 #. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_employee_cost
+msgid "Configure employee hourly costs"
+msgstr "Налаштуйте погодинну оплату працівників"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
+msgid "Confirm"
+msgstr "Підтвердити"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_cost_allocation__state__confirmed
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+msgid "Confirmed"
+msgstr "Підтверджено"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__construction
+#, python-format
+msgid "Construction Services"
+msgstr "Будівельні послуги"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Consulting"
+msgstr "Консультування"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__service_type__consumption
+msgid "Consumption Based"
+msgstr "На основі споживання"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_res_partner
+msgid "Contact"
+msgstr "Контакти"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Contract"
+msgstr "Контракт"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Contract Data"
+msgstr "Дані контракту"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Contract Law"
+msgstr "Договірне право"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Contract drafting and review"
+msgstr "Складання та перевірка договорів"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Contracts"
+msgstr "Контракти"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Corporate Law"
+msgstr "Корпоративне право"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Corporate legal services"
+msgstr "Корпоративні юридичні послуги"
+
+#. module: cost_allocation
+#: model:ir.module.category,name:cost_allocation.module_cost_allocation
+msgid "Cost Allocation"
+msgstr "Розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_report_wizard
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Cost Allocation Report"
+msgstr "Звіт про розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_cost_report_wizard
+msgid "Cost Allocation Report Wizard"
+msgstr "Майстер звітів про розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_allocation_wizard
+msgid "Cost Allocation Wizard"
+msgstr "Майстер розподілу витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__cost_allocation_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__cost_allocation_ids
+msgid "Cost Allocations"
+msgstr "Розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_operations
+msgid "Cost Analysis"
+msgstr "Аналіз витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
+msgid "Cost Breakdown"
+msgstr "Розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__cost_calculation_delay
+msgid "Cost Calculation Delay (days)"
+msgstr "Затримка розрахунку вартості (дні)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__driver_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__driver_id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__driver_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+msgid "Cost Driver"
+msgstr "Драйвер витрат"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_cost_driver
+msgid "Cost Driver Configuration"
+msgstr "Конфігурація драйверів витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__cost_driver_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__cost_driver_ids
+msgid "Cost Driver Values"
+msgstr "Цінності драйверів витрат"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_driver
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_tree
+msgid "Cost Drivers"
+msgstr "Фактори витрат"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_cost_pool
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__pool_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Cost Pool"
+msgstr "Пул витрат"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_cost_pool_allocation
+msgid "Cost Pool Employee Allocation"
+msgstr "Розподіл співробітників пулу витрат"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.actions.act_window,name:cost_allocation.action_cost_pool
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_pools
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_tree
+#, python-format
+msgid "Cost Pools"
+msgstr "Пули витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__cost_trend
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__cost_trend
+msgid "Cost Trend"
+msgstr "Тенденція витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_cost_driver
+msgid ""
+"Cost drivers determine how to allocate pool costs to clients.\n"
+"                Each pool should have one driver (computers, users, servers, "
+"etc.)."
+msgstr ""
+"Драйвери витрат визначають, як розподіляти витрати пулу між клієнтами.\n"
+"                Кожен пул повинен мати один драйвер (комп'ютери, "
+"користувачі, сервери тощо)."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__cost_per_unit
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__cost_per_unit
+msgid "Cost per Unit"
+msgstr "Витрати на одиницю продукції"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Court proceedings and disputes"
+msgstr "Судові розгляди та спори"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_allocation_wizard
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Create Allocations"
+msgstr "Створюйте розподіл"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_allocation_wizard
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Create Cost Allocations"
+msgstr "Створіть розподіл витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_billing_automation
+msgid ""
+"Create automated billing rules to generate invoices and work completion "
+"acts\n"
+"                for your IT service subscriptions on a regular schedule."
+msgstr ""
+"Створюйте автоматизовані правила виставлення рахунків для генерації рахунків-"
+"фактур та актів виконаних робіт\n"
+"                для ваших підписок на ІТ-послуги за регулярним графіком."
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_subscription
+msgid "Create service subscriptions"
+msgstr "Створюйте підписки на послуги"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_type
+msgid ""
+"Create service types with pricing, SLA, and assign default responsible "
+"teams.\n"
+"                Service types can auto-assign responsible employees to new "
+"client services."
+msgstr ""
+"Створюйте типи послуг з цінами, SLA та призначайте відповідальних за "
+"замовчуванням.\n"
+"                Типи послуг можуть автоматично призначати відповідальних "
+"працівників для нових клієнтських послуг."
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_allocation
+msgid "Create your first cost allocation"
+msgstr "Створіть перший розподіл витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_cost_driver
+msgid "Create your first cost driver"
+msgstr "Створіть свій перший драйвер витрат"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_service_subscription
+msgid "Create your first service subscription!"
+msgstr "Створіть свою першу підписку на послугу!"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_category
+msgid "Create your service categories"
+msgstr "Створіть свої категорії послуг"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__create_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__create_uid
+msgid "Created by"
+msgstr "Створено за участю"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__create_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__create_date
+msgid "Created on"
+msgstr "Створено на"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__complexity_level__critical
+msgid "Critical"
+msgstr "Критичний"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__currency_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__currency_id
+msgid "Currency"
+msgstr "Валюта"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_cost_employee__minimum_wage
+msgid "Current minimum wage in Ukraine for ESV calculation"
+msgstr "Поточна мінімальна заробітна плата в Україні для розрахунку ESV"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__custom
+#, python-format
+msgid "Custom Setup"
+msgstr "Індивідуальне налаштування"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Daily accounting and bookkeeping"
+msgstr "Щоденний облік і бухгалтерія"
+
+#. module: cost_allocation
+#: model:ir.actions.client,name:cost_allocation.action_cost_allocation_dashboard
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_dashboard
+msgid "Dashboard"
+msgstr "Панель приладів"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid ""
+"Data automatically calculated from employee contract.\n"
+"                                Standard tax calculation: 22% ESV on full "
+"salary."
+msgstr ""
+"Дані автоматично розраховуються з трудового договору.\n"
+"                                Стандартний розрахунок податку: 22% ESV від "
+"повної зарплати."
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__invoice_day
+msgid "Day of month to generate invoice"
+msgstr "День місяця для формування інвойсу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_billing_automation__billing_day
+msgid "Day of month to generate invoices (1-28)"
+msgstr "День місяця для формування інвойсів (1-28)"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__recurring_rule_type__daily
+msgid "Day(s)"
+msgstr "День(дні)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_billing_automation__cost_calculation_delay
+msgid "Days to wait for cost allocation calculation"
+msgstr "Дні очікування на розрахунок розподілу витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__res_partner__cost_trend__down
+msgid "Decreasing"
+msgstr "Зменшення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__default_responsible_ids
+msgid "Default Responsible Team"
+msgstr "Відповідальна команда за замовчуванням"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__default_responsible_ids
+msgid "Default Support Team"
+msgstr "Команда підтримки за замовчуванням"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_category
+msgid ""
+"Define categories for your IT services and assign responsible teams.\n"
+"                Categories help organize your services and link them to cost "
+"pools."
+msgstr ""
+"Визначте категорії для ваших ІТ-послуг і призначте відповідальні команди.\n"
+"                Категорії допомагають впорядкувати послуги та прив'язати їх "
+"до пулів витрат."
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_type
+msgid "Define your service types"
+msgstr "Визначте типи ваших послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Describe what costs are included in this pool..."
+msgstr "Опишіть, які витрати включені в цей пул..."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__description
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__description
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__description
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__description
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__description
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__description
+msgid "Description"
+msgstr "Опис"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_report_wizard__report_type__detailed
+msgid "Detailed Report"
+msgstr "Детальний звіт"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__direct_cost
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_pool__pool_type__direct
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Direct Costs"
+msgstr "Прямі витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__display_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__display_name
+msgid "Display Name"
+msgstr "Ім'я для відображення"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Document"
+msgstr "Документ"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Documents"
+msgstr "Документи"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_cost_allocation__state__draft
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__state__draft
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__state__draft
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Draft"
+msgstr "Чернетка"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__name
+msgid "Driver Name"
+msgstr "Найменування драйверу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__driver_quantity
+msgid "Driver Quantity"
+msgstr "Кількість драйверів"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_cost_driver_unique_code
+msgid "Driver code must be unique!"
+msgstr "Код драйвера повинен бути унікальним!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+msgid "Driver description..."
+msgstr "Опис драйверу..."
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_client_cost_driver_unique_driver_client
+msgid "Driver-Client combination must be unique!"
+msgstr "Комбінація драйвер-клієнт повинна бути унікальною!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Due for Invoice"
+msgstr "До сплати рахунку-фактури"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Dія.City (Manual Setting)"
+msgstr "Дія.Сіті (ручне налаштування)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__is_diia_city
+msgid "Dія.City Resident"
+msgstr "Резідент Дія.City"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__is_diia_city_own
+msgid "Dія.City Resident (Own)"
+msgstr "Резідент Дія.Сіті (власний)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_cost_driver__driver_category
+msgid "E.g.: Hardware, Software, Users, Infrastructure"
+msgstr ""
+"Наприклад: Апаратне забезпечення, програмне забезпечення, користувачі, "
+"інфраструктура"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_cost_driver_unique_pool
+msgid "Each pool can have only one driver!"
+msgstr "У кожному пулі може бути тільки один драйвер!"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__employee_id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__employee_cost_id
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__employee_id
+msgid "Employee"
+msgstr "Працівник"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__allocation_ids
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Employee Allocations"
+msgstr "Розподіл співробітників"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Employee Cost"
+msgstr "Витрати на персонал"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_cost_employee
+msgid "Employee Cost Configuration"
+msgstr "Конфігурація витрат на працівників"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_employee_cost
+#: model:ir.ui.menu,name:cost_allocation.menu_employee_costs
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_tree
+msgid "Employee Costs"
+msgstr "Витрати на персонал"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_employee_workload
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_workload_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_workload_tree
+msgid "Employee Workload"
+msgstr "Навантаження на працівників"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_employee_workload
+msgid "Employee Workload Analysis"
+msgstr "Аналіз завантаженості працівників"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_cost_employee_unique_employee
+msgid "Employee cost configuration must be unique!"
+msgstr "Конфігурація витрат на працівників повинна бути унікальною!"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_employee_cost
+msgid ""
+"Employee costs are automatically calculated from contract data.\n"
+"                The system supports both standard Ukrainian taxes and "
+"Dія.City special rates.\n"
+"                You can manually override values if needed."
+msgstr ""
+"Витрати на співробітників розраховуються автоматично на основі даних "
+"контракту.\n"
+"                Система підтримує як стандартні українські податки, так і "
+"спеціальні ставки Дія.City.\n"
+"                За потреби ви можете перевизначити значення вручну."
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_employee_workload_unique_employee_period
+msgid "Employee workload record must be unique per period!"
+msgstr "Запис про навантаження працівника має бути унікальним за період!"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__end_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__end_date
+msgid "End Date"
+msgstr "Кінцева дата"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "End user technical support"
+msgstr "Технічна підтримка кінцевого користувача"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__support_level__enterprise
+msgid "Enterprise Support"
+msgstr "Підтримка підприємств"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Entity"
+msgstr "Сутність"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__service_type__equipment
+msgid "Equipment Based"
+msgstr "На основі обладнання"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__name
+msgid "Equipment/Service Name"
+msgstr "Назва обладнання/послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__estimated_monthly_hours
+msgid "Estimated Monthly Hours"
+msgstr "Орієнтовна кількість годин на місяць"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__financial
+#, python-format
+msgid "Financial Consulting"
+msgstr "Фінансовий консалтинг"
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_financial
+msgid "Financial Manager"
+msgstr "Фінансовий менеджер"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Financial consulting services"
+msgstr "Послуги фінансового консалтингу"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__service_type__fixed
+msgid "Fixed Price"
+msgstr "Фіксована ціна"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_follower_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_follower_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_follower_ids
+msgid "Followers"
+msgstr "Підписники"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_partner_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_partner_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Підписник (партнери)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__activity_type_icon
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__activity_type_icon
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Іконка Font Awesome, наприклад fa-tasks"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__period_from
+msgid "From"
+msgstr "Від"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__consulting
+#, python-format
+msgid "General Consulting"
+msgstr "Загальний консалтинг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Generate Cost Report"
+msgstr "Створити звіт про витрати"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Generate Invoice"
+msgstr "Згенеруйте рахунок-фактуру"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Generate Report"
+msgstr "Створити звіт"
+
+#. module: cost_allocation
+#: model:ir.actions.server,name:cost_allocation.cron_generate_subscription_invoices_ir_actions_server
+msgid "Generate Subscription Invoices"
+msgstr "Створюйте рахунки за підписку"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Group By"
+msgstr "Групувати за"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_category__service_type__hardware
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Hardware"
+msgstr "Обладнання"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Hardware Support"
+msgstr "Підтримка апаратного забезпечення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__has_message
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__has_message
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__has_message
+msgid "Has Message"
+msgstr "Чи є повідомлення?"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__complexity_level__high
+msgid "High"
+msgstr "Високий"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Hour"
+msgstr "Година"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__hourly_cost
+msgid "Hourly Cost"
+msgstr "Погодинна вартість"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__id
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__id
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__id
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__id
+msgid "ID"
+msgstr "ID"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__ip_address
+msgid "IP Address"
+msgstr "IP адреса"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__phone_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__phone_count
+msgid "IP Phones"
+msgstr "IP-телефони"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_service_subscription
+msgid "IT Service Subscription"
+msgstr "Підписка на ІТ-послуги"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_service_type
+msgid "IT Service Type"
+msgstr "Тип ІТ-послуги"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__it
+#, python-format
+msgid "IT Services"
+msgstr "ІТ-послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_category__service_type__iaas
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "IaaS"
+msgstr "IaaS"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_exception_icon
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_exception_icon
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_exception_icon
+msgid "Icon"
+msgstr "Іконка"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__activity_exception_icon
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__activity_exception_icon
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Іконка для позначення помилки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__message_needaction
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__message_needaction
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Якщо встановлено, нові повідомлення потребують вашої уваги."
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__message_has_error
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__message_has_sms_error
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__message_has_error
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__message_has_sms_error
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__message_has_error
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Якщо встановлено, деякі повідомлення мають помилку доставки."
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service__status__inactive
+msgid "Inactive"
+msgstr "Неактивний"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__include_cost_allocation
+msgid "Include Cost Allocation Data"
+msgstr "Включити дані про розподіл витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__res_partner__cost_trend__up
+msgid "Increasing"
+msgstr "Збільшення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__indirect_cost
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_pool__pool_type__indirect
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_indirect_cost_tree
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Indirect Costs"
+msgstr "Непрямі витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__indirect_cost_ids
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
+msgid "Indirect Costs Detail"
+msgstr "Деталізація непрямих витрат"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Infrastructure"
+msgstr "Інфраструктура"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__installation_date
+msgid "Installation Date"
+msgstr "Дата встановлення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__inventory_number
+msgid "Inventory Number"
+msgstr "Інвентарний номер"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__invoice_day
+msgid "Invoice Day"
+msgstr "День рахунків-фактур"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__invoice_template_id
+msgid "Invoice Template"
+msgstr "Шаблон рахунку-фактури"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_is_follower
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_is_follower
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_is_follower
+msgid "Is Follower"
+msgstr "Він/Вона підписаний(а) "
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__last_cost_date
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__last_cost_date
+msgid "Last Cost Date"
+msgstr "Остання дата витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__last_invoice_count
+msgid "Last Invoice Count"
+msgstr "Кількість останніх рахунків-фактур"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__last_maintenance
+msgid "Last Maintenance"
+msgstr "Останнє обслуговування"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__last_monthly_cost
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__last_monthly_cost
+msgid "Last Monthly Cost"
+msgstr "Останні щомісячні витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__last_payroll_period
+msgid "Last Payroll Period"
+msgstr "Останній період виплати заробітної плати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__last_run_date
+msgid "Last Run Date"
+msgstr "Дата останнього запуску"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__write_uid
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__write_uid
+msgid "Last Updated by"
+msgstr "Востаннє змінив(ла)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__write_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__write_date
+msgid "Last Updated on"
+msgstr "Коли востаннє змінив(ла)"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Leave empty for all clients"
+msgstr "Залиште порожнім для всіх клієнтів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_billing_automation__subscription_ids
+msgid "Leave empty to include all active subscriptions"
+msgstr "Залиште порожнім, щоб відобразити всі активні підписки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_billing_automation__client_ids
+msgid "Leave empty to include all clients"
+msgstr "Залиште порожнім, щоб включити всіх клієнтів"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Legal Entities"
+msgstr "Юридичні особи"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__legal
+#, python-format
+msgid "Legal Services"
+msgstr "Юридичні послуги"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Legal compliance"
+msgstr "Дотримання законодавства"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Litigation"
+msgstr "Судові спори"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__location
+msgid "Location"
+msgstr "Місцезнаходження"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__complexity_level__low
+msgid "Low"
+msgstr "Низький"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__mac_address
+msgid "MAC Address"
+msgstr "MAC-адреса"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Main Driver"
+msgstr "Головний драйвер"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Main Services"
+msgstr "Основні послуги"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Main operational services"
+msgstr "Основні операційні послуги"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_form
+msgid "Maintenance"
+msgstr "Технічне обслуговування"
+
+#. module: cost_allocation
+#: model:ir.module.category,description:cost_allocation.module_cost_allocation
+msgid "Manage cost allocation and service pricing"
+msgstr "Керуйте розподілом витрат і ціноутворенням на послуги"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_service_subscription
+msgid ""
+"Manage recurring IT services for your clients.\n"
+"                Automatically generate invoices every month."
+msgstr ""
+"Керуйте постійними ІТ-послугами для своїх клієнтів.\n"
+"                Автоматично генеруйте рахунки щомісяця."
+
+#. module: cost_allocation
+#: model:res.groups,name:cost_allocation.group_cost_allocation_manager
+msgid "Manager"
+msgstr "Керівник"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__manual_benefits
+msgid "Manual Benefits Override"
+msgstr "Ручне перевизначення пільг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Manual Override"
+msgstr "Ручне перевизначення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__manual_salary
+msgid "Manual Salary Override"
+msgstr "Ручне перевизначення зарплати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__manual_taxes
+msgid "Manual Taxes Override"
+msgstr "Ручне перевизначення податків"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid ""
+"Manual values override automatic payroll calculation.\n"
+"                                Enable \"Use Manual Values\" to use these "
+"figures."
+msgstr ""
+"Ручні значення замінюють автоматичний розрахунок заробітної плати.\n"
+"                                Увімкніть \"Використовувати ручні "
+"значення\", щоб використовувати ці цифри."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__margin
+msgid "Margin %"
+msgstr "Відступи % від прибутку"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__markup_percent
+msgid "Markup %"
+msgstr "Націнка в % від вартості"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__complexity_level__medium
+msgid "Medium"
+msgstr "Середній"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_has_error
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_has_error
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_has_error
+msgid "Message Delivery error"
+msgstr "Повідомлення не доставлено"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_ids
+msgid "Messages"
+msgstr "Повідомлення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__minimum_wage
+msgid "Minimum Wage for ESV"
+msgstr "Мінімальна заробітна плата для ESV"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_employee_workload
+msgid ""
+"Monitor workload distribution across your IT support team.\n"
+"                Identify overloaded employees and balance the workload."
+msgstr ""
+"Відстежуйте розподіл робочого навантаження у вашій команді ІТ-підтримки.\n"
+"                Виявляйте перевантажених співробітників і збалансуйте "
+"навантаження."
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__recurring_rule_type__monthly
+msgid "Month(s)"
+msgstr "Місяць(ці)"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__billing_automation__billing_period__monthly
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__billing_period__monthly
+msgid "Monthly"
+msgstr "Щомісяця"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__total_amount
+msgid "Monthly Amount"
+msgstr "Щомісячна сума"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__monthly_benefits
+msgid "Monthly Benefits"
+msgstr "Щомісячні виплати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__monthly_cost
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__monthly_cost
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_tree_it_services
+msgid "Monthly Cost"
+msgstr "Щомісячна вартість"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__monthly_price
+msgid "Monthly Price"
+msgstr "Щомісячна ціна"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__monthly_salary
+msgid "Monthly Salary"
+msgstr "Щомісячна заробітна плата"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__support_hours
+msgid "Monthly Support Hours"
+msgstr "Щомісячні години підтримки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__monthly_taxes
+msgid "Monthly Taxes"
+msgstr "Щомісячні податки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__monthly_total
+msgid "Monthly Total"
+msgstr "Місячний підсумок"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__monthly_total_cost
+msgid "Monthly Total Cost"
+msgstr "Щомісячні загальні витрати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__monthly_hours
+msgid "Monthly Working Hours"
+msgstr "Щомісячні робочі години"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__my_activity_date_deadline
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__my_activity_date_deadline
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Дата завершення моєї роботи"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__name
+msgid "Name"
+msgstr "Ім'я"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Network and server infrastructure"
+msgstr "Мережева та серверна інфраструктура"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__res_partner__cost_trend__new
+msgid "New Client"
+msgstr "Новий клієнт"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_calendar_event_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_calendar_event_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Наступна подія в календарі подій"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_date_deadline
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_date_deadline
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Дата завершення наступної роботи"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_summary
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_summary
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_summary
+msgid "Next Activity Summary"
+msgstr "Огляд наступної роботи"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_type_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_type_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_type_id
+msgid "Next Activity Type"
+msgstr "Категорія наступної роботи"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Next Invoice"
+msgstr "Наступний рахунок-фактура"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__next_invoice_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__next_invoice_date
+msgid "Next Invoice Date"
+msgstr "Дата наступного інвойсу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__next_maintenance
+msgid "Next Maintenance"
+msgstr "Наступне технічне обслуговування"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__next_run_date
+msgid "Next Run Date"
+msgstr "Наступна дата запуску"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__notify_user_ids
+msgid "Notify Users"
+msgstr "Сповіщення користувачів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_needaction_counter
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_needaction_counter
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Кількість заходів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_has_error_counter
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_has_error_counter
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_has_error_counter
+msgid "Number of errors"
+msgstr "Кількість помилок"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__message_needaction_counter
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__message_needaction_counter
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Кількість повідомлень, що потребують дій"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__message_has_error_counter
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__message_has_error_counter
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Кількість повідомлень з помилками доставки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__subscription_id
+msgid "Odoo Subscription"
+msgstr "Підписка на Odoo"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__subscription_line_id
+msgid "Odoo Subscription Line"
+msgstr "Лінія підписки Odoo"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_client_cost_allocation_unique_client_period
+msgid "Only one allocation per client per period is allowed!"
+msgstr "На одного клієнта дозволено лише одне виділення на період!"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__overloaded
+msgid "Overloaded"
+msgstr "Перевантажений"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "PC"
+msgstr "ПК"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__state__paused
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Paused"
+msgstr "Призупинено"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__gb
+msgid "Per GB"
+msgstr "За гігабайт"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__hour
+msgid "Per Hour"
+msgstr "За годину"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__license
+msgid "Per License"
+msgstr "За кожну ліцензію"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__month
+msgid "Per Month"
+msgstr "На місяць"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__unit
+msgid "Per Unit"
+msgstr "За одиницю"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__unit_of_measure__user
+msgid "Per User"
+msgstr "На одного користувача"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__period_date
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__period_date
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__period_date
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+msgid "Period"
+msgstr "Період"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_report_wizard__report_type__comparison
+msgid "Period Comparison"
+msgstr "Порівняння періодів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription_line__client_service_ids
+msgid "Physical services/equipment linked to this subscription line"
+msgstr "Фізичні послуги/обладнання, пов'язані з цією абонентською лінією"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__name
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Pool Name"
+msgstr "Назва пулу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__pool_type
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Pool Type"
+msgstr "Тип пулу"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__support_level__premium
+msgid "Premium Support"
+msgstr "Преміум-підтримка"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_kanban
+msgid "Price:"
+msgstr "Ціна:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_form
+msgid "Pricing"
+msgstr "Ціна"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__responsible_employee_id
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__primary_services
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__primary_responsible_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__primary_responsible_id
+msgid "Primary Responsible"
+msgstr "Основний відповідальний"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__printer_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__printer_count
+msgid "Printers"
+msgstr "Принтери"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_driver__quantity
+#: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__quantity
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__quantity
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__quantity
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__quantity
+msgid "Quantity"
+msgstr "Кількість"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__billing_automation__billing_period__quarterly
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__billing_period__quarterly
+msgid "Quarterly"
+msgstr "Поквартально"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__rating_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__rating_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__rating_ids
+msgid "Ratings"
+msgstr "Рейтинги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__recurring_interval
+msgid "Recurring Interval"
+msgstr "Періодичний інтервал"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__recurring_rule_type
+msgid "Recurring Rule Type"
+msgstr "Тип повторюваного правила"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid "Related Cost Driver"
+msgstr "Супутній фактор витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__cost_pool_id
+msgid "Related Cost Pool"
+msgstr "Пул пов'язаних витрат"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__pool_id
+msgid "Related Pool"
+msgstr "Пов'язаний пул"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__client_service_ids
+msgid "Related Services"
+msgstr "Супутні послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_service_type__workload_factor
+msgid "Relative complexity/time factor for this service type"
+msgstr "Відносна складність/часовий фактор для цього типу послуг"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Report"
+msgstr "Повідомити"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__report_type
+msgid "Report Type"
+msgstr "Тип звіту"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_report
+#, python-format
+msgid "Reports"
+msgstr "Звіти"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__required_skill_ids
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "Required Skills"
+msgstr "Необхідні навички"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_service_type__required_skill_ids
+msgid ""
+"Required skills for this service type (if HR Skills module is installed)"
+msgstr ""
+"Необхідні навички для цього типу послуг (якщо встановлено модуль HR Skills)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__resolution_time
+msgid "Resolution Time (hours)"
+msgstr "Час вирішення (години)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__response_time
+msgid "Response Time (hours)"
+msgstr "Час реагування (години)"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "Responsible Team"
+msgstr "Відповідальна команда"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__activity_user_id
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__activity_user_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__activity_user_id
+msgid "Responsible User"
+msgstr "Відповідальний користувач"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service__status__retired
+msgid "Retired"
+msgstr "Скасовано"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_form
+msgid "Run Now"
+msgstr "Біжи зараз"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "SLA"
+msgstr "SLA"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__sla_response_time
+msgid "SLA Response Time (minutes)"
+msgstr "Час відгуку SLA (хвилини)"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__message_has_sms_error
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__message_has_sms_error
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Помилка доставки SMS"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_category__service_type__saas
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "SaaS"
+msgstr "SaaS"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__journal_id
+msgid "Sales Journal"
+msgstr "Журнал продажів"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__sales_price
+msgid "Sales Price"
+msgstr "Продажна ціна"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_form
+msgid "Scope"
+msgstr "Діапазон"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+msgid "Search Allocations"
+msgstr "Виділення для пошуку"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
+msgid "Search Cost Pools"
+msgstr "Пули витрат на пошук"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Search Services"
+msgstr "Пошукові сервіси"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Search Subscriptions"
+msgstr "Пошук по підписникам"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Select Clients"
+msgstr "Обрані клієнти"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Select Clients (Optional)"
+msgstr "Виберіть клієнтів (необов'язково)"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid "Select clients..."
+msgstr "Вибір клієнтів..."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_report_wizard_form
+msgid "Select period and clients to generate cost allocation reports."
+msgstr "Виберіть період і клієнтів для створення звітів про розподіл витрат."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__sequence
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__sequence
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__sequence
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__sequence
+msgid "Sequence"
+msgstr "Порядок дій"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__serial_number
+msgid "Serial Number"
+msgstr "Серійний номер"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Server"
+msgstr "Сервер"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__server_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__server_count
+#, python-format
+msgid "Servers"
+msgstr "Сервери"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__service_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_form
+msgid "Service"
+msgstr "Сервіси"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_catalog
+#: model:ir.model,name:cost_allocation.model_service_catalog
+#: model:ir.ui.menu,name:cost_allocation.menu_service_catalog
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_tree
+msgid "Service Catalog"
+msgstr "Каталог сервісів"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_category
+#: model:ir.ui.menu,name:cost_allocation.menu_service_categories
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_category_tree
+msgid "Service Categories"
+msgstr "Категорії Сервісу"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_service_category
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_category_form
+msgid "Service Category"
+msgstr "Категорія Сервісу"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__code
+msgid "Service Code"
+msgstr "Сервісний код"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_root
+msgid "Service Costing"
+msgstr "Розрахунок вартості послуг"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_costing_setup_wizard
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Service Costing Setup"
+msgstr "Налаштування калькуляції вартості послуг"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_service_costing_setup_wizard
+msgid "Service Costing Setup Wizard"
+msgstr "Майстер налаштування калькуляції вартості послуг"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__service_line_ids
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Service Lines"
+msgstr "Сервісні лінії"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__name
+msgid "Service Name"
+msgstr "Назва сервісу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_form
+msgid "Service Subscription"
+msgstr "Підписка на послуги"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_service_subscription_line
+msgid "Service Subscription Line"
+msgstr "Лінія підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_client_service_subscription
+#: model:ir.actions.act_window,name:cost_allocation.action_service_subscription
+#: model:ir.ui.menu,name:cost_allocation.menu_service_subscriptions
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_tree
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_tree
+msgid "Service Subscriptions"
+msgstr "Підписки на послуги"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__service_type_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__service_type
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__service_type
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__service_type_id
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "Service Type"
+msgstr "Тип послуги"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_service_type
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__service_type_count
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_tree
+msgid "Service Types"
+msgstr "Типи послуг"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_service_type_unique_code
+msgid "Service code must be unique!"
+msgstr "Сервісний код повинен бути унікальним!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_form
+msgid "Service description..."
+msgstr "Опис послуги..."
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__client_service_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__client_service_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_category__service_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__service_line_ids
+#: model:ir.ui.menu,name:cost_allocation.menu_services
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_it_services
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_tree_it_services
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_category_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_form
+msgid "Services"
+msgstr "Послуги"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Set this if external Dія.City module is not available"
+msgstr "Встановіть це значення, якщо зовнішній модуль Дія.Сіті недоступний"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_billing_automation
+msgid "Set up automated billing"
+msgstr "Налаштуйте автоматизоване виставлення рахунків"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_service_subscription
+msgid "Set up recurring billing for IT services with automatic invoicing."
+msgstr ""
+"Налаштуйте періодичне виставлення рахунків за ІТ-послуги з автоматичним "
+"виставленням рахунків."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Company"
+msgstr "Компанія, що займається налаштуванням"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Setup Complete!"
+msgstr "Установка завершена!"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__setup_drivers
+msgid "Setup Cost Drivers"
+msgstr "Драйвери витрат на встановлення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__setup_pools
+msgid "Setup Cost Pools"
+msgstr "Пули витрат на встановлення"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__setup_employees
+msgid "Setup Employee Costs"
+msgstr "Налаштування витрат на персонал"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options:"
+msgstr "Налаштування параметрів:"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_costing_setup_wizard__setup_services
+msgid "Setup Service Catalog"
+msgstr "Налаштування каталогу послуг"
+
+#. module: cost_allocation
 #: model:ir.ui.menu,name:cost_allocation.menu_setup_wizard
 msgid "Setup Wizard"
 msgstr "Майстер налаштування"
 
 #. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_employee_costs
-msgid "Employee Costs"
-msgstr "Вартість співробітників"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Software Support"
+msgstr "Підтримка програмного забезпечення"
 
 #. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_cost_pools
-msgid "Cost Pools"
-msgstr "Пули затрат"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Software and SaaS support"
+msgstr "Підтримка програмного забезпечення та SaaS"
 
 #. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
-msgid "Cost Drivers"
-msgstr "Драйвери затрат"
-
-#. module: cost_allocation
-#: model:ir.ui.menu,name:cost_allocation.menu_cost_allocation_operations
-msgid "Cost Analysis"
-msgstr "Аналіз затрат"
-
-# Common Fields
-#. module: cost_allocation
-msgid "Name"
-msgstr "Назва"
-
-#. module: cost_allocation
-msgid "Code"
-msgstr "Код"
-
-#. module: cost_allocation
-msgid "Description"
-msgstr "Опис"
-
-#. module: cost_allocation
-msgid "Active"
-msgstr "Активний"
-
-#. module: cost_allocation
-msgid "Sequence"
-msgstr "Послідовність"
-
-#. module: cost_allocation
-msgid "Client"
-msgstr "Клієнт"
-
-#. module: cost_allocation
-msgid "Employee"
-msgstr "Співробітник"
-
-#. module: cost_allocation
-msgid "Quantity"
-msgstr "Кількість"
-
-#. module: cost_allocation
-msgid "Status"
-msgstr "Статус"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Period"
-msgstr "Період"
-
-#. module: cost_allocation
-msgid "Currency"
-msgstr "Валюта"
-
-# Status Values
-#. module: cost_allocation
-msgid "Draft"
-msgstr "Чернетка"
-
-#. module: cost_allocation
-msgid "Calculated"
-msgstr "Розраховано"
-
-#. module: cost_allocation
-msgid "Confirmed"
-msgstr "Підтверджено"
-
-#. module: cost_allocation
-msgid "Terminated"
-msgstr "Припинений"
-
-# Employee Cost Model
-#. module: cost_allocation
-msgid "Monthly Salary"
-msgstr "Місячна зарплата"
-
-#. module: cost_allocation
-msgid "Monthly Taxes"
-msgstr "Місячні податки"
-
-#. module: cost_allocation
-msgid "Monthly Benefits"
-msgstr "Місячні пільги"
-
-#. module: cost_allocation
-msgid "Use Manual Values"
-msgstr "Використовувати ручні значення"
-
-#. module: cost_allocation
-msgid "Dія.City Resident"
-msgstr "Резидент Дія.Сіті"
-
-#. module: cost_allocation
-msgid "Minimum Wage for ESV"
-msgstr "Мінімальна зарплата для ЄСВ"
-
-#. module: cost_allocation
-msgid "Monthly Working Hours"
-msgstr "Місячні робочі години"
-
-#. module: cost_allocation
-msgid "Hourly Cost"
-msgstr "Вартість години"
-
-#. module: cost_allocation
-msgid "Monthly Total Cost"
-msgstr "Загальна місячна вартість"
-
-# Cost Pool Model
-#. module: cost_allocation
-msgid "Pool Name"
-msgstr "Назва пулу"
-
-#. module: cost_allocation
-msgid "Pool Type"
-msgstr "Тип пулу"
-
-#. module: cost_allocation
-msgid "Direct Costs"
-msgstr "Прямі затрати"
-
-#. module: cost_allocation
-msgid "Indirect Costs"
-msgstr "Непрямі затрати"
-
-#. module: cost_allocation
-msgid "Administrative Costs"
-msgstr "Адміністративні затрати"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Total Monthly Cost"
-msgstr "Загальна місячна вартість"
-
-#. module: cost_allocation
-msgid "Employee Allocations"
-msgstr "Розподіл співробітників"
-
-#. module: cost_allocation
-msgid "Allocation %"
-msgstr "Розподіл %"
-
-# Cost Driver Model
-#. module: cost_allocation
-msgid "Driver Name"
-msgstr "Назва драйвера"
-
-#. module: cost_allocation
-msgid "Category"
-msgstr "Категорія"
-
-#. module: cost_allocation
-msgid "Unit Name"
-msgstr "Назва одиниці"
-
-#. module: cost_allocation
-msgid "Total Quantity"
-msgstr "Загальна кількість"
-
-#. module: cost_allocation
-msgid "Cost per Unit"
-msgstr "Вартість за одиницю"
-
-#. module: cost_allocation
-msgid "Cost Driver"
-msgstr "Драйвер затрат"
-
-#. module: cost_allocation
-msgid "Allocated Cost"
-msgstr "Розподілена вартість"
-
-# Service Catalog
-#. module: cost_allocation
-msgid "Service Name"
-msgstr "Назва послуги"
-
-#. module: cost_allocation
-msgid "Service Code"
-msgstr "Код послуги"
-
-#. module: cost_allocation
-msgid "Service Type"
-msgstr "Тип послуги"
-
-#. module: cost_allocation
-msgid "Hardware"
-msgstr "Обладнання"
-
-#. module: cost_allocation
-msgid "SaaS"
-msgstr "SaaS"
-
-#. module: cost_allocation
-msgid "IaaS"
-msgstr "IaaS"
-
-#. module: cost_allocation
-msgid "Support"
-msgstr "Підтримка"
-
-#. module: cost_allocation
-msgid "Unit of Measure"
-msgstr "Одиниця виміру"
-
-#. module: cost_allocation
-msgid "Per Unit"
-msgstr "За одиницю"
-
-#. module: cost_allocation
-msgid "Per User"
-msgstr "За користувача"
-
-#. module: cost_allocation
-msgid "Per Month"
-msgstr "За місяць"
-
-#. module: cost_allocation
-msgid "Per Hour"
-msgstr "За годину"
-
-#. module: cost_allocation
-msgid "Base Monthly Cost"
-msgstr "Базова місячна вартість"
-
-#. module: cost_allocation
-msgid "Markup %"
-msgstr "Націнка %"
-
-#. module: cost_allocation
-msgid "Sales Price"
-msgstr "Ціна продажу"
-
-#. module: cost_allocation
-msgid "Complexity Level"
-msgstr "Рівень складності"
-
-#. module: cost_allocation
-msgid "Low"
-msgstr "Низький"
-
-#. module: cost_allocation
-msgid "Medium"
-msgstr "Середній"
-
-#. module: cost_allocation
-msgid "High"
-msgstr "Високий"
-
-#. module: cost_allocation
-msgid "Critical"
-msgstr "Критичний"
-
-# Client Allocation
-#. module: cost_allocation
-msgid "Display Name"
-msgstr "Відображувана назва"
-
-#. module: cost_allocation
-msgid "Total Cost"
-msgstr "Загальна вартість"
-
-#. module: cost_allocation
-msgid "Cost Breakdown"
-msgstr "Розподіл затрат"
-
-# Subscriptions
-#. module: cost_allocation
-msgid "Subscription Name"
-msgstr "Назва підписки"
-
-#. module: cost_allocation
-msgid "Start Date"
-msgstr "Дата початку"
-
-#. module: cost_allocation
-msgid "End Date"
-msgstr "Дата закінчення"
-
-#. module: cost_allocation
-msgid "Monthly Amount"
-msgstr "Місячна сума"
-
-#. module: cost_allocation
-msgid "Billing Period"
-msgstr "Період розрахунків"
-
-#. module: cost_allocation
-msgid "Monthly"
-msgstr "Щомісячно"
-
-#. module: cost_allocation
-msgid "Quarterly"
-msgstr "Щоквартально"
-
-#. module: cost_allocation
-msgid "Yearly"
-msgstr "Щорічно"
-
-#. module: cost_allocation
-msgid "Auto Invoice"
-msgstr "Автоматичний рахунок"
-
-#. module: cost_allocation
-msgid "Next Invoice Date"
-msgstr "Дата наступного рахунку"
-
-#. module: cost_allocation
-msgid "Service Lines"
-msgstr "Рядки послуг"
-
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Partner Extensions
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Active Services"
-msgstr "Активні послуги"
-
-#. module: cost_allocation
-msgid "Active Subscriptions"
-msgstr "Активні підписки"
-
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Driver Names
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Driver Names
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Workstations"
-msgstr "Робочі станції"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Users"
-msgstr "Користувачі"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Servers"
-msgstr "Сервери"
-
-#. module: cost_allocation
-msgid "IP Phones"
-msgstr "IP телефони"
-
-#. module: cost_allocation
-msgid "Printers"
-msgstr "Принтери"
-
-#. module: cost_allocation
-msgid "Last Monthly Cost"
-msgstr "Остання місячна вартість"
-
-#. module: cost_allocation
-msgid "Cost Trend"
-msgstr "Тренд вартості"
-
-#. module: cost_allocation
-msgid "Increasing"
-msgstr "Зростає"
-
-#. module: cost_allocation
-msgid "Decreasing"
-msgstr "Зменшується"
-
-#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__res_partner__cost_trend__stable
 msgid "Stable"
 msgstr "Стабільно"
 
 #. module: cost_allocation
-msgid "New Client"
-msgstr "Новий клієнт"
-
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Wizards
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Setup Options
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Setup Options
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Business Type"
-msgstr "Тип бізнесу"
-
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Additional translations for setup wizard
-# Add these to i18n/uk_UA.po
-# Setup Wizard Business Types
-# #-#-#-#-#  catalog.po (Odoo Server 17.0)  #-#-#-#-#
-# Units
-# Setup Wizard Business Types
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "IT Services"
-msgstr "ІТ послуги"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Legal Services"
-msgstr "Юридичні послуги"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Accounting Services"
-msgstr "Бухгалтерські послуги"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Financial Consulting"
-msgstr "Фінансовий консалтинг"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Construction Services"
-msgstr "Будівельні послуги"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Technical Expertise"
-msgstr "Технічна експертиза"
-
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Custom Setup"
-msgstr "Власне налаштування"
-
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Employee Costs"
-msgstr "Налаштувати вартість співробітників"
-
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Cost Pools"
-msgstr "Налаштувати пули затрат"
-
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Cost Drivers"
-msgstr "Налаштувати драйвери затрат"
-
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Service Catalog"
-msgstr "Налаштувати каталог послуг"
-
-# Service Management
-#. module: cost_allocation
-msgid "Service Categories"
-msgstr "Категорії послуг"
-
-#. module: cost_allocation
-msgid "Service Types"
-msgstr "Типи послуг"
-
-#. module: cost_allocation
-msgid "Client Services"
-msgstr "Послуги клієнтів"
-
-#. module: cost_allocation
-msgid "Equipment Based"
-msgstr "На основі обладнання"
-
-#. module: cost_allocation
-msgid "User Based"
-msgstr "На основі користувачів"
-
-#. module: cost_allocation
-msgid "Fixed Price"
-msgstr "Фіксована ціна"
-
-#. module: cost_allocation
-msgid "Support Level"
-msgstr "Рівень підтримки"
-
-#. module: cost_allocation
-msgid "Basic Support"
-msgstr "Базова підтримка"
-
-#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__support_level__standard
 msgid "Standard Support"
 msgstr "Стандартна підтримка"
 
 #. module: cost_allocation
-msgid "Premium Support"
-msgstr "Преміум підтримка"
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__start_date
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__start_date
+msgid "Start Date"
+msgstr "Дата початку"
 
 #. module: cost_allocation
-msgid "Response Time (hours)"
-msgstr "Час відгуку (години)"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_billing_automation_form
+msgid "Statistics"
+msgstr "Статистика"
 
 #. module: cost_allocation
-msgid "Resolution Time (hours)"
-msgstr "Час вирішення (години)"
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__state
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__status
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__state
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__state
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_search
+msgid "Status"
+msgstr "Статус"
 
 #. module: cost_allocation
-msgid "Primary Responsible"
-msgstr "Основний відповідальний"
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__activity_state
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__activity_state
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Статус на основі діяльності\n"
+"Прострочений: Термін сплати вже минув\n"
+"Сьогодні Дата активності сьогодні\n"
+"Заплановано: Майбутні заходи."
 
 #. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__subscription_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__subscription_id
+msgid "Subscription"
+msgstr "Підписка"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__subscription_line_id
+msgid "Subscription Line"
+msgstr "Абонентська лінія"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__name
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
+msgid "Subscription Name"
+msgstr "Назва підписки Назва підписки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__template_id
+msgid "Subscription Template"
+msgstr "Шаблон підписки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__subscription_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__subscription_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__subscription_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__subscription_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__subscription_ids
+#: model:ir.ui.menu,name:cost_allocation.menu_subscriptions
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_partner_form_it_services
+msgid "Subscriptions"
+msgstr "Підписки"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__cost_report_wizard__report_type__summary
+msgid "Summary Report"
+msgstr "Підсумковий звіт"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_category__service_type__support
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_search
+msgid "Support"
+msgstr "Підтримка"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__support_level
+msgid "Support Level"
+msgstr "Рівень підтримки"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__support_team_ids
 msgid "Support Team"
 msgstr "Команда підтримки"
 
 #. module: cost_allocation
-msgid "Location"
-msgstr "Розташування"
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__support_services
+msgid "Support Team Member"
+msgstr "Член команди підтримки"
 
 #. module: cost_allocation
-msgid "IP Address"
-msgstr "IP адреса"
-
-#. module: cost_allocation
-msgid "MAC Address"
-msgstr "MAC адреса"
-
-#. module: cost_allocation
-msgid "Serial Number"
-msgstr "Серійний номер"
-
-#. module: cost_allocation
-msgid "Installation Date"
-msgstr "Дата встановлення"
-
-#. module: cost_allocation
-msgid "Last Maintenance"
-msgstr "Останнє обслуговування"
-
-#. module: cost_allocation
-msgid "Next Maintenance"
-msgstr "Наступне обслуговування"
-
-#. module: cost_allocation
-msgid "Inactive"
-msgstr "Неактивний"
-
-#. module: cost_allocation
-msgid "Under Maintenance"
-msgstr "На обслуговуванні"
-
-#. module: cost_allocation
-msgid "Retired"
-msgstr "Списаний"
-
-# Billing
-#. module: cost_allocation
-msgid "Automation Name"
-msgstr "Назва автоматизації"
-
-#. module: cost_allocation
-msgid "Billing Day of Month"
-msgstr "День місяця для виставлення рахунків"
-
-#. module: cost_allocation
-msgid "Next Run Date"
-msgstr "Дата наступного запуску"
-
-#. module: cost_allocation
-msgid "Auto Confirm Invoices"
-msgstr "Автоматично підтверджувати рахунки"
-
-#. module: cost_allocation
-msgid "Auto Send Invoices"
-msgstr "Автоматично відправляти рахунки"
-
-#. module: cost_allocation
-msgid "Include Cost Allocation Data"
-msgstr "Включати дані розподілу затрат"
-
-# Buttons and Actions
-#. module: cost_allocation
-msgid "Update from Contract"
-msgstr "Оновити з контракту"
-
-#. module: cost_allocation
-msgid "Calculate Costs"
-msgstr "Розрахувати затрати"
-
-#. module: cost_allocation
-msgid "Confirm"
-msgstr "Підтвердити"
-
-#. module: cost_allocation
-msgid "Activate"
-msgstr "Активувати"
-
-#. module: cost_allocation
-msgid "Generate Invoice"
-msgstr "Створити рахунок"
-
-#. module: cost_allocation
-msgid "Create Allocations"
-msgstr "Створити розподіли"
-
-#. module: cost_allocation
-msgid "Generate Report"
-msgstr "Створити звіт"
-
-#. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Company"
-msgstr "Налаштувати компанію"
-
-#. module: cost_allocation
-msgid "Cancel"
-msgstr "Скасувати"
-
-#. module: cost_allocation
-msgid "Run Now"
-msgstr "Запустити зараз"
-
-#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_form
 msgid "Suspend"
 msgstr "Призупинити"
 
 #. module: cost_allocation
-msgid "Terminate"
-msgstr "Припинити"
-
-# Service Data Categories
-#. module: cost_allocation
-msgid "IT Hardware"
-msgstr "ІТ обладнання"
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__state__suspended
+msgid "Suspended"
+msgstr "Призупинений"
 
 #. module: cost_allocation
-msgid "IT Software & SaaS"
-msgstr "ІТ ПЗ та SaaS"
-
-#. module: cost_allocation
-msgid "IT Infrastructure"
-msgstr "ІТ інфраструктура"
-
-#. module: cost_allocation
-msgid "IT Support"
-msgstr "ІТ підтримка"
-
-#. module: cost_allocation
-msgid "Corporate Legal"
-msgstr "Корпоративне право"
-
-#. module: cost_allocation
-msgid "Contract Law"
-msgstr "Договірне право"
-
-#. module: cost_allocation
-msgid "Litigation"
-msgstr "Судові процеси"
-
-#. module: cost_allocation
-msgid "Bookkeeping"
-msgstr "Бухгалтерський облік"
-
-#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
 msgid "Tax Services"
 msgstr "Податкові послуги"
 
 #. module: cost_allocation
-msgid "Audit & Review"
-msgstr "Аудит та перевірка"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Tax Settings"
+msgstr "Налаштування податку"
 
 #. module: cost_allocation
-msgid "Financial Analysis"
-msgstr "Фінансовий аналіз"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Tax preparation and planning"
+msgstr "Податкова підготовка та планування"
 
 #. module: cost_allocation
-msgid "Design & Planning"
-msgstr "Проектування та планування"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_form
+msgid "Technical Details"
+msgstr "Технічні деталі"
 
 #. module: cost_allocation
-msgid "Construction Work"
-msgstr "Будівельні роботи"
-
-# Sample Services
-#. module: cost_allocation
-msgid "Workstation Support"
-msgstr "Підтримка робочих станцій"
-
-#. module: cost_allocation
-msgid "Server Management"
-msgstr "Управління серверами"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_costing_setup_wizard__company_type__expertise
+#, python-format
+msgid "Technical Expertise"
+msgstr "Технічна експертиза"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "User Support"
-msgstr "Підтримка користувачів"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_subscription_form
+msgid "Terminate"
+msgstr "Припинити"
 
 #. module: cost_allocation
-msgid "Contract Review"
-msgstr "Перевірка договорів"
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__state__terminated
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__state__terminated
+msgid "Terminated"
+msgstr "Припинено"
 
 #. module: cost_allocation
-msgid "Corporate Compliance"
-msgstr "Корпоративна відповідність"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_search
+msgid "This Month"
+msgstr "Цей місяць"
 
 #. module: cost_allocation
-msgid "Monthly Bookkeeping"
-msgstr "Щомісячний облік"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
+msgid ""
+"This wizard will create cost allocations for selected clients for the "
+"specified period."
+msgstr ""
+"Цей майстер створить розподіл витрат для вибраних клієнтів за вказаний "
+"період."
 
 #. module: cost_allocation
-msgid "Tax Return Preparation"
-msgstr "Підготовка податкових декларацій"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid ""
+"This wizard will help you set up the module for your business type. Choose "
+"your business category and select what you want to configure."
+msgstr ""
+"Цей майстер допоможе вам налаштувати модуль для вашого типу бізнесу. "
+"Виберіть категорію вашого бізнесу і виберіть, що ви хочете налаштувати."
 
 #. module: cost_allocation
-msgid "Financial Planning"
-msgstr "Фінансове планування"
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_report_wizard__period_to
+msgid "To"
+msgstr "До"
 
 #. module: cost_allocation
-msgid "Architectural Design"
-msgstr "Архітектурне проектування"
-
-#. module: cost_allocation
-msgid "Technical Assessment"
-msgstr "Технічна оцінка"
-
-# Dashboard translations
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Cost Allocation Dashboard"
-msgstr "Панель розподілу затрат"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Monthly Revenue"
-msgstr "Місячний дохід"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Active Clients"
-msgstr "Активні клієнти"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Team Utilization"
-msgstr "Завантаження команди"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Cost Trends"
-msgstr "Тренди затрат"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Cost Pool Distribution"
-msgstr "Розподіл пулів затрат"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Top Clients by Cost"
-msgstr "Топ клієнтів за вартістю"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Quick Actions & Stats"
-msgstr "Швидкі дії та статистика"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Quick Actions"
-msgstr "Швидкі дії"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Create Allocation"
-msgstr "Створити розподіл"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Generate Invoices"
-msgstr "Створити рахунки"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Service Overview"
-msgstr "Огляд послуг"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Billing Status"
-msgstr "Статус рахунків"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "subscriptions due for invoice"
-msgstr "підписок для виставлення рахунків"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Refresh"
-msgstr "Оновити"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Last 3 months"
-msgstr "Останні 3 місяці"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Last 6 months"
-msgstr "Останні 6 місяців"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Last 12 months"
-msgstr "Останні 12 місяців"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Loading..."
-msgstr "Завантаження..."
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "No data available"
-msgstr "Немає даних"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Coverage"
-msgstr "Покриття"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Margin"
-msgstr "Маржа"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Overloaded"
-msgstr "Перевантажені"
-
-#. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_tree
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_form
 msgid "Total"
 msgstr "Всього"
 
 #. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Breakdown"
-msgstr "Детально"
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__total_cost
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__total_cost
+msgid "Total Cost"
+msgstr "Загальна вартість"
 
 #. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "vs last month"
-msgstr "проти мин. місяця"
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__total_estimated_hours
+msgid "Total Estimated Hours"
+msgstr "Загальна кількість передбачуваних годин"
 
 #. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "services"
-msgstr "послуг"
+#: model:ir.model.fields,field_description:cost_allocation.field_billing_automation__total_invoices_created
+msgid "Total Invoices Created"
+msgstr "Загальна кількість створених рахунків-фактур"
 
 #. module: cost_allocation
-#: model_terms:static/src/js/dashboard.js
-msgid "Unknown Client"
-msgstr "Невідомий клієнт"
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__total_monthly_cost
+msgid "Total Monthly Cost"
+msgstr "Загальна місячна вартість"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "General Consulting"
-msgstr "Загальний консалтинг"
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__total_price
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__total_price
+msgid "Total Price"
+msgstr "Загальна сума"
 
 #. module: cost_allocation
-#: model:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
-msgid "Setup Options"
-msgstr "Параметри налаштування"
-
-# Messages
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Setup Complete!"
-msgstr "Налаштування завершено!"
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__total_quantity
+msgid "Total Quantity"
+msgstr "Загальна кількість"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__total_services
+msgid "Total Services"
+msgstr "Всього послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_client_service
 msgid ""
-"Basic configuration for %s created. You can edit cost pools and drivers in "
-"Configuration menu."
+"Track all IT services and equipment for each client.\n"
+"                Assign responsible employees and track maintenance schedules."
 msgstr ""
-"Базову конфігурацію для %s створено. Ви можете редагувати пули затрат та "
-"драйвери в меню Налаштування."
+"Відстежуйте всі ІТ-послуги та обладнання для кожного клієнта.\n"
+"                Призначайте відповідальних працівників та відстежуйте "
+"графіки технічного обслуговування."
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Created by wizard - can be edited"
-msgstr "Створено майстром - можна редагувати"
-
-# Pool Names
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Hardware Support"
-msgstr "Підтримка обладнання"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Transaction"
+msgstr "Транзакція"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Software Support"
-msgstr "Підтримка ПЗ"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Transactions"
+msgstr "Транзакції"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Infrastructure"
-msgstr "Інфраструктура"
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__activity_exception_decoration
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__activity_exception_decoration
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Тип дії винятку в записі."
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Administration"
-msgstr "Адміністрування"
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "UAH)"
+msgstr "ГРН)"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Applications"
-msgstr "Застосунки"
-
-# Units
-#. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "PC"
-msgstr "ПК"
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service__status__maintenance
+msgid "Under Maintenance"
+msgstr "В стадії обслуговування"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Server"
-msgstr "Сервер"
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Unit"
+msgstr "Секція"
 
 #. module: cost_allocation
-#: code:addons/cost_allocation/wizards/setup_wizard.py
-msgid "Application"
-msgstr "Застосунок"
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__unit_cost
+msgid "Unit Cost"
+msgstr "Собівартість одиниці продукції"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__unit_name
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__unit_name
+msgid "Unit Name"
+msgstr "Назва"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__unit_price
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription_line__unit_price
+msgid "Unit Price"
+msgstr "Ціна за одиницю"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__unit_of_measure
+msgid "Unit of Measure"
+msgstr "Одиниця виміру"
+
+#. module: cost_allocation
+#: model:ir.actions.server,name:cost_allocation.cron_cost_driver_update_ir_actions_server
+msgid "Update Cost Drivers from Services"
+msgstr "Оновлення драйверів витрат з послуг"
+
+#. module: cost_allocation
+#: model:ir.actions.server,name:cost_allocation.cron_payroll_cost_update_ir_actions_server
+msgid "Update Employee Costs from Contracts"
+msgstr "Оновлення витрат на працівників з контрактів"
+
+#. module: cost_allocation
+#: model:ir.actions.server,name:cost_allocation.cron_employee_workload_update_ir_actions_server
+msgid "Update Employee Workload Analysis"
+msgstr "Оновити аналіз завантаженості працівників"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_cost_form
+msgid "Update from Contract"
+msgstr "Оновлення з договору"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_cost_employee__is_diia_city_own
+msgid ""
+"Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from "
+"minimum wage"
+msgstr ""
+"Використовуйте податкові ставки Дія.Сіті: 5% i податок на прибуток + 5% "
+"військовий збір + 22% E ЄСВ з мінімальної зарплати"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_employee__use_manual
+msgid "Use Manual Values"
+msgstr "Використовуйте ручні значення"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:res.groups,name:cost_allocation.group_cost_allocation_user
+#, python-format
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__service_type__user
+msgid "User Based"
+msgstr "На основі користувача"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "User Support"
+msgstr "Підтримка користувачів"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__user_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__user_count
+#, python-format
+msgid "Users"
+msgstr "Користувачі"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__utilization_percentage
+msgid "Utilization %"
+msgstr "Використання % використання"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service__warranty_end
+msgid "Warranty End"
+msgstr "Закінчення гарантії"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_client_cost_allocation__website_message_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription__website_message_ids
+#: model:ir.model.fields,field_description:cost_allocation.field_service_subscription__website_message_ids
+msgid "Website Messages"
+msgstr "Повідомлення на веб-сайті"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_client_cost_allocation__website_message_ids
+#: model:ir.model.fields,help:cost_allocation.field_client_service_subscription__website_message_ids
+#: model:ir.model.fields,help:cost_allocation.field_service_subscription__website_message_ids
+msgid "Website communication history"
+msgstr "Історія спілкування з сайтом"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__recurring_rule_type__weekly
+msgid "Week(s)"
+msgstr "Тиждень"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Welcome to Service Costing Module!"
+msgstr "Ласкаво просимо до Модуля розрахунку вартості послуг!"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#, python-format
+msgid "Work Hours"
+msgstr "Години роботи"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__workload_factor
+msgid "Workload Factor"
+msgstr "Фактор робочого навантаження"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__workload_by_category
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_employee_workload_form
+msgid "Workload by Category"
+msgstr "Навантаження за категоріями"
+
+#. module: cost_allocation
+#. odoo-python
+#: code:addons/cost_allocation/wizards/setup_wizard.py:0
+#: model:ir.model.fields,field_description:cost_allocation.field_res_partner__workstation_count
+#: model:ir.model.fields,field_description:cost_allocation.field_res_users__workstation_count
+#, python-format
+msgid "Workstations"
+msgstr "Робочі станції"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__recurring_rule_type__yearly
+msgid "Year(s)"
+msgstr "Рік"
+
+#. module: cost_allocation
+#: model:ir.model.fields.selection,name:cost_allocation.selection__billing_automation__billing_period__yearly
+#: model:ir.model.fields.selection,name:cost_allocation.selection__service_subscription__billing_period__yearly
+msgid "Yearly"
+msgstr "Щорічно"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_cost_pool
+msgid ""
+"Пули затрат групують затрати на зарплати співробітників за видами "
+"діяльності.\n"
+"                Наприклад: \"Підтримка обладнання\", \"Розробка ПЗ\", "
+"\"Адміністрування\"."
+msgstr ""
+"Кулі витрат групують витрати на зарплати співробітників за видами "
+"діяльності.\n"
+"                Наприклад: \"Підтримка обладнання\", \"Розробка ПЗ\", "
+"\"Адміністрування\"."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
+msgid ""
+"Розподіліть зарплати співробітників по цьому пулу затрат.\n"
+"                                Можете вказати відсоток часу, який "
+"співробітник витрачає на цей пул."
+msgstr ""
+"Розподіліть зарплати співробітників за цим пулом витрат.\n"
+"                                Можете вказати відсоток часу, який "
+"співробітник витрачає на цей пул."
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_cost_pool
+msgid "Створіть свій перший пул затрат!"
+msgstr "Створіть свій перший пул витрат!"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_catalog_kanban
+msgid "грн"
+msgstr "грн"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_subscription_kanban
+msgid "грн/мес"
+msgstr "грн/міс"

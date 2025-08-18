@@ -129,7 +129,7 @@ class ResPartner(models.Model):
                 if 'workstation' in driver.name.lower() or 'компьютер' in driver.name.lower():
                     # Считаем рабочие станции
                     workstations = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_id.name.lower()
+                        lambda s: any(word in s.service_type_id.name.lower()
                                       for word in ['workstation', 'desktop', 'laptop', 'компьютер', 'ноутбук'])
                     )
                     quantity = sum(workstations.mapped('quantity'))
@@ -138,7 +138,7 @@ class ResPartner(models.Model):
                 elif 'user' in driver.name.lower() or 'пользователь' in driver.name.lower():
                     # Считаем пользователей
                     user_services = partner.client_service_ids.filtered(
-                        lambda s: s.service_id.unit_of_measure == 'user'
+                        lambda s: 'user' in s.service_type_id.name.lower() or 'пользователь' in s.service_type_id.name.lower()
                     )
                     quantity = sum(user_services.mapped('quantity'))
                     partner.user_count = quantity
@@ -146,7 +146,7 @@ class ResPartner(models.Model):
                 elif 'server' in driver.name.lower() or 'сервер' in driver.name.lower():
                     # Считаем серверы
                     servers = partner.client_service_ids.filtered(
-                        lambda s: 'server' in s.service_id.name.lower() or 'сервер' in s.service_id.name.lower()
+                        lambda s: 'server' in s.service_type_id.name.lower() or 'сервер' in s.service_type_id.name.lower()
                     )
                     quantity = sum(servers.mapped('quantity'))
                     partner.server_count = quantity
@@ -154,7 +154,7 @@ class ResPartner(models.Model):
                 elif 'phone' in driver.name.lower() or 'телефон' in driver.name.lower():
                     # Считаем телефоны
                     phones = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_id.name.lower()
+                        lambda s: any(word in s.service_type_id.name.lower()
                                       for word in ['phone', 'ip', 'телефон'])
                     )
                     quantity = sum(phones.mapped('quantity'))
@@ -163,7 +163,7 @@ class ResPartner(models.Model):
                 elif 'printer' in driver.name.lower() or 'принтер' in driver.name.lower():
                     # Считаем принтеры
                     printers = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_id.name.lower()
+                        lambda s: any(word in s.service_type_id.name.lower()
                                       for word in ['printer', 'mfp', 'принтер'])
                     )
                     quantity = sum(printers.mapped('quantity'))

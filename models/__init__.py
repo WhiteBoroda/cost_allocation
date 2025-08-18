@@ -8,4 +8,4 @@ from . import service_management
 from . import billing_automation
 from . import subscription
 from . import res_partner
-from . import dashboard
+from . import company_fields

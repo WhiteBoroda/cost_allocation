@@ -17,7 +17,8 @@ export class CostAllocationDashboard extends Component {
             loading: true,
             data: {},
             period: 12,
-            chartsLoaded: false
+            chartsLoaded: false,
+            error: null
         });
 
         onMounted(() => {
@@ -66,6 +67,16 @@ export class CostAllocationDashboard extends Component {
                                         <li><a class="dropdown-item period-select active" data-period="12">Last 12 months</a></li>
                                     </ul>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div class="row mb-3" id="error_alert" style="display: none;">
+                        <div class="col-12">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Loading Error:</strong> <span id="error_message"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         </div>
                     </div>
@@ -157,6 +168,10 @@ export class CostAllocationDashboard extends Component {
                                 </div>
                                 <div class="card-body">
                                     <canvas id="costTrendsChart" style="height: 300px;"></canvas>
+                                    <div id="trends_no_data" style="display: none;" class="text-center text-muted py-5">
+                                        <i class="fa fa-chart-line fa-3x mb-3"></i>
+                                        <p>No cost data available for the selected period</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -171,6 +186,10 @@ export class CostAllocationDashboard extends Component {
                                 </div>
                                 <div class="card-body">
                                     <canvas id="poolDistributionChart" style="height: 300px;"></canvas>
+                                    <div id="pools_no_data" style="display: none;" class="text-center text-muted py-5">
+                                        <i class="fa fa-pie-chart fa-3x mb-3"></i>
+                                        <p>No cost pools configured</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -255,13 +274,24 @@ export class CostAllocationDashboard extends Component {
     async loadDashboardData() {
         try {
             this.state.loading = true;
+            this.state.error = null;
+
+            console.log('Loading dashboard data...');
 
             const data = await this.rpc('/cost_allocation/dashboard_data', {
                 period_months: this.state.period
             });
 
+            console.log('Dashboard data loaded:', data);
+
             this.state.data = data;
             this.state.loading = false;
+
+            // Hide error alert if it was shown
+            const errorAlert = document.getElementById('error_alert');
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
 
             // Update UI
             this.updateKPICards(data);
@@ -270,9 +300,45 @@ export class CostAllocationDashboard extends Component {
 
         } catch (error) {
             console.error('Error loading dashboard data:', error);
-            this.notification.add('Failed to load dashboard data', { type: 'danger' });
             this.state.loading = false;
+            this.state.error = error.message || 'Unknown error';
+
+            // Show error in UI
+            this.showError('Failed to load dashboard data: ' + (error.message || 'Network error'));
+
+            // Load fallback data
+            this.loadFallbackData();
         }
+    }
+
+    showError(message) {
+        const errorAlert = document.getElementById('error_alert');
+        const errorMessage = document.getElementById('error_message');
+
+        if (errorAlert && errorMessage) {
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+        }
+
+        // Also show notification
+        this.notification.add(message, { type: 'danger' });
+    }
+
+    loadFallbackData() {
+        // Load basic data to prevent empty dashboard
+        const fallbackData = {
+            cost_overview: { current_total: 0, previous_total: 0, change_percent: 0 },
+            client_stats: { total_clients: 0, active_subscriptions: 0, allocated_clients: 0, allocation_coverage: 0 },
+            employee_utilization: { total_employees: 0, avg_utilization: 0, overloaded_count: 0 },
+            billing_summary: { total_revenue: 0, total_cost: 0, margin_percent: 0, due_invoices: 0 },
+            service_performance: { total_services: 0, active_subscriptions: 0 },
+            top_clients: [],
+            cost_trends: { months: [], total_costs: [] },
+            pool_distribution: []
+        };
+
+        this.updateKPICards(fallbackData);
+        this.updateTopClients([]);
     }
 
     updateKPICards(data) {
@@ -288,12 +354,12 @@ export class CostAllocationDashboard extends Component {
 
         // Total Cost
         const totalCostEl = document.getElementById('total_cost');
-        if (totalCostEl && cost_overview.current_total !== undefined) {
-            totalCostEl.textContent = this.formatCurrency(cost_overview.current_total);
+        if (totalCostEl) {
+            totalCostEl.textContent = this.formatCurrency(cost_overview.current_total || 0);
 
             const changeEl = document.getElementById('cost_change');
-            if (changeEl && cost_overview.change_percent !== undefined) {
-                const change_percent = cost_overview.change_percent;
+            if (changeEl) {
+                const change_percent = cost_overview.change_percent || 0;
                 const change_direction = cost_overview.change_direction || 'stable';
 
                 changeEl.textContent = `${change_percent > 0 ? '+' : ''}${change_percent}% vs last month`;
@@ -303,52 +369,52 @@ export class CostAllocationDashboard extends Component {
 
         // Revenue
         const revenueEl = document.getElementById('total_revenue');
-        if (revenueEl && billing_summary.total_revenue !== undefined) {
-            revenueEl.textContent = this.formatCurrency(billing_summary.total_revenue);
+        if (revenueEl) {
+            revenueEl.textContent = this.formatCurrency(billing_summary.total_revenue || 0);
 
             const marginEl = document.getElementById('margin_info');
-            if (marginEl && billing_summary.margin_percent !== undefined) {
-                marginEl.textContent = `Margin: ${billing_summary.margin_percent}%`;
+            if (marginEl) {
+                marginEl.textContent = `Margin: ${billing_summary.margin_percent || 0}%`;
             }
         }
 
         // Clients
         const clientsEl = document.getElementById('total_clients');
-        if (clientsEl && client_stats.total_clients !== undefined) {
-            clientsEl.textContent = client_stats.total_clients.toString();
+        if (clientsEl) {
+            clientsEl.textContent = (client_stats.total_clients || 0).toString();
 
             const coverageEl = document.getElementById('allocation_coverage');
-            if (coverageEl && client_stats.allocation_coverage !== undefined) {
-                coverageEl.textContent = `Coverage: ${client_stats.allocation_coverage}%`;
+            if (coverageEl) {
+                coverageEl.textContent = `Coverage: ${client_stats.allocation_coverage || 0}%`;
             }
         }
 
         // Team Utilization
         const utilizationEl = document.getElementById('avg_utilization');
-        if (utilizationEl && employee_utilization.avg_utilization !== undefined) {
-            utilizationEl.textContent = `${employee_utilization.avg_utilization}%`;
+        if (utilizationEl) {
+            utilizationEl.textContent = `${employee_utilization.avg_utilization || 0}%`;
 
             const overloadedEl = document.getElementById('overloaded_info');
-            if (overloadedEl && employee_utilization.overloaded_count !== undefined) {
-                overloadedEl.textContent = `Overloaded: ${employee_utilization.overloaded_count}`;
+            if (overloadedEl) {
+                overloadedEl.textContent = `Overloaded: ${employee_utilization.overloaded_count || 0}`;
             }
         }
 
         // Service Stats
         const servicesEl = document.getElementById('total_services');
-        if (servicesEl && service_performance.total_services !== undefined) {
-            servicesEl.textContent = service_performance.total_services.toString();
+        if (servicesEl) {
+            servicesEl.textContent = (service_performance.total_services || 0).toString();
         }
 
         const subscriptionsEl = document.getElementById('active_subscriptions');
-        if (subscriptionsEl && service_performance.active_subscriptions !== undefined) {
-            subscriptionsEl.textContent = service_performance.active_subscriptions.toString();
+        if (subscriptionsEl) {
+            subscriptionsEl.textContent = (service_performance.active_subscriptions || 0).toString();
         }
 
         // Billing Status
         const dueInvoicesEl = document.getElementById('due_invoices');
-        if (dueInvoicesEl && billing_summary.due_invoices !== undefined) {
-            dueInvoicesEl.textContent = billing_summary.due_invoices.toString();
+        if (dueInvoicesEl) {
+            dueInvoicesEl.textContent = (billing_summary.due_invoices || 0).toString();
         }
     }
 
@@ -357,7 +423,13 @@ export class CostAllocationDashboard extends Component {
         if (!listEl) return;
 
         if (!topClients || !Array.isArray(topClients) || topClients.length === 0) {
-            listEl.innerHTML = '<div class="text-center text-muted">No data available</div>';
+            listEl.innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="fa fa-users fa-3x mb-3"></i>
+                    <p>No client cost data available</p>
+                    <small>Create cost allocations to see top clients</small>
+                </div>
+            `;
             return;
         }
 
@@ -411,6 +483,10 @@ export class CostAllocationDashboard extends Component {
             script.id = 'chartjs-script';
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
             script.onload = resolve;
+            script.onerror = () => {
+                console.error('Failed to load Chart.js');
+                resolve(); // Don't block the dashboard
+            };
             document.head.appendChild(script);
         });
     }
@@ -418,12 +494,16 @@ export class CostAllocationDashboard extends Component {
     createCharts(data) {
         const { cost_trends, pool_distribution } = data;
 
-        if (cost_trends) {
+        if (cost_trends && cost_trends.months && cost_trends.months.length > 0) {
             this.createCostTrendsChart(cost_trends);
+        } else {
+            document.getElementById('trends_no_data').style.display = 'block';
         }
 
-        if (pool_distribution) {
+        if (pool_distribution && pool_distribution.length > 0) {
             this.createPoolDistributionChart(pool_distribution);
+        } else {
+            document.getElementById('pools_no_data').style.display = 'block';
         }
 
         this.state.chartsLoaded = true;
@@ -433,93 +513,101 @@ export class CostAllocationDashboard extends Component {
         const ctx = document.getElementById('costTrendsChart');
         if (!ctx || !trendData || !trendData.months || !trendData.total_costs) return;
 
-        // Format month labels
-        const labels = trendData.months.map(month => {
-            const [year, monthNum] = month.split('-');
-            const date = new Date(year, monthNum - 1);
-            return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-        });
+        try {
+            // Format month labels
+            const labels = trendData.months.map(month => {
+                const [year, monthNum] = month.split('-');
+                const date = new Date(year, monthNum - 1);
+                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            });
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Total Cost',
-                    data: trendData.total_costs,
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Cost',
+                        data: trendData.total_costs,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: (value) => this.formatCurrency(value, true)
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => this.formatCurrency(value, true)
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 4,
+                            hoverRadius: 6
                         }
                     }
-                },
-                elements: {
-                    point: {
-                        radius: 4,
-                        hoverRadius: 6
-                    }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error('Error creating cost trends chart:', error);
+        }
     }
 
     createPoolDistributionChart(poolData) {
         const ctx = document.getElementById('poolDistributionChart');
         if (!ctx || !poolData || !Array.isArray(poolData) || poolData.length === 0) return;
 
-        const labels = poolData.map(pool => pool.name || 'Unknown');
-        const costs = poolData.map(pool => pool.cost || 0);
-        const colors = this.generateColors(poolData.length);
+        try {
+            const labels = poolData.map(pool => pool.name || 'Unknown');
+            const costs = poolData.map(pool => pool.cost || 0);
+            const colors = this.generateColors(poolData.length);
 
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: costs,
-                    backgroundColor: colors,
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            usePointStyle: true
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const value = this.formatCurrency(context.raw);
-                                return `${context.label}: ${value}`;
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: costs,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const value = this.formatCurrency(context.raw);
+                                    return `${context.label}: ${value}`;
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error('Error creating pool distribution chart:', error);
+        }
     }
 
     setupEventListeners() {
