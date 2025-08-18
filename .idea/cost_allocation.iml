@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$APPLICATION_PLUGINS_DIR$/pycharm-odoo/stubs/odoo-stubs17" />
     <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$/../ua-accounting-self-erp-exchange-point/self-erp" />
     <content url="file://$MODULE_DIR$/../../odoo/enterprise-17.0">
       <sourceFolder url="file://$MODULE_DIR$/../../odoo/enterprise-17.0" isTestSource="false" />
     </content>

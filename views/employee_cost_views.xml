@@ -5,16 +5,17 @@
         <field name="name">cost.employee.tree</field>
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
-            <tree string="Employee Costs" decoration-warning="use_manual==True">
+            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="is_diia_city==True">
                 <field name="employee_id"/>
                 <field name="monthly_salary" widget="monetary"/>
                 <field name="monthly_taxes" widget="monetary"/>
                 <field name="monthly_benefits" widget="monetary"/>
                 <field name="monthly_hours"/>
                 <field name="hourly_cost" widget="monetary"/>
+                <field name="is_diia_city" widget="boolean_toggle"/>
                 <field name="use_manual" widget="boolean_toggle"/>
                 <field name="last_payroll_period"/>
-                <field name="currency_id" invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -40,7 +41,15 @@
                         <group>
                             <field name="last_payroll_period" readonly="1"/>
                             <field name="hourly_cost" widget="monetary" readonly="1"/>
+                            <field name="monthly_total_cost" widget="monetary" readonly="1"/>
                         </group>
+                    </group>
+
+                    <group string="Tax Settings">
+                        <field name="is_diia_city" readonly="1"/>
+                        <field name="is_diia_city_own" string="Dія.City (Manual Setting)"
+                               help="Set this if external Dія.City module is not available"/>
+                        <field name="minimum_wage" widget="monetary" invisible="not is_diia_city"/>
                     </group>
 
                     <notebook>
@@ -52,9 +61,17 @@
                                     <field name="monthly_benefits" widget="monetary" readonly="1"/>
                                 </group>
                             </group>
-                            <p class="text-muted">
+                            <div class="alert alert-info" invisible="not is_diia_city">
+                                <strong>Dія.City Tax Calculation:</strong>
+                                <ul>
+                                    <li>5% Income Tax on full salary</li>
+                                    <li>5% Military Tax on full salary</li>
+                                    <li>22% ESV on minimum wage (<field name="minimum_wage" readonly="1"/> UAH)</li>
+                                </ul>
+                            </div>
+                            <p class="text-muted" invisible="is_diia_city">
                                 Data automatically calculated from employee contract.
-                                Monthly taxes calculated at 22% ESV rate.
+                                Standard tax calculation: 22% ESV on full salary.
                             </p>
                         </page>
 
@@ -88,7 +105,7 @@
             </p>
             <p>
                 Employee costs are automatically calculated from contract data.
-                The system uses employee contracts to determine monthly wage and calculates taxes at 22% ESV rate.
+                The system supports both standard Ukrainian taxes and Dія.City special rates.
                 You can manually override values if needed.
             </p>
         </field>

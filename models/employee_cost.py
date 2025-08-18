@@ -20,9 +20,13 @@ class EmployeeCost(models.Model):
     manual_benefits = fields.Float(string='Manual Benefits Override')
     use_manual = fields.Boolean(string='Use Manual Values', default=False)
 
-    # Tax settings
-    is_diia_city = fields.Boolean(string='Dія.City Resident', default=True,
-                                  help='Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage')
+    # Own Dія.City field (fallback if external module not available)
+    is_diia_city_own = fields.Boolean(string='Dія.City Resident (Own)', default=False,
+                                      help='Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage')
+
+    # Company Dія.City status (computed - tries external module first, then own field)
+    is_diia_city = fields.Boolean(string='Dія.City Resident', compute='_compute_diia_city_status', store=False,
+                                  help='Company is Dія.City resident: 5% income tax + 5% military tax + 22% ESV from minimum wage')
     minimum_wage = fields.Float(string='Minimum Wage for ESV', default=7723.0,
                                 help='Current minimum wage in Ukraine for ESV calculation')
 
@@ -38,8 +42,33 @@ class EmployeeCost(models.Model):
     # Last payroll period for calculation
     last_payroll_period = fields.Date(string='Last Payroll Period', compute='_compute_payroll_data', store=True)
 
-    @api.depends('employee_id', 'use_manual', 'manual_salary', 'manual_taxes', 'manual_benefits', 'is_diia_city',
-                 'minimum_wage')
+    def _has_external_diia_city_field(self):
+        """Check if external module with is_diia_city_resident field is available"""
+        try:
+            return 'is_diia_city_resident' in self.env['res.company']._fields
+        except:
+            return False
+
+    @api.depends('employee_id.company_id', 'is_diia_city_own')
+    def _compute_diia_city_status(self):
+        """Get Dія.City status from external module or own field"""
+        for record in self:
+            # Try external module field first
+            if record._has_external_diia_city_field():
+                try:
+                    if record.employee_id and record.employee_id.company_id:
+                        record.is_diia_city = record.employee_id.company_id.is_diia_city_resident
+                    else:
+                        record.is_diia_city = record.env.company.is_diia_city_resident
+                except:
+                    # Fallback to own field
+                    record.is_diia_city = record.is_diia_city_own
+            else:
+                # Use own field
+                record.is_diia_city = record.is_diia_city_own
+
+    @api.depends('employee_id', 'use_manual', 'manual_salary', 'manual_taxes', 'manual_benefits',
+                 'minimum_wage', 'is_diia_city_own')
     def _compute_payroll_data(self):
         for record in self:
             if record.use_manual:
@@ -71,7 +100,23 @@ class EmployeeCost(models.Model):
             wage = contract.wage
             self.monthly_salary = wage
 
-            if self.is_diia_city:
+            # Get Dія.City status
+            is_diia_city = False
+
+            # Try external module field first
+            if self._has_external_diia_city_field():
+                try:
+                    if self.employee_id.company_id:
+                        is_diia_city = self.employee_id.company_id.is_diia_city_resident
+                    else:
+                        is_diia_city = self.env.company.is_diia_city_resident
+                except:
+                    is_diia_city = self.is_diia_city_own
+            else:
+                # Use own field
+                is_diia_city = self.is_diia_city_own
+
+            if is_diia_city:
                 # Dія.City tax calculation
                 income_tax = wage * 0.05  # 5% income tax
                 military_tax = wage * 0.05  # 5% military tax
@@ -115,7 +160,20 @@ class EmployeeCost(models.Model):
     @api.constrains('minimum_wage')
     def _check_minimum_wage(self):
         for record in self:
-            if record.is_diia_city and record.minimum_wage <= 0:
+            # Get actual Dія.City status
+            is_diia_city = False
+            if record._has_external_diia_city_field():
+                try:
+                    if record.employee_id and record.employee_id.company_id:
+                        is_diia_city = record.employee_id.company_id.is_diia_city_resident
+                    else:
+                        is_diia_city = record.env.company.is_diia_city_resident
+                except:
+                    is_diia_city = record.is_diia_city_own
+            else:
+                is_diia_city = record.is_diia_city_own
+
+            if is_diia_city and record.minimum_wage <= 0:
                 raise ValidationError('Minimum wage must be greater than 0 for Dія.City residents')
 
     def action_update_from_payroll(self):

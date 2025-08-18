@@ -52,7 +52,7 @@
                     <group>
                         <group>
                             <field name="total_amount" widget="monetary"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                             <field name="next_invoice_date"/>
                         </group>
                         <group>

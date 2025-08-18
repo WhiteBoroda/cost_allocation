@@ -5,17 +5,16 @@
         <field name="name">cost.employee.tree</field>
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
-            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="is_diia_city==True">
+            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="'employee_id.company_id.is_diia_city_resident'==True">
                 <field name="employee_id"/>
                 <field name="monthly_salary" widget="monetary"/>
                 <field name="monthly_taxes" widget="monetary"/>
                 <field name="monthly_benefits" widget="monetary"/>
                 <field name="monthly_hours"/>
                 <field name="hourly_cost" widget="monetary"/>
-                <field name="is_diia_city" widget="boolean_toggle"/>
                 <field name="use_manual" widget="boolean_toggle"/>
                 <field name="last_payroll_period"/>
-                <field name="currency_id" invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -34,7 +33,7 @@
                                 <field name="employee_id"/>
                                 <field name="monthly_hours"/>
                                 <field name="use_manual"/>
-                                <field name="currency_id" invisible="1"/>
+                                <field name="currency_id" column_invisible="1"/>
                             </group>
                             <group>
                                 <field name="last_payroll_period" readonly="1"/>
@@ -45,7 +44,7 @@
 
                         <group string="Tax Settings">
                             <field name="is_diia_city"/>
-                            <field name="minimum_wage" widget="monetary" invisible="not is_diia_city"/>
+                            <field name="minimum_wage" widget="monetary" invisible="not employee_id.company_id.is_diia_city_resident"/>
                         </group>
 
                         <notebook>
@@ -152,7 +151,7 @@
                 <field name="primary_responsible_id"/>
                 <field name="active_services_count"/>
                 <field name="support_level"/>
-                <field name="currency_id" invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -178,7 +177,7 @@
                             <field name="workload_factor"/>
                             <field name="auto_assign_responsible"/>
                             <field name="active_services_count" readonly="1"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
                     <field name="description"/>
@@ -224,7 +223,7 @@
                 <field name="status" widget="badge" decoration-success="status=='active'" decoration-warning="status=='maintenance'" decoration-danger="status=='retired'"/>
                 <field name="last_maintenance"/>
                 <field name="subscription_line_id"/>
-                <field name="auto_assigned" invisible="1"/>
+                <field name="auto_assigned" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -307,7 +306,7 @@
                 <field name="total_estimated_hours"/>
                 <field name="available_hours"/>
                 <field name="utilization_percentage" widget="percentage"/>
-                <field name="overloaded" invisible="1"/>
+                <field name="overloaded" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -356,7 +355,7 @@
                 <field name="monthly_total" widget="monetary"/>
                 <field name="next_invoice_date"/>
                 <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='active'" decoration-warning="state=='suspended'" decoration-danger="state=='terminated'"/>
-                <field name="currency_id" invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -393,7 +392,7 @@
                         </group>
                         <group>
                             <field name="margin"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -407,7 +406,7 @@
                                     <field name="unit_price"/>
                                     <field name="monthly_cost" readonly="1"/>
                                     <field name="monthly_price" readonly="1"/>
-                                    <field name="currency_id" invisible="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
                                 </tree>
                             </field>
                         </page>
