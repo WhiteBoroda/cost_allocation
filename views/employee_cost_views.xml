@@ -5,20 +5,17 @@
         <field name="name">cost.employee.tree</field>
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
-            <tree string="Employee Costs"
-                  decoration-warning="use_manual==True">
+            <tree string="Employee Costs" decoration-warning="use_manual==True">
                 <field name="employee_id"/>
                 <field name="monthly_salary" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="monthly_taxes" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="monthly_benefits" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="monthly_hours"/>
                 <field name="hourly_cost" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="is_diia_city" widget="boolean_toggle"/>
-                <!-- Поле для decoration - доступно всем пользователям -->
+                <field name="monthly_total_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="use_manual" widget="boolean_toggle"/>
                 <field name="last_payroll_period"
                        groups="cost_allocation.group_cost_allocation_financial"/>
@@ -34,62 +31,77 @@
         <field name="arch" type="xml">
             <form string="Employee Cost">
                 <header>
-                    <button name="action_update_from_payroll" type="object"
+                    <button name="action_update_from_contract" type="object"
                             string="Update from Contract" class="btn-primary"/>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1><field name="employee_id" placeholder="Select Employee"/></h1>
+                    </div>
+
                     <group>
                         <group>
-                            <field name="employee_id"/>
                             <field name="monthly_hours"/>
                             <field name="use_manual"/>
-                            <field name="currency_id" column_invisible="1"/>
+                            <field name="active"/>
                         </group>
                         <group>
                             <field name="last_payroll_period" readonly="1"/>
                             <field name="hourly_cost" widget="monetary" readonly="1"/>
                             <field name="monthly_total_cost" widget="monetary" readonly="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
 
-                    <group string="Tax Settings">
-                        <field name="is_diia_city" readonly="1"/>
-                        <field name="is_diia_city_own"/>
-                        <field name="minimum_wage" widget="monetary"
-                               invisible="not is_diia_city"/>
-                    </group>
-
                     <notebook>
-                        <page string="Contract Data">
-                            <p class="text-muted">
-                                Data automatically calculated from employee contract.
-                                Standard tax calculation: 22% ESV on full salary.
-                            </p>
-                            <group string="Auto-calculated Values"
+                        <page string="Cost Data">
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"/> How it works</h4>
+                                <p><strong>Contract Wage:</strong> Enter the total monthly cost in HR contract (salary + all taxes + contributions)</p>
+                                <p><strong>Benefits:</strong> Any additional costs like health insurance, bonuses, etc.</p>
+                                <p><strong>Manual Override:</strong> Use when you need custom values different from contract</p>
+                            </div>
+
+                            <group string="Auto-calculated from Contract"
                                    invisible="use_manual"
                                    groups="cost_allocation.group_cost_allocation_financial">
                                 <group>
-                                    <field name="monthly_salary" widget="monetary" readonly="1"/>
-                                    <field name="monthly_taxes" widget="monetary" readonly="1"/>
-                                    <field name="monthly_benefits" widget="monetary" readonly="1"/>
-                                </group>
-                                <group invisible="not is_diia_city">
-                                    <label for="is_diia_city" string="Dія.City Tax Calculation:"/>
-                                    <div>
-                                        <div>• 5% Income Tax on full salary</div>
-                                        <div>• 5% Military Tax on full salary</div>
-                                        <div>• 22% ESV on minimum wage (<field name="minimum_wage" widget="monetary"/>)</div>
-                                    </div>
+                                    <field name="monthly_salary" widget="monetary" readonly="1"
+                                           help="Total monthly cost including all taxes from HR contract"/>
+                                    <field name="monthly_benefits" widget="monetary" readonly="1"
+                                           help="Additional benefits and costs"/>
                                 </group>
                             </group>
 
-                            <group string="Manual Override"
+                            <group string="Manual Override Values"
                                    invisible="not use_manual"
                                    groups="cost_allocation.group_cost_allocation_financial">
                                 <group>
-                                    <field name="manual_salary" widget="monetary"/>
-                                    <field name="manual_taxes" widget="monetary"/>
-                                    <field name="manual_benefits" widget="monetary"/>
+                                    <field name="manual_salary" widget="monetary"
+                                           help="Total monthly cost including all taxes"/>
+                                    <field name="manual_benefits" widget="monetary"
+                                           help="Additional benefits and costs"/>
+                                </group>
+                            </group>
+
+                            <div class="alert alert-warning" invisible="not use_manual">
+                                <i class="fa fa-exclamation-triangle"/> Manual override is active.
+                                Contract updates will be ignored until you disable manual mode.
+                            </div>
+                        </page>
+
+                        <page string="Statistics" groups="cost_allocation.group_cost_allocation_financial">
+                            <group>
+                                <group string="Monthly">
+                                    <field name="monthly_salary" widget="monetary" readonly="1"/>
+                                    <field name="monthly_benefits" widget="monetary" readonly="1"/>
+                                    <field name="monthly_total_cost" widget="monetary" readonly="1"
+                                           decoration-bf="1"/>
+                                </group>
+                                <group string="Hourly">
+                                    <field name="monthly_hours" readonly="1"/>
+                                    <field name="hourly_cost" widget="monetary" readonly="1"
+                                           decoration-bf="1"/>
                                 </group>
                             </group>
                         </page>
@@ -112,12 +124,12 @@
                         domain="[('use_manual', '=', True)]"/>
                 <filter string="Auto-calculated" name="auto"
                         domain="[('use_manual', '=', False)]"/>
-                <!-- Убран фильтр по is_diia_city так как поле не stored -->
+                <filter string="Active" name="active"
+                        domain="[('active', '=', True)]"/>
 
                 <group expand="1" string="Group By">
-                    <filter string="Manual vs Auto" name="group_manual"
+                    <filter string="Data Source" name="group_manual"
                             context="{'group_by': 'use_manual'}"/>
-                    <!-- Убрана группировка по is_diia_city -->
                 </group>
             </search>
         </field>

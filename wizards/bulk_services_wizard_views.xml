@@ -47,9 +47,9 @@
                 </group>
 
                 <div class="alert alert-warning mt-3" invisible="not service_line_ids">
-                    <p><strong>Preview:</strong> This will create <strong><t t-esc="len(service_line_ids)"/> service types</strong>
-                       for <strong><t t-esc="len(client_ids)"/> clients</strong>
-                       = <strong><t t-esc="len(service_line_ids) * len(client_ids)"/> total services</strong></p>
+                    <p><strong>Preview:</strong> This will create <strong><field name="service_count"/> service types</strong>
+                       for <strong><field name="client_count"/> clients</strong>
+                       = <strong><field name="total_services"/> total services</strong></p>
                     <p><i class="fa fa-info-circle"/> Existing services will have their quantities updated unless "Force Create New" is checked.</p>
                 </div>
 
@@ -74,22 +74,5 @@
         <field name="view_id" ref="view_bulk_services_wizard_form"/>
     </record>
 
-    <!-- Add shortcut to client services tree view -->
-    <record id="view_client_service_tree_with_bulk" model="ir.ui.view">
-        <field name="name">client.service.tree.with.bulk</field>
-        <field name="model">client.service</field>
-        <field name="inherit_id" ref="view_client_service_tree"/>
-        <field name="arch" type="xml">
-            <tree position="attributes">
-                <attribute name="create_text">Add Service</attribute>
-            </tree>
-            <tree position="inside">
-                <header>
-                    <button name="%(action_bulk_services_wizard)d" type="action"
-                            string="Bulk Add Services" class="btn-primary"/>
-                </header>
-            </tree>
-        </field>
-    </record>
 
 </odoo>

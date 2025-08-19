@@ -26,6 +26,17 @@ class BulkServicesWizard(models.TransientModel):
     workstation_count = fields.Integer(string='Number of Workstations', default=10)
     user_count = fields.Integer(string='Number of Users', default=10)
     printer_count = fields.Integer(string='Number of Printers', default=2)
+    service_count = fields.Integer(string='Service Types Count', compute='_compute_preview_counts')
+    client_count = fields.Integer(string='Clients Count', compute='_compute_preview_counts')
+    total_services = fields.Integer(string='Total Services', compute='_compute_preview_counts')
+
+    @api.depends('service_line_ids', 'client_ids')
+    def _compute_preview_counts(self):
+        for wizard in self:
+            wizard.service_count = len(wizard.service_line_ids)
+            wizard.client_count = len(wizard.client_ids)
+            wizard.total_services = wizard.service_count * wizard.client_count
+
 
     @api.onchange('add_template')
     def _onchange_add_template(self):

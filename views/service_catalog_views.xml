@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <!-- Service Category Views -->
     <record id="view_service_category_tree" model="ir.ui.view">
         <field name="name">service.category.tree</field>
@@ -8,8 +9,9 @@
             <tree string="Service Categories">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="service_type"/>
-                <field name="description"/>
+                <field name="code"/>
+                <field name="service_type_count"/>
+                <field name="active"/>
             </tree>
         </field>
     </record>
@@ -23,29 +25,34 @@
                     <group>
                         <group>
                             <field name="name"/>
+                            <field name="code"/>
                             <field name="service_type"/>
                             <field name="sequence"/>
                         </group>
                         <group>
                             <field name="active"/>
+                            <field name="service_type_count" readonly="1"/>
+                            <field name="active_services_count" readonly="1"/>
                         </group>
                     </group>
-                    <group>
-                        <field name="description" placeholder="Category description..."/>
-                    </group>
+                    <field name="description" placeholder="Category description..."/>
                     <notebook>
-                        <page string="Services">
-                            <field name="service_ids" context="{'default_category_id': active_id}">
-                                <tree editable="bottom">
-                                    <field name="sequence" widget="handle"/>
+                        <page string="Service Types">
+                            <field name="service_ids">
+                                <tree>
                                     <field name="name"/>
                                     <field name="code"/>
-                                    <field name="unit_of_measure"/>
+                                    <field name="service_type"/>
                                     <field name="base_cost"/>
                                     <field name="sales_price"/>
-                                    <field name="complexity_level"/>
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Responsible Team">
+                            <group>
+                                <field name="primary_responsible_id"/>
+                            </group>
+                            <field name="default_responsible_ids" widget="many2many_tags"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -72,6 +79,7 @@
         </field>
     </record>
 
+    <!-- ИСПРАВЛЕННАЯ ФОРМА SERVICE CATALOG -->
     <record id="view_service_catalog_form" model="ir.ui.view">
         <field name="name">service.catalog.form</field>
         <field name="model">service.catalog</field>
@@ -101,73 +109,20 @@
                             <field name="sales_price" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Support">
-                        <group>
-                            <field name="support_hours"/>
-                            <field name="sla_response_time"/>
-                        </group>
-                    </group>
-                    <group>
-                        <field name="description" placeholder="Service description..."/>
-                    </group>
+                    <field name="description" placeholder="Service description..."/>
+                    <notebook>
+                        <page string="Service Details">
+                            <group>
+                                <field name="support_hours"/>
+                                <field name="sla_response_time"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id="view_service_catalog_kanban" model="ir.ui.view">
-        <field name="name">service.catalog.kanban</field>
-        <field name="model">service.catalog</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile" group_by="category_id">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="sales_price"/>
-                <field name="complexity_level"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name"/>
-                                    </strong>
-                                </div>
-                                <span class="o_kanban_record_subtitle">
-                                    <field name="code"/>
-                                </span>
-                            </div>
-                            <div class="o_kanban_record_body">
-                                <div>
-                                    <span class="o_badge o_badge_pill">
-                                        <field name="complexity_level"/>
-                                    </span>
-                                </div>
-                                <div class="mt8">
-                                    <strong>Price: <field name="sales_price"/> грн</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Actions -->
-    <record id="action_service_category" model="ir.actions.act_window">
-        <field name="name">Service Categories</field>
-        <field name="res_model">service.category</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <record id="action_service_catalog" model="ir.actions.act_window">
-        <field name="name">Service Catalog</field>
-        <field name="res_model">service.catalog</field>
-        <field name="view_mode">kanban,tree,form</field>
-    </record>
-
-    <!-- Filters and Groups -->
     <record id="view_service_catalog_search" model="ir.ui.view">
         <field name="name">service.catalog.search</field>
         <field name="model">service.catalog</field>
@@ -176,19 +131,52 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="category_id"/>
+                <field name="service_type"/>
+
                 <separator/>
                 <filter string="Hardware" name="hardware" domain="[('service_type', '=', 'hardware')]"/>
-                <filter string="SaaS" name="saas" domain="[('service_type', '=', 'saas')]"/>
-                <filter string="IaaS" name="iaas" domain="[('service_type', '=', 'iaas')]"/>
+                <filter string="Software" name="software" domain="[('service_type', '=', 'saas')]"/>
                 <filter string="Support" name="support" domain="[('service_type', '=', 'support')]"/>
+                <filter string="Maintenance" name="maintenance" domain="[('service_type', '=', 'support')]"/>
+
                 <separator/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                <group string="Group By">
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="1" string="Group By">
                     <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
-                    <filter string="Service Type" name="group_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type'}"/>
                     <filter string="Complexity" name="group_complexity" context="{'group_by': 'complexity_level'}"/>
                 </group>
             </search>
+        </field>
+    </record>
+
+    <!-- Service Catalog Kanban View -->
+    <record id="view_service_catalog_kanban" model="ir.ui.view">
+        <field name="name">service.catalog.kanban</field>
+        <field name="model">service.catalog</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="sales_price"/>
+                <field name="complexity_level"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_content">
+                                <h3><field name="name"/></h3>
+                                <p><field name="category_id"/></p>
+                                <p>Type: <field name="service_type"/></p>
+                                <p>Price: <field name="sales_price"/></p>
+                                <p>Level: <field name="complexity_level"/></p>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 

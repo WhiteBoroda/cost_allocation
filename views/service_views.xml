@@ -79,7 +79,7 @@
                   decoration-success="status=='active'"
                   decoration-muted="status=='inactive'"
                   decoration-warning="status=='maintenance'"
-                  create_text="Add Service"
+                  decoration-danger="status=='retired'"
                   default_order="client_id, service_type_id">
                 <field name="client_id"/>
                 <field name="service_type_id"/>
@@ -99,20 +99,13 @@
         </field>
     </record>
 
+    <!-- ИСПРАВЛЕННАЯ ФОРМА CLIENT SERVICE -->
     <record id="view_client_service_form" model="ir.ui.view">
         <field name="name">client.service.form</field>
         <field name="model">client.service</field>
         <field name="arch" type="xml">
             <form string="Client Service">
-                <header>
-                    <field name="status" widget="statusbar" statusbar_visible="active,maintenance,retired"/>
-                </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_toggle"/>
-                        </button>
-                    </div>
                     <group>
                         <group>
                             <field name="client_id"/>
@@ -121,29 +114,33 @@
                             <field name="quantity"/>
                         </group>
                         <group>
+                            <field name="status"/>
+                            <field name="responsible_employee_id"/>
                             <field name="location"/>
-                            <field name="brand"/>
-                            <field name="model"/>
-                            <field name="ip_address"/>
-                            <field name="subscription_line_id"/>
-                            <field name="estimated_monthly_hours" readonly="1"/>
+                            <field name="estimated_monthly_hours"/>
                         </group>
                     </group>
-                    <field name="description"/>
                     <notebook>
-                        <page string="Responsible Team">
-                            <group>
-                                <field name="responsible_employee_id"/>
-                                <field name="auto_assigned" readonly="1"/>
-                            </group>
-                            <field name="support_team_ids" widget="many2many_tags"/>
-                        </page>
-                        <page string="Technical Details">
+                        <page string="Details">
                             <group>
                                 <group>
-                                    <field name="mac_address"/>
+                                    <field name="description"/>
+                                    <field name="subscription_line_id"/>
+                                    <field name="auto_assigned"/>
+                                </group>
+                                <group>
+                                    <field name="brand"/>
+                                    <field name="model"/>
                                     <field name="serial_number"/>
                                     <field name="inventory_number"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Technical">
+                            <group>
+                                <group>
+                                    <field name="ip_address"/>
+                                    <field name="mac_address"/>
                                 </group>
                                 <group>
                                     <field name="installation_date"/>
@@ -158,6 +155,9 @@
                                     <field name="next_maintenance"/>
                                 </group>
                             </group>
+                        </page>
+                        <page string="Support Team">
+                            <field name="support_team_ids" widget="many2many_tags"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -221,7 +221,7 @@
         <field name="name">employee.workload.tree</field>
         <field name="model">employee.workload</field>
         <field name="arch" type="xml">
-            <tree string="Employee Workload" decoration-danger="overloaded==True" decoration-warning="utilization_percentage > 80">
+            <tree string="Employee Workload" decoration-danger="overloaded==True" decoration-warning="utilization_percentage &gt; 80">
                 <field name="employee_id"/>
                 <field name="period_date"/>
                 <field name="total_services"/>
@@ -229,6 +229,8 @@
                 <field name="available_hours"/>
                 <field name="utilization_percentage" widget="percentage"/>
                 <field name="overloaded" widget="boolean_toggle"/>
+                <field name="primary_services"/>
+                <field name="support_services"/>
             </tree>
         </field>
     </record>
@@ -252,53 +254,16 @@
                             <field name="overloaded"/>
                         </group>
                     </group>
-
-                    <notebook>
-                        <page string="Service Breakdown">
-                            <group>
-                                <group>
-                                    <field name="primary_services"/>
-                                    <field name="support_services"/>
-                                </group>
-                            </group>
-                            <separator string="Workload by Category"/>
-                            <field name="workload_by_category" widget="text"/>
-                        </page>
-                    </notebook>
+                    <group>
+                        <group>
+                            <field name="primary_services"/>
+                            <field name="support_services"/>
+                        </group>
+                    </group>
+                    <field name="workload_by_category" widget="text"/>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id="view_employee_workload_search" model="ir.ui.view">
-        <field name="name">employee.workload.search</field>
-        <field name="model">employee.workload</field>
-        <field name="arch" type="xml">
-            <search string="Search Employee Workload">
-                <field name="employee_id"/>
-                <field name="period_date"/>
-
-                <separator/>
-                <filter string="Overloaded" name="overloaded"
-                        domain="[('overloaded', '=', True)]"/>
-                <filter string="High Utilization (>80%)" name="high_utilization"
-                        domain="[('utilization_percentage', '>', 80)]"/>
-                <filter string="Low Utilization (<50%)" name="low_utilization"
-                        domain="[('utilization_percentage', '<', 50)]"/>
-
-                <separator/>
-                <filter string="This Month" name="this_month"
-                        domain="[('period_date', '>=', context_today().replace(day=1))]"/>
-
-                <group expand="1" string="Group By">
-                    <filter string="Employee" name="group_employee"
-                            context="{'group_by': 'employee_id'}"/>
-                    <filter string="Period" name="group_period"
-                            context="{'group_by': 'period_date'}"/>
-                    <filter string="Overloaded Status" name="group_overloaded"
-                            context="{'group_by': 'overloaded'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
 </odoo>

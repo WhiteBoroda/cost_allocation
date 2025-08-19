@@ -10,12 +10,14 @@ class ServiceCategory(models.Model):
     code = fields.Char(string='Code')
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
+
+    # ИСПРАВЛЕНО: добавлено default значение и убрано required временно
     service_type = fields.Selection([
         ('hardware', 'Hardware'),
         ('saas', 'SaaS'),
         ('iaas', 'IaaS'),
         ('support', 'Support')
-    ], string='Service Type', required=True)
+    ], string='Service Type', default='support')  # Убрал required=True и добавил default
 
     # Relations
     service_ids = fields.One2many('service.catalog', 'category_id', string='Services')
@@ -34,10 +36,11 @@ class ServiceCategory(models.Model):
 
     active = fields.Boolean(string='Active', default=True)
 
-    @api.depends('name')
+    @api.depends('service_ids')
     def _compute_counts(self):
         for category in self:
-            category.service_type_count = len(self.env['service.type'].search([('category_id', '=', category.id)]))
+            # Исправлено: считаем service_ids вместо поиска service.type
+            category.service_type_count = len(category.service_ids)
             category.active_services_count = len(self.env['client.service'].search([
                 ('service_type_id.category_id', '=', category.id),
                 ('status', '=', 'active')

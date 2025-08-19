@@ -13,16 +13,12 @@
         <field name="user_id" ref="base.user_root"/>
     </record>
 
-    <!-- Cost Driver Update Cron Job -->
+    <!-- Cost Driver Update Cron Job - ИСПРАВЛЕНО -->
     <record id="cron_cost_driver_update" model="ir.cron">
         <field name="name">Update Cost Drivers from Services</field>
-        <field name="model_id" ref="model_cost_driver"/>
+        <field name="model_id" ref="base.model_res_partner"/>
         <field name="state">code</field>
-        <field name="code">
-drivers = model.search([('auto_update', '=', True)])
-for driver in drivers:
-    driver.action_update_from_services()
-        </field>
+        <field name="code">model.cron_update_all_cost_drivers()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="numbercall">0</field>
@@ -30,16 +26,12 @@ for driver in drivers:
         <field name="user_id" ref="base.user_root"/>
     </record>
 
-    <!-- Contract Cost Update Cron Job -->
+    <!-- Employee Cost Update Cron Job -->
     <record id="cron_payroll_cost_update" model="ir.cron">
         <field name="name">Update Employee Costs from Contracts</field>
         <field name="model_id" ref="model_cost_employee"/>
         <field name="state">code</field>
-        <field name="code">
-employees = model.search([('use_manual', '=', False)])
-for emp in employees:
-    emp._compute_payroll_data()
-        </field>
+        <field name="code">model.update_all_from_contracts()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">weeks</field>
         <field name="numbercall">0</field>
@@ -59,4 +51,18 @@ for emp in employees:
         <field name="active">True</field>
         <field name="user_id" ref="base.user_root"/>
     </record>
+
+    <!-- Subscription Invoice Generation Cron Job -->
+    <record id="cron_generate_subscription_invoices" model="ir.cron">
+        <field name="name">Generate Subscription Invoices</field>
+        <field name="model_id" ref="model_client_service_subscription"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_generate_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">0</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
 </odoo>
