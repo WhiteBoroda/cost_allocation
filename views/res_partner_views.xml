@@ -1,76 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Partner Form View Extension -->
+    <!-- Partner Form Extension -->
     <record id="view_partner_form_cost_allocation" model="ir.ui.view">
         <field name="name">res.partner.form.cost_allocation</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales_purchases']" position="after">
-                <page string="Service Costing" name="service_costing" invisible="not is_company">
-                    <group>
-                        <group string="Service Statistics">
-                            <field name="service_count"/>
-                            <field name="subscription_count"/>
+            <div name="button_box" position="inside">
+                <button name="%(action_client_service)d" type="action"
+                        class="oe_stat_button" icon="fa-gear"
+                        context="{'default_client_id': active_id, 'search_default_client_id': active_id}"
+                        invisible="not is_company">
+                    <field name="service_count" widget="statinfo" string="Services"/>
+                </button>
+                <button name="%(action_client_service_subscription)d" type="action"
+                        class="oe_stat_button" icon="fa-refresh"
+                        context="{'default_client_id': active_id, 'search_default_client_id': active_id}"
+                        invisible="not is_company">
+                    <field name="subscription_count" widget="statinfo" string="Subscriptions"/>
+                </button>
+                <button name="%(action_client_allocation)d" type="action"
+                        class="oe_stat_button" icon="fa-calculator"
+                        context="{'default_client_id': active_id, 'search_default_client_id': active_id}"
+                        invisible="not is_company">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
                             <field name="last_monthly_cost" widget="monetary"/>
-                            <field name="last_cost_date"/>
-                            <field name="cost_trend" widget="badge"/>
-                        </group>
-                        <group string="Cost Driver Quantities">
+                        </span>
+                        <span class="o_stat_text">Monthly Cost</span>
+                    </div>
+                </button>
+            </div>
+
+            <xpath expr="//page[@name='accounting']" position="after">
+                <page string="Service Costing" invisible="not is_company">
+                    <group>
+                        <group string="Cost Drivers">
                             <field name="workstation_count"/>
                             <field name="user_count"/>
                             <field name="server_count"/>
                             <field name="phone_count"/>
                             <field name="printer_count"/>
                         </group>
+                        <group string="Cost Analysis">
+                            <field name="last_monthly_cost" widget="monetary"/>
+                            <field name="last_cost_date"/>
+                            <field name="cost_trend" widget="badge"/>
+                        </group>
                     </group>
-
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_services" type="object"
-                                class="oe_stat_button" icon="fa-cogs">
-                            <field name="service_count" widget="statinfo" string="Services"/>
-                        </button>
-                        <button name="action_view_subscriptions" type="object"
-                                class="oe_stat_button" icon="fa-refresh">
-                            <field name="subscription_count" widget="statinfo" string="Subscriptions"/>
-                        </button>
-                        <button name="action_view_cost_allocations" type="object"
-                                class="oe_stat_button" icon="fa-pie-chart">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="last_monthly_cost" widget="monetary"/>
-                                </span>
-                                <span class="o_stat_text">Last Cost</span>
-                            </div>
-                        </button>
-                        <button name="action_create_subscription" type="object"
-                                class="oe_stat_button" icon="fa-plus-circle">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">New Subscription</span>
-                            </div>
-                        </button>
-                    </div>
-
                     <notebook>
                         <page string="Services">
                             <field name="client_service_ids">
-                                <tree editable="bottom">
-                                    <field name="service_id"/>
-                                    <field name="quantity"/>
-                                    <field name="total_price" widget="monetary"/>
-                                    <field name="active"/>
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="service_type_id"/>
                                     <field name="brand"/>
                                     <field name="model"/>
-                                    <field name="location"/>
+                                    <field name="quantity"/>
+                                    <field name="status" widget="badge"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="Cost Drivers">
-                            <field name="cost_driver_ids">
-                                <tree editable="bottom">
-                                    <field name="driver_id"/>
-                                    <field name="quantity"/>
-                                    <field name="allocated_cost" widget="monetary"/>
+                        <page string="Subscriptions">
+                            <field name="subscription_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="start_date"/>
+                                    <field name="total_amount" widget="monetary"/>
                                 </tree>
                             </field>
                         </page>

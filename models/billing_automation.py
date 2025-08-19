@@ -29,7 +29,7 @@ class BillingAutomation(models.Model):
                                   domain=[('is_company', '=', True)],
                                   help='Leave empty to include all clients')
 
-    subscription_ids = fields.Many2many('service.subscription', string='Subscriptions',
+    subscription_ids = fields.Many2many('client.service.subscription', string='Subscriptions',
                                         help='Leave empty to include all active subscriptions')
 
     # Templates
@@ -148,7 +148,7 @@ class BillingAutomation(models.Model):
         # Check next invoice date
         domain.append(('next_invoice_date', '<=', fields.Date.today()))
 
-        return self.env['service.subscription'].search(domain)
+        return self.env['client.service.subscription'].search(domain)
 
     def _create_invoice(self, subscription, period_start, period_end):
         """Create invoice for subscription"""
@@ -189,12 +189,12 @@ class BillingAutomation(models.Model):
         # Add invoice lines from subscription
         for line in subscription.service_line_ids:
             # Get or create product for service type
-            product = self._get_or_create_product(line.service_type_id)
+            product = self._get_or_create_product(line.service_id)
 
             invoice_line_vals = {
                 'move_id': invoice.id,
                 'product_id': product.id,
-                'name': line.name or line.service_type_id.name,
+                'name': line.name or line.service_id.name,
                 'quantity': line.quantity,
                 'price_unit': line.unit_price,
                 'account_id': self._get_income_account().id,
@@ -275,14 +275,13 @@ Cost Breakdown:
 
         return income_account
 
-    def _get_or_create_product(self, service_type):
-        """Get or create product for service type"""
+    def _get_or_create_product(self, service_catalog):
+        """Get or create product for service catalog item"""
         product = self.env['product.template'].search([
-            ('default_code', '=', f"SRV_{service_type.code}")
+            ('default_code', '=', f"SRV_{service_catalog.code}")
         ], limit=1)
 
         if not product:
-            # Get or create IT Services category
             category = self.env['product.category'].search([
                 ('name', '=', 'IT Services')
             ], limit=1)
@@ -293,11 +292,11 @@ Cost Breakdown:
                 })
 
             product = self.env['product.template'].create({
-                'name': service_type.name,
-                'default_code': f"SRV_{service_type.code}",
+                'name': service_catalog.name,
+                'default_code': f"SRV_{service_catalog.code}",
                 'type': 'service',
                 'invoice_policy': 'order',
-                'list_price': service_type.base_price,
+                'list_price': service_catalog.sales_price,
                 'categ_id': category.id,
             })
         return product.product_variant_id

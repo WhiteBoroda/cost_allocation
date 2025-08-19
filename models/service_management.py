@@ -96,6 +96,8 @@ class ClientService(models.Model):
 
     # Location and technical data
     location = fields.Char(string='Location')
+    brand = fields.Char(string='Brand')
+    model = fields.Char(string='Model')
     ip_address = fields.Char(string='IP Address')
     mac_address = fields.Char(string='MAC Address')
     serial_number = fields.Char(string='Serial Number')

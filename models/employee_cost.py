@@ -23,6 +23,14 @@ class EmployeeCost(models.Model):
     # Company-based Dія.City status (computed from employee's company)
     is_diia_city = fields.Boolean(string='Dія.City Resident', compute='_compute_diia_city_status', store=False,
                                   help='Company is Dія.City resident: 5% income tax + 5% military tax + 22% ESV from minimum wage')
+
+    # ДОБАВЛЕНО НЕДОСТАЮЩЕЕ ПОЛЕ:
+    is_diia_city_own = fields.Boolean(
+        string='Dія.City Resident (Own)',
+        default=False,
+        help='Use Dія.City tax rates: 5% income tax + 5% military tax + 22% ESV from minimum wage'
+    )
+
     minimum_wage = fields.Float(string='Minimum Wage for ESV', default=7723.0,
                                 help='Current minimum wage in Ukraine for ESV calculation')
 
@@ -38,17 +46,23 @@ class EmployeeCost(models.Model):
     # Last payroll period for calculation
     last_payroll_period = fields.Date(string='Last Payroll Period', compute='_compute_payroll_data', store=True)
 
-    @api.depends('employee_id.company_id.is_diia_city_resident')
+    # ИСПРАВЛЕН @api.depends:
+    @api.depends('employee_id', 'is_diia_city_own')
     def _compute_diia_city_status(self):
-        """Get Dія.City status from employee's company"""
+        """Get Dія.City status from manual setting or employee's company"""
         for record in self:
-            if record.employee_id and record.employee_id.company_id:
+            # Проверяем есть ли поле в company (если установлен внешний модуль)
+            if (record.employee_id and
+                    record.employee_id.company_id and
+                    hasattr(record.employee_id.company_id, 'is_diia_city_resident')):
                 record.is_diia_city = record.employee_id.company_id.is_diia_city_resident
             else:
-                record.is_diia_city = False
+                # Используем ручную настройку
+                record.is_diia_city = record.is_diia_city_own
 
+    # ИСПРАВЛЕН @api.depends:
     @api.depends('employee_id', 'use_manual', 'manual_salary', 'manual_taxes', 'manual_benefits',
-                 'minimum_wage', 'employee_id.company_id.is_diia_city_resident')
+                 'minimum_wage', 'is_diia_city_own')
     def _compute_payroll_data(self):
         for record in self:
             if record.use_manual:
@@ -80,9 +94,8 @@ class EmployeeCost(models.Model):
             wage = contract.wage
             self.monthly_salary = wage
 
-            # Get Dія.City status from employee's company
-            is_diia_city = (self.employee_id.company_id and
-                            self.employee_id.company_id.is_diia_city_resident)
+            # ИСПРАВЛЕНО: Используем computed field вместо прямого обращения к company
+            is_diia_city = self.is_diia_city
 
             if is_diia_city:
                 # Dія.City tax calculation
@@ -125,15 +138,12 @@ class EmployeeCost(models.Model):
             if record.monthly_hours <= 0:
                 raise ValidationError('Monthly hours must be greater than 0')
 
-    @api.constrains('minimum_wage')
+    # ИСПРАВЛЕН @api.constrains:
+    @api.constrains('minimum_wage', 'is_diia_city_own')
     def _check_minimum_wage(self):
         for record in self:
-            # Check if employee's company is Dія.City resident
-            is_diia_city = (record.employee_id and
-                            record.employee_id.company_id and
-                            record.employee_id.company_id.is_diia_city_resident)
-
-            if is_diia_city and record.minimum_wage <= 0:
+            # Используем computed field вместо прямого обращения к company
+            if record.is_diia_city and record.minimum_wage <= 0:
                 raise ValidationError('Minimum wage must be greater than 0 for Dія.City residents')
 
     def action_update_from_payroll(self):

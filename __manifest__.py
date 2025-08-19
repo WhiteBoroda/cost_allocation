@@ -47,7 +47,6 @@
         'data/service_templates_data.xml',
         'data/cron_data.xml',
         'views/actions.xml',
-        'views/service_views.xml',
         'views/billing_views.xml',
         'views/cost_pool_views.xml',
         'views/cost_driver_views.xml',
@@ -61,6 +60,7 @@
         'views/dashboard_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
+        'views/service_views.xml'
         'views/menu_views.xml',
     ],
     'assets': {

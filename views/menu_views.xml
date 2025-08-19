@@ -116,4 +116,11 @@
               action="action_cost_report_wizard"
               sequence="30"/>
 
+        <menuitem id="menu_bulk_add_services"
+              name="Bulk Add Services"
+              parent="menu_service_catalog"
+              action="action_bulk_services_wizard"
+              sequence="35"/>
+
+
 </odoo>

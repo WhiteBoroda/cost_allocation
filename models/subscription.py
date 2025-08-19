@@ -48,13 +48,46 @@ class ClientServiceSubscription(models.Model):
     # Invoicing
     auto_invoice = fields.Boolean(string='Auto Invoice', default=True)
     invoice_day = fields.Integer(string='Invoice Day', default=1, help='Day of month to generate invoice')
-    next_invoice_date = fields.Date(string='Next Invoice Date', compute='_compute_next_invoice_date', store=True)
+    next_invoice_date = fields.Date(string='Next Invoice Date', store=True)
 
     # Integration fields (optional)
     external_subscription_id = fields.Char(string='External Subscription ID',
                                            help='ID from external subscription system')
 
     active = fields.Boolean(default=True)
+
+    @api.onchange('start_date', 'recurring_interval', 'recurring_rule_type', 'invoice_day')
+    def _onchange_compute_next_invoice_date(self):
+        """Calculate initial next invoice date when subscription details change"""
+        for record in self:
+            if record.start_date:
+                if record.recurring_rule_type == 'monthly':
+                    next_date = record.start_date.replace(day=record.invoice_day or 1)
+                    if next_date <= record.start_date:
+                        next_date = next_date + relativedelta(months=1)
+                    record.next_invoice_date = next_date
+                else:
+                    record.next_invoice_date = record.start_date
+            else:
+                record.next_invoice_date = False
+
+    def _update_next_invoice_date(self):
+        """Update next invoice date after invoice creation"""
+        for record in self:
+            if record.next_invoice_date and record.recurring_rule_type == 'monthly':
+                if record.recurring_interval:
+                    next_date = record.next_invoice_date + relativedelta(months=record.recurring_interval)
+                else:
+                    next_date = record.next_invoice_date + relativedelta(months=1)
+                try:
+                    next_date = next_date.replace(day=record.invoice_day or 1)
+                except ValueError:
+                    next_date = next_date.replace(day=min(record.invoice_day or 1, 28))
+                record.next_invoice_date = next_date
+            elif record.recurring_rule_type == 'yearly':
+                if record.next_invoice_date:
+                    next_date = record.next_invoice_date + relativedelta(years=record.recurring_interval or 1)
+                    record.next_invoice_date = next_date
 
     @api.depends('service_line_ids.total_price')
     def _compute_total_amount(self):
@@ -191,7 +224,7 @@ class ClientServiceSubscription(models.Model):
             try:
                 subscription.action_generate_invoice()
                 # Update next invoice date
-                subscription._compute_next_invoice_date()
+                subscription._update_next_invoice_date()
             except Exception as e:
                 # Log error but continue with other subscriptions
                 subscription.message_post(body=f"Failed to generate invoice: {e}")

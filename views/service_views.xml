@@ -332,7 +332,7 @@
                     <filter string="Service Type" name="group_service_type"
                             context="{'group_by': 'service_type_id'}"/>
                     <filter string="Category" name="group_category"
-                            context="{'group_by': 'service_type_id.category_id'}"/>
+                            context="{'group_by': 'category_id'}"/>
                     <filter string="Status" name="group_status"
                             context="{'group_by': 'status'}"/>
                     <filter string="Responsible" name="group_responsible"
