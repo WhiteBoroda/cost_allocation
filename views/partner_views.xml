@@ -13,7 +13,7 @@
                         invisible="not is_company">
                     <field name="service_count" widget="statinfo" string="Services"/>
                 </button>
-                <button name="%(action_service_subscription)d" type="action"
+                <button name="%(action_client_service_subscription)d" type="action"
                         class="oe_stat_button" icon="fa-refresh"
                         context="{'default_client_id': active_id, 'search_default_client_id': active_id}"
                         invisible="not is_company">

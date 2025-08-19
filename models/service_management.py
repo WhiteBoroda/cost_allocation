@@ -89,6 +89,9 @@ class ClientService(models.Model):
                                 domain=[('is_company', '=', True)], required=True)
     service_type_id = fields.Many2one('service.type', string='Service Type', required=True)
 
+    category_id = fields.Many2one('service.category', string='Category',
+                                  related='service_type_id.category_id', store=True, readonly=True)
+
     # Equipment/Service details
     name = fields.Char(string='Equipment/Service Name')
     description = fields.Text(string='Description')

@@ -1,146 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Employee Cost Views -->
-    <record id="view_employee_cost_tree" model="ir.ui.view">
-        <field name="name">cost.employee.tree</field>
-        <field name="model">cost.employee</field>
-        <field name="arch" type="xml">
-            <tree string="Employee Costs" decoration-warning="use_manual==True" decoration-info="is_diia_city==True">
-                <field name="employee_id"/>
-                <field name="monthly_salary" widget="monetary"/>
-                <field name="monthly_taxes" widget="monetary"/>
-                <field name="monthly_benefits" widget="monetary"/>
-                <field name="monthly_hours"/>
-                <field name="hourly_cost" widget="monetary"/>
-                <field name="is_diia_city" widget="boolean_toggle"/>
-                <field name="use_manual" widget="boolean_toggle"/>
-                <field name="last_payroll_period"/>
-                <field name="currency_id" column_invisible="1"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_employee_cost_form" model="ir.ui.view">
-        <field name="name">cost.employee.form</field>
-        <field name="model">cost.employee</field>
-        <field name="arch" type="xml">
-            <form string="Employee Cost">
-                <header>
-                    <button name="action_update_from_payroll" type="object" string="Update from Contract"
-                            class="btn-primary"/>
-                </header>
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="employee_id"/>
-                            <field name="monthly_hours"/>
-                            <field name="use_manual"/>
-                            <field name="currency_id" invisible="1"/>
-                        </group>
-                        <group>
-                            <field name="last_payroll_period" readonly="1"/>
-                            <field name="hourly_cost" widget="monetary" readonly="1"/>
-                            <field name="monthly_total_cost" widget="monetary" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <group string="Tax Settings">
-                        <field name="is_diia_city" readonly="1"/>
-                        <field name="is_diia_city_own" string="Dія.City (Manual Setting)"
-                               help="Set this if external Dія.City module is not available"/>
-                        <field name="minimum_wage" widget="monetary" invisible="not is_diia_city"/>
-                    </group>
-
-                    <notebook>
-                        <page string="Contract Data" invisible="use_manual">
-                            <group>
-                                <group>
-                                    <field name="monthly_salary" widget="monetary" readonly="1"/>
-                                    <field name="monthly_taxes" widget="monetary" readonly="1"/>
-                                    <field name="monthly_benefits" widget="monetary" readonly="1"/>
-                                </group>
-                            </group>
-                            <div class="alert alert-info" invisible="not is_diia_city">
-                                <strong>Dія.City Tax Calculation:</strong>
-                                <ul>
-                                    <li>5% Income Tax on full salary</li>
-                                    <li>5% Military Tax on full salary</li>
-                                    <li>22% ESV on minimum wage (<field name="minimum_wage" readonly="1"/> UAH)</li>
-                                </ul>
-                            </div>
-                            <p class="text-muted" invisible="is_diia_city">
-                                Data automatically calculated from employee contract.
-                                Standard tax calculation: 22% ESV on full salary.
-                            </p>
-                        </page>
-
-                        <page string="Manual Override" invisible="not use_manual">
-                            <group>
-                                <group>
-                                    <field name="manual_salary" widget="monetary"/>
-                                    <field name="manual_taxes" widget="monetary"/>
-                                    <field name="manual_benefits" widget="monetary"/>
-                                </group>
-                            </group>
-                            <p class="text-muted">
-                                Manual values override automatic payroll calculation.
-                                Enable "Use Manual Values" to use these figures.
-                            </p>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Service Category Views -->
-    <record id="view_service_category_form" model="ir.ui.view">
-        <field name="name">service.category.form</field>
-        <field name="model">service.category</field>
-        <field name="arch" type="xml">
-            <form string="Service Category">
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="code"/>
-                            <field name="sequence"/>
-                        </group>
-                        <group>
-                            <field name="cost_pool_id"/>
-                            <field name="service_type_count" readonly="1"/>
-                            <field name="active_services_count" readonly="1"/>
-                        </group>
-                    </group>
-                    <field name="description"/>
-                    <notebook>
-                        <page string="Responsible Team">
-                            <group>
-                                <field name="primary_responsible_id"/>
-                            </group>
-                            <field name="default_responsible_ids" widget="many2many_tags"/>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
     <!-- Service Type Views -->
     <record id="view_service_type_tree" model="ir.ui.view">
         <field name="name">service.type.tree</field>
         <field name="model">service.type</field>
         <field name="arch" type="xml">
             <tree string="Service Types">
-                <field name="category_id"/>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="code"/>
-                <field name="service_type"/>
+                <field name="category_id"/>
+                <field name="service_type" widget="badge"/>
                 <field name="base_price" widget="monetary"/>
-                <field name="primary_responsible_id"/>
+                <field name="unit_name"/>
+                <field name="support_level" widget="badge"/>
                 <field name="active_services_count"/>
-                <field name="support_level"/>
-                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -207,10 +81,6 @@
                   decoration-warning="status=='maintenance'"
                   create_text="Add Service"
                   default_order="client_id, service_type_id">
-                <header>
-                    <button name="%(action_bulk_services_wizard)d" type="action"
-                            string="Bulk Add Services" class="btn-primary"/>
-                </header>
                 <field name="client_id"/>
                 <field name="service_type_id"/>
                 <field name="name"/>
@@ -252,6 +122,8 @@
                         </group>
                         <group>
                             <field name="location"/>
+                            <field name="brand"/>
+                            <field name="model"/>
                             <field name="ip_address"/>
                             <field name="subscription_line_id"/>
                             <field name="estimated_monthly_hours" readonly="1"/>
@@ -353,12 +225,10 @@
                 <field name="employee_id"/>
                 <field name="period_date"/>
                 <field name="total_services"/>
-                <field name="primary_services"/>
-                <field name="support_services"/>
                 <field name="total_estimated_hours"/>
                 <field name="available_hours"/>
                 <field name="utilization_percentage" widget="percentage"/>
-                <field name="overloaded" column_invisible="1"/>
+                <field name="overloaded" widget="boolean_toggle"/>
             </tree>
         </field>
     </record>
@@ -373,104 +243,62 @@
                         <group>
                             <field name="employee_id"/>
                             <field name="period_date"/>
+                            <field name="total_services"/>
+                        </group>
+                        <group>
+                            <field name="total_estimated_hours"/>
                             <field name="available_hours"/>
-                        </group>
-                        <group>
-                            <field name="total_estimated_hours" readonly="1"/>
-                            <field name="utilization_percentage" widget="percentage" readonly="1"/>
-                            <field name="overloaded" readonly="1"/>
+                            <field name="utilization_percentage" widget="percentage"/>
+                            <field name="overloaded"/>
                         </group>
                     </group>
-                    <group>
-                        <group>
-                            <field name="total_services" readonly="1"/>
-                            <field name="primary_services" readonly="1"/>
-                            <field name="support_services" readonly="1"/>
-                        </group>
-                    </group>
-                    <separator string="Workload by Category"/>
-                    <field name="workload_by_category" readonly="1"/>
+
+                    <notebook>
+                        <page string="Service Breakdown">
+                            <group>
+                                <group>
+                                    <field name="primary_services"/>
+                                    <field name="support_services"/>
+                                </group>
+                            </group>
+                            <separator string="Workload by Category"/>
+                            <field name="workload_by_category" widget="text"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Actions -->
-    <record id="action_employee_cost" model="ir.actions.act_window">
-        <field name="name">Employee Costs</field>
-        <field name="res_model">cost.employee</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Configure employee hourly costs
-            </p>
-            <p>
-                Employee costs are automatically calculated from contract data.
-                The system supports both standard Ukrainian taxes and Dія.City special rates.
-                You can manually override values if needed.
-            </p>
-        </field>
-    </record>
+    <record id="view_employee_workload_search" model="ir.ui.view">
+        <field name="name">employee.workload.search</field>
+        <field name="model">employee.workload</field>
+        <field name="arch" type="xml">
+            <search string="Search Employee Workload">
+                <field name="employee_id"/>
+                <field name="period_date"/>
 
-    <record id="action_service_category" model="ir.actions.act_window">
-        <field name="name">Service Categories</field>
-        <field name="res_model">service.category</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your service categories
-            </p>
-            <p>
-                Define categories for your IT services and assign responsible teams.
-                Categories help organize your services and link them to cost pools.
-            </p>
-        </field>
-    </record>
+                <separator/>
+                <filter string="Overloaded" name="overloaded"
+                        domain="[('overloaded', '=', True)]"/>
+                <filter string="High Utilization (>80%)" name="high_utilization"
+                        domain="[('utilization_percentage', '>', 80)]"/>
+                <filter string="Low Utilization (<50%)" name="low_utilization"
+                        domain="[('utilization_percentage', '<', 50)]"/>
 
-    <record id="action_service_type" model="ir.actions.act_window">
-        <field name="name">Service Types</field>
-        <field name="res_model">service.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Define your service types
-            </p>
-            <p>
-                Create service types with pricing, SLA, and assign default responsible teams.
-                Service types can auto-assign responsible employees to new client services.
-            </p>
-        </field>
-    </record>
+                <separator/>
+                <filter string="This Month" name="this_month"
+                        domain="[('period_date', '>=', context_today().replace(day=1))]"/>
 
-    <record id="action_client_service" model="ir.actions.act_window">
-        <field name="name">Client Services</field>
-        <field name="res_model">client.service</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{'group_by': 'client_id'}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add client services and equipment
-            </p>
-            <p>
-                Track all IT services and equipment for each client.
-                Assign responsible employees and track maintenance schedules.
-            </p>
-        </field>
-    </record>
-
-    <record id="action_employee_workload" model="ir.actions.act_window">
-        <field name="name">Employee Workload</field>
-        <field name="res_model">employee.workload</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{'group_by': 'period_date'}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Analyze employee workload
-            </p>
-            <p>
-                Monitor workload distribution across your IT support team.
-                Identify overloaded employees and balance the workload.
-            </p>
+                <group expand="1" string="Group By">
+                    <filter string="Employee" name="group_employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter string="Period" name="group_period"
+                            context="{'group_by': 'period_date'}"/>
+                    <filter string="Overloaded Status" name="group_overloaded"
+                            context="{'group_by': 'overloaded'}"/>
+                </group>
+            </search>
         </field>
     </record>
 </odoo>

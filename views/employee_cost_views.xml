@@ -6,8 +6,7 @@
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
             <tree string="Employee Costs"
-                  decoration-warning="use_manual==True"
-                  decoration-info="is_diia_city==True">
+                  decoration-warning="use_manual==True">
                 <field name="employee_id"/>
                 <field name="monthly_salary" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
@@ -19,8 +18,8 @@
                 <field name="hourly_cost" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="is_diia_city" widget="boolean_toggle"/>
-                <field name="use_manual" widget="boolean_toggle"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <!-- Поле для decoration - доступно всем пользователям -->
+                <field name="use_manual" widget="boolean_toggle"/>
                 <field name="last_payroll_period"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="currency_id" column_invisible="1"/>
@@ -36,82 +35,63 @@
             <form string="Employee Cost">
                 <header>
                     <button name="action_update_from_payroll" type="object"
-                            string="Update from Contract"
-                            class="btn-primary"
-                            groups="cost_allocation.group_cost_allocation_financial"/>
+                            string="Update from Contract" class="btn-primary"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="employee_id"/>
                             <field name="monthly_hours"/>
-                            <field name="use_manual"
-                                   groups="cost_allocation.group_cost_allocation_financial"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="use_manual"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                         <group>
-                            <field name="last_payroll_period" readonly="1"
-                                   groups="cost_allocation.group_cost_allocation_financial"/>
-                            <field name="hourly_cost" widget="monetary" readonly="1"
-                                   groups="cost_allocation.group_cost_allocation_financial"/>
-                            <field name="monthly_total_cost" widget="monetary" readonly="1"
-                                   groups="cost_allocation.group_cost_allocation_financial"/>
+                            <field name="last_payroll_period" readonly="1"/>
+                            <field name="hourly_cost" widget="monetary" readonly="1"/>
+                            <field name="monthly_total_cost" widget="monetary" readonly="1"/>
                         </group>
                     </group>
 
-                    <group string="Company Tax Settings">
-                        <field name="is_diia_city" readonly="1"
-                               string="Company is Dія.City Resident"/>
+                    <group string="Tax Settings">
+                        <field name="is_diia_city" readonly="1"/>
+                        <field name="is_diia_city_own"/>
                         <field name="minimum_wage" widget="monetary"
-                               invisible="not is_diia_city"
-                               groups="cost_allocation.group_cost_allocation_financial"/>
+                               invisible="not is_diia_city"/>
                     </group>
 
                     <notebook>
-                        <page string="Contract Data"
-                              invisible="use_manual"
-                              groups="cost_allocation.group_cost_allocation_financial">
-                            <group>
+                        <page string="Contract Data">
+                            <p class="text-muted">
+                                Data automatically calculated from employee contract.
+                                Standard tax calculation: 22% ESV on full salary.
+                            </p>
+                            <group string="Auto-calculated Values"
+                                   invisible="use_manual"
+                                   groups="cost_allocation.group_cost_allocation_financial">
                                 <group>
                                     <field name="monthly_salary" widget="monetary" readonly="1"/>
                                     <field name="monthly_taxes" widget="monetary" readonly="1"/>
                                     <field name="monthly_benefits" widget="monetary" readonly="1"/>
                                 </group>
+                                <group invisible="not is_diia_city">
+                                    <label for="is_diia_city" string="Dія.City Tax Calculation:"/>
+                                    <div>
+                                        <div>• 5% Income Tax on full salary</div>
+                                        <div>• 5% Military Tax on full salary</div>
+                                        <div>• 22% ESV on minimum wage (<field name="minimum_wage" widget="monetary"/>)</div>
+                                    </div>
+                                </group>
                             </group>
-                            <div class="alert alert-info" invisible="not is_diia_city">
-                                <strong>Dія.City Tax Calculation (Company Setting):</strong>
-                                <ul>
-                                    <li>5% Income Tax on full salary</li>
-                                    <li>5% Military Tax on full salary</li>
-                                    <li>22% ESV on minimum wage (<field name="minimum_wage" readonly="1"/> UAH)</li>
-                                </ul>
-                            </div>
-                            <div class="alert alert-warning" invisible="is_diia_city">
-                                <strong>Standard Tax Calculation:</strong>
-                                <ul>
-                                    <li>22% ESV on full salary</li>
-                                </ul>
-                            </div>
-                            <p class="text-muted">
-                                Data automatically calculated from employee contract.
-                                Tax regime determined by employee's company settings.
-                            </p>
-                        </page>
 
-                        <page string="Manual Override"
-                              invisible="not use_manual"
-                              groups="cost_allocation.group_cost_allocation_financial">
-                            <group>
+                            <group string="Manual Override"
+                                   invisible="not use_manual"
+                                   groups="cost_allocation.group_cost_allocation_financial">
                                 <group>
                                     <field name="manual_salary" widget="monetary"/>
                                     <field name="manual_taxes" widget="monetary"/>
                                     <field name="manual_benefits" widget="monetary"/>
                                 </group>
                             </group>
-                            <p class="text-muted">
-                                Manual values override automatic payroll calculation.
-                                Enable "Use Manual Values" to use these figures.
-                            </p>
                         </page>
                     </notebook>
                 </sheet>
@@ -119,52 +99,27 @@
         </field>
     </record>
 
-    <!-- Search View -->
+    <!-- Employee Cost Search View -->
     <record id="view_employee_cost_search" model="ir.ui.view">
         <field name="name">cost.employee.search</field>
         <field name="model">cost.employee</field>
         <field name="arch" type="xml">
             <search string="Search Employee Costs">
                 <field name="employee_id"/>
+
                 <separator/>
-                <filter string="Dія.City Companies" name="diia_city"
-                        domain="[('is_diia_city', '=', True)]"/>
-                <filter string="Standard Tax" name="standard_tax"
-                        domain="[('is_diia_city', '=', False)]"/>
                 <filter string="Manual Override" name="manual"
                         domain="[('use_manual', '=', True)]"/>
-                <separator/>
-                <filter string="Active" name="active"
-                        domain="[('active', '=', True)]"/>
-                <group string="Group By">
-                    <filter string="Company" name="group_company"
-                            context="{'group_by': 'employee_id.company_id'}"/>
-                    <filter string="Department" name="group_department"
-                            context="{'group_by': 'employee_id.department_id'}"/>
-                    <filter string="Tax Regime" name="group_tax"
-                            context="{'group_by': 'is_diia_city'}"/>
+                <filter string="Auto-calculated" name="auto"
+                        domain="[('use_manual', '=', False)]"/>
+                <!-- Убран фильтр по is_diia_city так как поле не stored -->
+
+                <group expand="1" string="Group By">
+                    <filter string="Manual vs Auto" name="group_manual"
+                            context="{'group_by': 'use_manual'}"/>
+                    <!-- Убрана группировка по is_diia_city -->
                 </group>
             </search>
-        </field>
-    </record>
-
-    <!-- Employee Cost Action -->
-    <record id="action_employee_cost" model="ir.actions.act_window">
-        <field name="name">Employee Costs</field>
-        <field name="res_model">cost.employee</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Configure employee hourly costs
-            </p>
-            <p>
-                Employee costs are automatically calculated from contract data.
-                The system supports both standard Ukrainian taxes and Dія.City special rates.
-                Tax regime is determined by the employee's company settings.
-            </p>
-            <p>
-                <strong>Note:</strong> Salary information is only visible to Financial Managers.
-            </p>
         </field>
     </record>
 </odoo>

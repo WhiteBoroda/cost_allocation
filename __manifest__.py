@@ -60,7 +60,7 @@
         'views/dashboard_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
-        'views/service_views.xml'
+        'views/service_views.xml',
         'views/menu_views.xml',
     ],
     'assets': {
