@@ -8,7 +8,9 @@
             <tree string="Cost Pools" decoration-info="pool_type=='admin'" decoration-success="pool_type=='indirect'" decoration-warning="pool_type=='direct'">
                 <field name="name"/>
                 <field name="pool_type" widget="badge"/>
-                <field name="total_monthly_cost" widget="monetary"/>
+                <!-- ИСПРАВЛЕНО: добавлена группа доступа для зарплат -->
+                <field name="total_monthly_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="description"/>
                 <field name="active" widget="boolean_toggle"/>
             </tree>
@@ -38,7 +40,9 @@
                             <field name="pool_type"/>
                         </group>
                         <group>
-                            <field name="total_monthly_cost" widget="monetary" readonly="1"/>
+                            <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                            <field name="total_monthly_cost" widget="monetary" readonly="1"
+                                   groups="cost_allocation.group_cost_allocation_financial"/>
                         </group>
                     </group>
 
@@ -47,16 +51,21 @@
                     </group>
 
                     <notebook>
-                        <page string="Employee Allocations">
-                            <p class="text-muted">
-                                Розподіліть зарплати співробітників по цьому пулу затрат.
-                                Можете вказати відсоток часу, який співробітник витрачає на цей пул.
-                            </p>
+                        <page string="Employee Allocations" groups="cost_allocation.group_cost_allocation_financial">
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"/> Employee Allocation</h4>
+                                <p>Distribute employee costs across this cost pool by percentage of their time.</p>
+                                <p><strong>Example:</strong> If an employee spends 50% of time on this pool, enter 50%</p>
+                            </div>
                             <field name="allocation_ids">
                                 <tree editable="bottom">
                                     <field name="employee_cost_id"/>
-                                    <field name="percentage" widget="percentage"/>
-                                    <field name="monthly_cost" widget="monetary" readonly="1"/>
+                                    <!-- ИСПРАВЛЕНО: убран widget="percentage" чтобы показывать как обычное число -->
+                                    <field name="percentage" string="Allocation %"
+                                           decoration-bf="percentage == 100"/>
+                                    <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                                    <field name="monthly_cost" widget="monetary" readonly="1"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
                             </field>
                         </page>
@@ -68,7 +77,9 @@
                                     <field name="code"/>
                                     <field name="driver_category"/>
                                     <field name="total_quantity"/>
-                                    <field name="cost_per_unit" widget="monetary"/>
+                                    <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                                    <field name="cost_per_unit" widget="monetary"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
                             </field>
                         </page>
@@ -107,14 +118,14 @@
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Створіть свій перший пул затрат!
+                Create your first cost pool!
             </p>
             <p>
-                Пули затрат групують затрати на зарплати співробітників за видами діяльності.
-                Наприклад: "Підтримка обладнання", "Розробка ПЗ", "Адміністрування".
+                Cost pools group employee salary costs by activity types.
+                For example: "Hardware Support", "Software Development", "Administration".
             </p>
             <p>
-                <b>Підказка:</b> Використайте майстер налаштування для створення базових пулів під ваш тип бізнесу.
+                <b>Tip:</b> Use the setup wizard to create basic pools for your business type.
             </p>
         </field>
     </record>

@@ -9,10 +9,12 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="driver_category"/>
-                <field name="unit_name"/>
                 <field name="pool_id"/>
                 <field name="total_quantity"/>
-                <field name="cost_per_unit" widget="monetary"/>
+                <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                <field name="cost_per_unit" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="active" widget="boolean_toggle"/>
             </tree>
         </field>
     </record>
@@ -23,34 +25,50 @@
         <field name="arch" type="xml">
             <form string="Cost Driver">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_toggle"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Driver Name"/>
+                        </h1>
+                    </div>
+
                     <group>
                         <group>
-                            <field name="name"/>
                             <field name="code"/>
                             <field name="driver_category"/>
+                            <field name="unit_name"/>
                         </group>
                         <group>
                             <field name="pool_id"/>
-                            <field name="unit_name"/>
-                            <field name="active"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group>
                             <field name="total_quantity"/>
-                            <field name="cost_per_unit" widget="monetary"/>
+                            <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                            <field name="cost_per_unit" widget="monetary"
+                                   groups="cost_allocation.group_cost_allocation_financial"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
-                    <group>
-                        <field name="description" placeholder="Driver description..."/>
-                    </group>
+
+                    <field name="description" placeholder="Describe this cost driver..."/>
+
                     <notebook>
-                        <page string="Client Values">
+                        <page string="Client Values" groups="cost_allocation.group_cost_allocation_financial">
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"/> Cost Driver Values</h4>
+                                <p>Set the quantity for each client to determine cost allocation.</p>
+                                <p><strong>Example:</strong> For "Workstations" driver, set number of workstations per client</p>
+                            </div>
                             <field name="client_driver_ids">
                                 <tree editable="bottom">
                                     <field name="client_id"/>
                                     <field name="quantity"/>
-                                    <field name="allocated_cost" widget="monetary" readonly="1"/>
+                                    <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
+                                    <field name="allocated_cost" widget="monetary" readonly="1"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
                             </field>
                         </page>
@@ -69,7 +87,9 @@
                 <field name="driver_id"/>
                 <field name="client_id"/>
                 <field name="quantity"/>
-                <field name="allocated_cost" widget="monetary" readonly="1"/>
+                <!-- ИСПРАВЛЕНО: groups только на полях, не на tree -->
+                <field name="allocated_cost" widget="monetary" readonly="1"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
             </tree>
         </field>
     </record>

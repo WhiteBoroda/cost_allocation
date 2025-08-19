@@ -38,13 +38,17 @@ class CostPoolAllocation(models.Model):
 
     pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True, ondelete='cascade')
     employee_cost_id = fields.Many2one('cost.employee', string='Employee', required=True)
-    percentage = fields.Float(string='Allocation %', required=True, default=100.0)
+
+    # ИСПРАВЛЕНО: процент как обычное число от 0 до 100, без percentage widget
+    percentage = fields.Float(string='Allocation %', required=True, default=100.0,
+                              help='Percentage of employee time allocated to this pool (0-100)')
     monthly_cost = fields.Float(string='Monthly Cost', compute='_compute_monthly_cost', store=True)
 
     @api.depends('employee_cost_id.monthly_total_cost', 'percentage')
     def _compute_monthly_cost(self):
         for allocation in self:
             if allocation.employee_cost_id and allocation.percentage:
+                # ИСПРАВЛЕНО: правильное вычисление (percentage уже в формате 0-100)
                 allocation.monthly_cost = allocation.employee_cost_id.monthly_total_cost * (allocation.percentage / 100)
             else:
                 allocation.monthly_cost = 0.0
@@ -54,3 +58,23 @@ class CostPoolAllocation(models.Model):
         for record in self:
             if record.percentage < 0 or record.percentage > 100:
                 raise ValidationError("Percentage must be between 0 and 100.")
+
+    @api.constrains('employee_cost_id', 'pool_id')
+    def _check_unique_employee_pool(self):
+        for record in self:
+            existing = self.search([
+                ('employee_cost_id', '=', record.employee_cost_id.id),
+                ('pool_id', '=', record.pool_id.id),
+                ('id', '!=', record.id)
+            ])
+            if existing:
+                raise ValidationError(
+                    f"Employee {record.employee_cost_id.employee_id.name} is already allocated to this pool.")
+
+    def name_get(self):
+        """Custom name display"""
+        result = []
+        for record in self:
+            name = f"{record.employee_cost_id.employee_id.name} - {record.percentage}%"
+            result.append((record.id, name))
+        return result

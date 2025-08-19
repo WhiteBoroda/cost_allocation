@@ -5,16 +5,21 @@
         <field name="name">client.cost.allocation.tree</field>
         <field name="model">client.cost.allocation</field>
         <field name="arch" type="xml">
-            <tree string="Client Cost Allocations" decoration-success="state == 'confirmed'"
-                  decoration-info="state == 'calculated'">
-                <field name="display_name"/>
+            <tree string="Client Cost Allocations" decoration-info="state=='draft'"
+                  decoration-success="state=='confirmed'" decoration-warning="state=='calculated'">
                 <field name="client_id"/>
                 <field name="period_date"/>
-                <field name="direct_cost" widget="monetary"/>
-                <field name="indirect_cost" widget="monetary"/>
-                <field name="admin_cost" widget="monetary"/>
-                <field name="total_cost" widget="monetary" sum="Total"/>
+                <!-- ИСПРАВЛЕНО: добавлены группы доступа для всех финансовых полей -->
+                <field name="direct_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="indirect_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="admin_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="total_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -25,30 +30,31 @@
         <field name="arch" type="xml">
             <form string="Client Cost Allocation">
                 <header>
-                    <button name="action_calculate_costs" type="object"
-                            string="Calculate Costs" class="btn-primary"
-                            invisible="state not in ['draft']"/>
-                    <button name="action_confirm" type="object"
-                            string="Confirm" class="btn-primary"
-                            invisible="state != 'calculated'"/>
+                    <button name="action_calculate_costs" type="object" string="Calculate Costs"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="cost_allocation.group_cost_allocation_financial"/>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'calculated'"
+                            groups="cost_allocation.group_cost_allocation_financial"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,calculated,confirmed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="display_name"/>
+                            <field name="client_id" placeholder="Select Client"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="client_id"/>
                             <field name="period_date"/>
                         </group>
                         <group>
                             <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
-                    <group string="Cost Breakdown">
+
+                    <!-- ИСПРАВЛЕНО: вся секция Cost Breakdown только для financial группы -->
+                    <group string="Cost Breakdown" groups="cost_allocation.group_cost_allocation_financial">
                         <group>
                             <field name="direct_cost" widget="monetary"/>
                             <field name="indirect_cost" widget="monetary"/>
@@ -58,16 +64,34 @@
                             <field name="total_cost" widget="monetary" class="oe_subtotal_footer_separator"/>
                         </group>
                     </group>
+
                     <notebook>
-                        <page string="Indirect Costs Detail" invisible="not indirect_cost_ids">
+                        <!-- ИСПРАВЛЕНО: страница только для financial группы -->
+                        <page string="Indirect Costs Detail" invisible="not indirect_cost_ids"
+                              groups="cost_allocation.group_cost_allocation_financial">
                             <field name="indirect_cost_ids">
                                 <tree>
                                     <field name="driver_id"/>
                                     <field name="quantity"/>
-                                    <field name="cost_per_unit" widget="monetary"/>
-                                    <field name="allocated_cost" widget="monetary"/>
+                                    <field name="cost_per_unit" widget="monetary"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                    <field name="allocated_cost" widget="monetary"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
                             </field>
+                        </page>
+
+                        <page string="Client Information">
+                            <group>
+                                <field name="client_id" readonly="1"/>
+                                <field name="period_date" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info" invisible="state != 'draft'">
+                                <h4><i class="fa fa-info-circle"/> How it works</h4>
+                                <p><strong>Direct Costs:</strong> From project timesheets for this client</p>
+                                <p><strong>Indirect Costs:</strong> Distributed based on cost drivers (workstations, users, etc.)</p>
+                                <p><strong>Admin Costs:</strong> Administrative overhead distributed proportionally</p>
+                            </div>
                         </page>
                     </notebook>
                 </sheet>
@@ -112,8 +136,11 @@
             <tree string="Indirect Costs" editable="bottom">
                 <field name="driver_id"/>
                 <field name="quantity"/>
-                <field name="cost_per_unit" widget="monetary"/>
-                <field name="allocated_cost" widget="monetary"/>
+                <!-- ИСПРАВЛЕНО: groups только на полях, не на tree -->
+                <field name="cost_per_unit" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="allocated_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
             </tree>
         </field>
     </record>
