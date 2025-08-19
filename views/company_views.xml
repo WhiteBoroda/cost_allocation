@@ -1,81 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Bulk Services Wizard Views -->
-    <record id="view_bulk_services_wizard_form" model="ir.ui.view">
-        <field name="name">bulk.services.wizard.form</field>
-        <field name="model">bulk.services.wizard</field>
+    <!-- Company Form Extension for Cost Allocation -->
+    <record id="view_company_form_cost_allocation" model="ir.ui.view">
+        <field name="name">res.company.form.cost_allocation</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
-            <form string="Bulk Add Services">
-                <div class="alert alert-info mb-3">
-                    <h4><i class="fa fa-magic"/> Bulk Add Services to Clients</h4>
-                    <p>Quickly add multiple services to one or more clients using templates or custom selection.</p>
-                </div>
-
-                <group>
-                    <group string="Target Clients">
-                        <field name="client_ids" widget="many2many_tags"
-                               placeholder="Select clients to add services to..."
-                               options="{'no_create': True}"/>
+            <!-- Добавляем после основной информации о компании -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Cost Allocation" name="cost_allocation">
+                    <group>
+                        <group string="Business Information">
+                            <field name="business_type"/>
+                        </group>
+                        <group string="Tax Settings">
+                            <field name="is_diia_city_resident"/>
+                        </group>
                     </group>
-                    <group string="Service Template">
-                        <field name="add_template" widget="radio"/>
-                    </group>
-                </group>
 
-                <!-- Template Configuration -->
-                <group string="Template Configuration" invisible="add_template == 'custom'">
-                    <group invisible="add_template != 'workstations'">
-                        <field name="workstation_count"/>
-                        <field name="user_count"/>
-                        <field name="printer_count"/>
-                    </group>
-                </group>
+                    <div class="alert alert-info" invisible="not is_diia_city_resident">
+                        <h4><i class="fa fa-info-circle"/> Dія.City Tax Regime</h4>
+                        <p>This company operates under Dія.City special tax regime:</p>
+                        <ul>
+                            <li><strong>5%</strong> Income Tax (instead of 18%)</li>
+                            <li><strong>5%</strong> Military Tax (standard)</li>
+                            <li><strong>22% ESV</strong> calculated from minimum wage only (instead of full salary)</li>
+                        </ul>
+                        <p class="text-muted">
+                            This setting affects all employees of this company in cost calculations.
+                        </p>
+                    </div>
 
-                <!-- Services to Add -->
-                <group string="Services to Add">
-                    <field name="service_line_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="service_type_id"
-                                   options="{'no_create': True, 'no_open': True}"/>
-                            <field name="name" placeholder="Custom name (optional)"/>
-                            <field name="quantity"/>
-                            <field name="location" placeholder="Office, Server room, etc."/>
-                            <field name="auto_assign" widget="boolean_toggle"/>
-                            <field name="force_create" widget="boolean_toggle"/>
-                        </tree>
-                    </field>
-                </group>
-
-                <div class="alert alert-warning mt-3" invisible="not service_line_ids">
-                    <p><strong>Preview:</strong> This will create <strong><t t-esc="len(service_line_ids)"/> service types</strong>
-                       for <strong><t t-esc="len(client_ids)"/> clients</strong>
-                       = <strong><t t-esc="len(service_line_ids) * len(client_ids)"/> total services</strong></p>
-                    <p><i class="fa fa-info-circle"/> Existing services will have their quantities updated unless "Force Create New" is checked.</p>
-                </div>
-
-                <footer>
-                    <button name="action_create_services" type="object"
-                            string="Create Services" class="btn-primary"
-                            confirm="This will create services for all selected clients. Continue?"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
+                    <div class="alert alert-warning" invisible="is_diia_city_resident">
+                        <h4><i class="fa fa-exclamation-triangle"/> Standard Tax Regime</h4>
+                        <p>This company uses standard Ukrainian tax calculation:</p>
+                        <ul>
+                            <li><strong>22% ESV</strong> calculated from full salary</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
         </field>
     </record>
 
-    <!-- NOTE: Action is defined in views/actions.xml to avoid duplication -->
-
-    <!-- Inherit client services tree view to add bulk button -->
-    <record id="view_client_service_tree_with_bulk" model="ir.ui.view">
-        <field name="name">client.service.tree.with.bulk</field>
-        <field name="model">client.service</field>
-        <field name="inherit_id" ref="view_client_service_tree"/>
+    <!-- Company Tree View Extension -->
+    <record id="view_company_tree_cost_allocation" model="ir.ui.view">
+        <field name="name">res.company.tree.cost_allocation</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree"/>
         <field name="arch" type="xml">
+            <!-- Добавляем поля в конец tree view -->
             <xpath expr="//tree" position="inside">
-                <header>
-                    <button name="%(action_bulk_services_wizard)d" type="action"
-                            string="Bulk Add Services" class="btn-primary"/>
-                </header>
+                <field name="business_type"/>
+                <field name="is_diia_city_resident" widget="boolean_toggle"/>
             </xpath>
         </field>
     </record>

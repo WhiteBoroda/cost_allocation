@@ -56,11 +56,11 @@
         'views/subscription_views.xml',
         'views/partner_views.xml',
         'views/company_views.xml',
-        'views/holding_structure_views.xml',
         'views/dashboard_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
         'views/service_views.xml',
+        'views/holding_structure_views.xml',
         'views/menu_views.xml',
     ],
     'assets': {

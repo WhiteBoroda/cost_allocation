@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="view_client_service_form"/>
         <field name="arch" type="xml">
             <field name="client_id" position="attributes">
-                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="domain">[('is_company', '=', True)]</attribute>
                 <attribute name="context">{'default_is_company': True}</attribute>
             </field>
         </field>
@@ -22,7 +22,7 @@
         <field name="inherit_id" ref="view_client_service_subscription_form"/>
         <field name="arch" type="xml">
             <field name="client_id" position="attributes">
-                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="domain">[('is_company', '=', True)]</attribute>
                 <attribute name="context">{'default_is_company': True}</attribute>
             </field>
         </field>
@@ -35,7 +35,7 @@
         <field name="inherit_id" ref="view_bulk_services_wizard_form"/>
         <field name="arch" type="xml">
             <field name="client_ids" position="attributes">
-                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="domain">[('is_company', '=', True)]</attribute>
                 <attribute name="context">{'default_is_company': True}</attribute>
             </field>
         </field>
@@ -48,7 +48,7 @@
         <field name="inherit_id" ref="view_allocation_wizard_form"/>
         <field name="arch" type="xml">
             <field name="client_ids" position="attributes">
-                <attribute name="domain">[('is_company', '=', True), ('id', '!=', company.id)]</attribute>
+                <attribute name="domain">[('is_company', '=', True)]</attribute>
                 <attribute name="context">{'default_is_company': True}</attribute>
             </field>
         </field>
@@ -66,12 +66,12 @@
         </field>
     </record>
 
-    <!-- Add action for viewing only client companies -->
+    <!-- Add action for viewing only client companies (здесь можно использовать user) -->
     <record id="action_holding_clients" model="ir.actions.act_window">
         <field name="name">Client Companies</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[('is_company', '=', True), ('id', '!=', user.company_id.id)]</field>
+        <field name="domain">[('is_company', '=', True)]</field>
         <field name="context">{
             'default_is_company': True,
             'search_default_customer': 1
@@ -82,7 +82,6 @@
             </p>
             <p>
                 These are the companies you provide services to within the holding structure.
-                Your own company is excluded from this list.
             </p>
         </field>
     </record>

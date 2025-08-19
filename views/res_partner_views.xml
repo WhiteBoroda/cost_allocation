@@ -107,21 +107,19 @@
         </field>
     </record>
 
-    <!-- Partner Kanban View Extension -->
+    <!-- Partner Kanban View Extension - упрощенная версия без t-esc -->
     <record id="view_partner_kanban_cost_allocation" model="ir.ui.view">
         <field name="name">res.partner.kanban.cost_allocation</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_kanban_partner_categories')]" position="after">
-                <div t-if="record.is_company.raw_value and record.service_count.raw_value > 0"
-                     class="mt-1">
+                <div class="mt-1" invisible="not is_company or service_count == 0">
                     <span class="badge badge-pill badge-info">
-                        <i class="fa fa-cogs"/> <t t-esc="record.service_count.value"/> Services
+                        <i class="fa fa-cogs"/> Services: <field name="service_count"/>
                     </span>
-                    <span t-if="record.last_monthly_cost.raw_value > 0"
-                          class="badge badge-pill badge-success">
-                        <i class="fa fa-money"/> <t t-esc="record.last_monthly_cost.value"/>
+                    <span class="badge badge-pill badge-success" invisible="last_monthly_cost == 0">
+                        <i class="fa fa-money"/> <field name="last_monthly_cost" widget="monetary"/>
                     </span>
                 </div>
             </xpath>
