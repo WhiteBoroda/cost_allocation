@@ -5,9 +5,10 @@ class ServiceType(models.Model):
     _name = 'service.type'
     _description = 'IT Service Type'
     _order = 'category_id, sequence, name'
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 
     name = fields.Char(string='Service Name', required=True)
-    code = fields.Char(string='Code', required=True)
+    code = fields.Char(string='Code', readonly=True, copy=False)  # ИЗМЕНЕНО: readonly, copy=False
     category_id = fields.Many2one('service.category', string='Category', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
@@ -56,7 +57,8 @@ class ServiceType(models.Model):
     active_services_count = fields.Integer(string='Active Services', compute='_compute_service_count')
 
     active = fields.Boolean(default=True)
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
+                                  default=lambda self: self.env.company.currency_id)
 
     @api.depends('name')
     def _compute_service_count(self):
@@ -75,6 +77,13 @@ class ServiceType(models.Model):
             if self.category_id.primary_responsible_id:
                 self.primary_responsible_id = self.category_id.primary_responsible_id
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('service.type.code')
+        return super().create(vals_list)
+
     _sql_constraints = [
         ('unique_code', 'unique(code)', 'Service code must be unique!')
     ]
@@ -84,7 +93,10 @@ class ClientService(models.Model):
     _name = 'client.service'
     _description = 'Client IT Services and Equipment'
     _rec_name = 'display_name'
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 
+    # ДОБАВЛЕНО: поле кода для client.service
+    code = fields.Char(string='Service Code', readonly=True, copy=False)
     client_id = fields.Many2one('res.partner', string='Client',
                                 domain=[('is_company', '=', True)], required=True)
     service_type_id = fields.Many2one('service.type', string='Service Type', required=True)
@@ -120,200 +132,175 @@ class ClientService(models.Model):
                                         string='Support Team')
 
     # Auto-assign from service type
-    auto_assigned = fields.Boolean(string='Auto Assigned from Service Type', default=False)
+    auto_assigned = fields.Boolean(string='Auto Assigned', readonly=True,
+                                   help='This service was auto-assigned based on service type settings')
 
-    # Status
+    # Pricing (per unit/month)
+    monthly_cost = fields.Float(string='Monthly Cost per Unit',
+                                help='Cost per unit per month for this service')
+
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
+                                  default=lambda self: self.env.company.currency_id)
+
+    # Status and lifecycle
     status = fields.Selection([
+        ('draft', 'Draft'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('maintenance', 'Under Maintenance'),
-        ('retired', 'Retired')
-    ], string='Status', default='active', required=True)
+        ('terminated', 'Terminated')
+    ], string='Status', default='draft', required=True)
 
-    # Subscription link - reference to subscription line
-    subscription_line_id = fields.Many2one('client.service.subscription.line', string='Subscription Line')
+    # Service history
+    notes = fields.Html(string='Service Notes')
 
-    # Display name
+    # Computed fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    total_monthly_cost = fields.Float(string='Total Monthly Cost',
+                                      compute='_compute_total_monthly_cost', store=True)
 
-    # Cost driver integration
-    driver_quantity = fields.Float(string='Driver Quantity', compute='_compute_driver_quantity', store=True)
+    # ИСПРАВЛЕНО: добавлено поле company_id
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
 
-    # Workload estimation
-    estimated_monthly_hours = fields.Float(string='Estimated Monthly Hours',
-                                           compute='_compute_workload', store=True)
-
-    active = fields.Boolean(default=True)
-
-    @api.depends('name', 'service_type_id', 'client_id')
+    @api.depends('name', 'service_type_id', 'client_id', 'location')
     def _compute_display_name(self):
-        for record in self:
-            if record.name:
-                record.display_name = f"{record.client_id.name} - {record.name}"
-            else:
-                record.display_name = f"{record.client_id.name} - {record.service_type_id.name}"
+        for service in self:
+            name_parts = []
+            if service.name:
+                name_parts.append(service.name)
+            elif service.service_type_id:
+                name_parts.append(service.service_type_id.name)
 
-    @api.depends('quantity', 'status', 'service_type_id')
-    def _compute_driver_quantity(self):
-        for record in self:
-            if record.status == 'active':
-                record.driver_quantity = record.quantity
-            else:
-                record.driver_quantity = 0.0
+            if service.location:
+                name_parts.append(f"({service.location})")
 
-    @api.depends('service_type_id.workload_factor', 'quantity')
-    def _compute_workload(self):
-        for record in self:
-            if record.service_type_id.workload_factor and record.quantity:
-                # Base monthly hours per unit * workload factor * quantity
-                base_hours = 2.0  # Default 2 hours per month per unit
-                record.estimated_monthly_hours = base_hours * record.service_type_id.workload_factor * record.quantity
-            else:
-                record.estimated_monthly_hours = 0.0
+            if service.client_id:
+                name_parts.append(f"- {service.client_id.name}")
+
+            service.display_name = ' '.join(name_parts) or 'New Service'
+
+    @api.depends('monthly_cost', 'quantity')
+    def _compute_total_monthly_cost(self):
+        for service in self:
+            service.total_monthly_cost = service.monthly_cost * service.quantity
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('client.service.code')
+
+            # Auto-assign responsible team if enabled
+            if vals.get('service_type_id'):
+                service_type = self.env['service.type'].browse(vals['service_type_id'])
+                if service_type.auto_assign_responsible:
+                    if service_type.primary_responsible_id and not vals.get('responsible_employee_id'):
+                        vals['responsible_employee_id'] = service_type.primary_responsible_id.id
+                    if service_type.default_responsible_ids and not vals.get('support_team_ids'):
+                        vals['support_team_ids'] = [(6, 0, service_type.default_responsible_ids.ids)]
+                    vals['auto_assigned'] = True
+
+            # Set default name if not provided
+            if not vals.get('name') and vals.get('service_type_id'):
+                service_type = self.env['service.type'].browse(vals['service_type_id'])
+                vals['name'] = service_type.name
+
+        return super().create(vals_list)
 
     @api.onchange('service_type_id')
     def _onchange_service_type_id(self):
-        if self.service_type_id and self.service_type_id.auto_assign_responsible:
-            # Auto-assign responsible team from service type
-            if self.service_type_id.primary_responsible_id:
-                self.responsible_employee_id = self.service_type_id.primary_responsible_id
-            if self.service_type_id.default_responsible_ids:
-                self.support_team_ids = self.service_type_id.default_responsible_ids
-            self.auto_assigned = True
+        if self.service_type_id:
+            # Inherit pricing from service type
+            self.monthly_cost = self.service_type_id.base_price
 
-    @api.model
-    def update_cost_drivers(self):
-        """Update cost driver quantities based on active services"""
-        # Group services by client and service type
-        service_data = {}
+            # Inherit responsible team if auto-assign is enabled
+            if self.service_type_id.auto_assign_responsible:
+                if self.service_type_id.primary_responsible_id:
+                    self.responsible_employee_id = self.service_type_id.primary_responsible_id
+                if self.service_type_id.default_responsible_ids:
+                    self.support_team_ids = self.service_type_id.default_responsible_ids
 
-        for service in self.search([('status', '=', 'active')]):
-            client = service.client_id
-            service_type = service.service_type_id
-
-            key = (client.id,
-                   service_type.category_id.cost_pool_id.id if service_type.category_id.cost_pool_id else None)
-
-            if key not in service_data:
-                service_data[key] = 0
-            service_data[key] += service.driver_quantity
-
-        # Update cost drivers
-        for (client_id, pool_id), quantity in service_data.items():
-            if pool_id:
-                driver = self.env['cost.driver'].search([('pool_id', '=', pool_id)], limit=1)
-                if driver:
-                    client_driver = self.env['client.cost.driver'].search([
-                        ('driver_id', '=', driver.id),
-                        ('client_id', '=', client_id)
-                    ])
-
-                    if client_driver:
-                        client_driver.quantity = quantity
-                    else:
-                        self.env['client.cost.driver'].create({
-                            'driver_id': driver.id,
-                            'client_id': client_id,
-                            'quantity': quantity
-                        })
+            # Set default name if empty
+            if not self.name:
+                self.name = self.service_type_id.name
 
 
 class EmployeeWorkload(models.Model):
     _name = 'employee.workload'
-    _description = 'Employee Workload Analysis'
-    _rec_name = 'employee_id'
+    _description = 'Employee Workload Tracking'
 
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True)
-    period_date = fields.Date(string='Period', default=fields.Date.today, required=True)
+    period_date = fields.Date(string='Period', required=True, default=fields.Date.today)
 
-    # Calculated workload
-    total_estimated_hours = fields.Float(string='Total Estimated Hours', compute='_compute_workload')
-    total_services = fields.Integer(string='Total Services', compute='_compute_workload')
-    primary_services = fields.Integer(string='Primary Responsible', compute='_compute_workload')
-    support_services = fields.Integer(string='Support Team Member', compute='_compute_workload')
+    # Services assigned
+    active_services_count = fields.Integer(string='Active Services', compute='_compute_workload')
+    total_workload_factor = fields.Float(string='Total Workload Factor', compute='_compute_workload')
 
-    # Workload by category
+    # Categories breakdown
     workload_by_category = fields.Text(string='Workload by Category', compute='_compute_workload')
 
-    # Capacity planning
-    available_hours = fields.Float(string='Available Hours per Month', default=160.0)
-    utilization_percentage = fields.Float(string='Utilization %', compute='_compute_utilization')
-    overloaded = fields.Boolean(string='Overloaded', compute='_compute_utilization')
+    # Status
+    is_overloaded = fields.Boolean(string='Overloaded', compute='_compute_workload',
+                                   help='Employee has more than optimal workload')
+    overload_percentage = fields.Float(string='Overload %', compute='_compute_workload')
+
+    # Target workload (configurable per employee)
+    target_workload = fields.Float(string='Target Workload', default=100.0,
+                                   help='Target workload factor for this employee')
 
     @api.depends('employee_id', 'period_date')
     def _compute_workload(self):
-        for record in self:
-            # Services where employee is primary responsible
-            primary_services = self.env['client.service'].search([
-                ('responsible_employee_id', '=', record.employee_id.id),
+        for workload in self:
+            # Get active services for this employee
+            services = self.env['client.service'].search([
+                ('responsible_employee_id', '=', workload.employee_id.id),
                 ('status', '=', 'active')
             ])
 
-            # Services where employee is in support team
-            support_services = self.env['client.service'].search([
-                ('support_team_ids', 'in', record.employee_id.id),
-                ('status', '=', 'active')
-            ])
+            workload.active_services_count = len(services)
 
-            record.primary_services = len(primary_services)
-            record.support_services = len(support_services)
-            record.total_services = len(primary_services | support_services)
+            # Calculate total workload factor
+            total_factor = sum(services.mapped('service_type_id.workload_factor'))
+            workload.total_workload_factor = total_factor
 
-            # Calculate estimated hours
-            total_hours = sum(primary_services.mapped('estimated_monthly_hours'))
-            # Support team members get 30% of the workload
-            total_hours += sum(support_services.mapped('estimated_monthly_hours')) * 0.3
-
-            record.total_estimated_hours = total_hours
+            # Calculate overload
+            if workload.target_workload > 0:
+                workload.overload_percentage = (total_factor / workload.target_workload) * 100
+                workload.is_overloaded = workload.overload_percentage > 100
+            else:
+                workload.overload_percentage = 0
+                workload.is_overloaded = False
 
             # Workload by category
-            categories = {}
-            for service in primary_services | support_services:
-                cat_name = service.service_type_id.category_id.name
-                if cat_name not in categories:
-                    categories[cat_name] = 0
-                categories[cat_name] += 1
+            category_workload = {}
+            for service in services:
+                category = service.category_id.name if service.category_id else 'Uncategorized'
+                factor = service.service_type_id.workload_factor
+                category_workload[category] = category_workload.get(category, 0) + factor
 
-            record.workload_by_category = '\n'.join([f"{cat}: {count} services" for cat, count in categories.items()])
-
-    @api.depends('total_estimated_hours', 'available_hours')
-    def _compute_utilization(self):
-        for record in self:
-            if record.available_hours > 0:
-                record.utilization_percentage = (record.total_estimated_hours / record.available_hours) * 100
-                record.overloaded = record.utilization_percentage > 100
-            else:
-                record.utilization_percentage = 0
-                record.overloaded = False
-
-    _sql_constraints = [
-        ('unique_employee_period', 'unique(employee_id, period_date)',
-         'Employee workload record must be unique per period!')
-    ]
+            workload_text = '\n'.join([f"{cat}: {factor}" for cat, factor in category_workload.items()])
+            workload.workload_by_category = workload_text
 
     @api.model
-    def update_all_workloads(self, period_date=None):
-        """Update workload for all employees for given period"""
-        if not period_date:
-            period_date = fields.Date.today()
+    def update_all_workloads(self):
+        """Update workload for all employees - called by cron"""
+        employees = self.env['hr.employee'].search([])
+        today = fields.Date.today()
 
-        # Get all employees from cost.employee
-        employees = self.env['cost.employee'].search([('active', '=', True)])
-
-        for emp_cost in employees:
-            # Check if workload record exists
-            workload = self.search([
-                ('employee_id', '=', emp_cost.employee_id.id),
-                ('period_date', '=', period_date)
+        for employee in employees:
+            # Check if workload record exists for this month
+            existing = self.search([
+                ('employee_id', '=', employee.id),
+                ('period_date', '=', today)
             ])
 
-            if not workload:
-                # Create new workload record
+            if not existing:
                 self.create({
-                    'employee_id': emp_cost.employee_id.id,
-                    'period_date': period_date,
+                    'employee_id': employee.id,
+                    'period_date': today
                 })
             else:
-                # Trigger recomputation
-                workload._compute_workload()
-                workload._compute_utilization()
+                # Force recompute
+                existing._compute_workload()

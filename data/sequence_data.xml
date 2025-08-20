@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Нумераторы для кодов в модуле Cost Allocation -->
+
+    <!-- Service Category Sequence -->
+    <record id="seq_service_category" model="ir.sequence">
+        <field name="name">Service Category Code</field>
+        <field name="code">service.category.code</field>
+        <field name="prefix">CAT-</field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Service Catalog Sequence -->
+    <record id="seq_service_catalog" model="ir.sequence">
+        <field name="name">Service Catalog Code</field>
+        <field name="code">service.catalog.code</field>
+        <field name="prefix">SRV-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Service Type Sequence -->
+    <record id="seq_service_type" model="ir.sequence">
+        <field name="name">Service Type Code</field>
+        <field name="code">service.type.code</field>
+        <field name="prefix">ST-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Client Service Sequence -->
+    <record id="seq_client_service" model="ir.sequence">
+        <field name="name">Client Service Code</field>
+        <field name="code">client.service.code</field>
+        <field name="prefix">CS-</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Client Service Subscription Sequence -->
+    <record id="seq_client_service_subscription" model="ir.sequence">
+        <field name="name">Service Subscription Code</field>
+        <field name="code">client.service.subscription.code</field>
+        <field name="prefix">SUB-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Cost Pool Sequence -->
+    <record id="seq_cost_pool" model="ir.sequence">
+        <field name="name">Cost Pool Code</field>
+        <field name="code">cost.pool.code</field>
+        <field name="prefix">CP-</field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Cost Driver Sequence -->
+    <record id="seq_cost_driver" model="ir.sequence">
+        <field name="name">Cost Driver Code</field>
+        <field name="code">cost.driver.code</field>
+        <field name="prefix">CD-</field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Client Cost Allocation Sequence -->
+    <record id="seq_client_cost_allocation" model="ir.sequence">
+        <field name="name">Cost Allocation Code</field>
+        <field name="code">client.cost.allocation.code</field>
+        <field name="prefix">CA-</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Employee Cost Sequence -->
+    <record id="seq_employee_cost" model="ir.sequence">
+        <field name="name">Employee Cost Code</field>
+        <field name="code">cost.employee.code</field>
+        <field name="prefix">EC-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Настройки префиксов через ir.config_parameter -->
+    <record id="sequence_prefix_service_category" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.service_category.prefix</field>
+        <field name="value">CAT-</field>
+    </record>
+
+    <record id="sequence_prefix_service_catalog" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.service_catalog.prefix</field>
+        <field name="value">SRV-</field>
+    </record>
+
+    <record id="sequence_prefix_service_type" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.service_type.prefix</field>
+        <field name="value">ST-</field>
+    </record>
+
+    <record id="sequence_prefix_client_service" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.client_service.prefix</field>
+        <field name="value">CS-</field>
+    </record>
+
+    <record id="sequence_prefix_subscription" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.subscription.prefix</field>
+        <field name="value">SUB-</field>
+    </record>
+
+    <record id="sequence_prefix_cost_pool" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.cost_pool.prefix</field>
+        <field name="value">CP-</field>
+    </record>
+
+    <record id="sequence_prefix_cost_driver" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.cost_driver.prefix</field>
+        <field name="value">CD-</field>
+    </record>
+
+    <record id="sequence_prefix_cost_allocation" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.cost_allocation.prefix</field>
+        <field name="value">CA-</field>
+    </record>
+
+    <record id="sequence_prefix_employee_cost" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.employee_cost.prefix</field>
+        <field name="value">EC-</field>
+    </record>
+
+</odoo>

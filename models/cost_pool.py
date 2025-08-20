@@ -6,8 +6,10 @@ class CostPool(models.Model):
     _name = 'cost.pool'
     _description = 'Cost Pool'
     _rec_name = 'name'
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 
     name = fields.Char(string='Pool Name', required=True)
+    code = fields.Char(string='Pool Code', readonly=True, copy=False)  # ДОБАВЛЕНО: поле кода
     description = fields.Text(string='Description')
     pool_type = fields.Selection([
         ('direct', 'Direct Costs'),
@@ -26,10 +28,22 @@ class CostPool(models.Model):
     # Related driver
     driver_id = fields.One2many('cost.driver', 'pool_id', string='Cost Driver')
 
+    # ДОБАВЛЕНО: поле company_id для multi-company
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
+
     @api.depends('allocation_ids.monthly_cost')
     def _compute_total_cost(self):
         for pool in self:
             pool.total_monthly_cost = sum(pool.allocation_ids.mapped('monthly_cost'))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('cost.pool.code')
+        return super().create(vals_list)
 
 
 class CostPoolAllocation(models.Model):
@@ -39,7 +53,7 @@ class CostPoolAllocation(models.Model):
     pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True, ondelete='cascade')
     employee_cost_id = fields.Many2one('cost.employee', string='Employee', required=True)
 
-    # ИСПРАВЛЕНО: процент как обычное число от 0 до 100, без percentage widget
+    # Процент как обычное число от 0 до 100
     percentage = fields.Float(string='Allocation %', required=True, default=100.0,
                               help='Percentage of employee time allocated to this pool (0-100)')
     monthly_cost = fields.Float(string='Monthly Cost', compute='_compute_monthly_cost', store=True)
@@ -48,7 +62,6 @@ class CostPoolAllocation(models.Model):
     def _compute_monthly_cost(self):
         for allocation in self:
             if allocation.employee_cost_id and allocation.percentage:
-                # ИСПРАВЛЕНО: правильное вычисление (percentage уже в формате 0-100)
                 allocation.monthly_cost = allocation.employee_cost_id.monthly_total_cost * (allocation.percentage / 100)
             else:
                 allocation.monthly_cost = 0.0

@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Service Subscriptions" decoration-success="state == 'active'"
                   decoration-muted="state == 'terminated'" decoration-warning="state == 'paused'">
+                <field name="code"/>  <!-- ДОБАВЛЕНО: поле кода -->
                 <field name="name"/>
                 <field name="client_id"/>
                 <field name="start_date"/>
@@ -14,6 +15,7 @@
                 <field name="total_amount" widget="monetary"/>
                 <field name="next_invoice_date"/>
                 <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -24,17 +26,20 @@
         <field name="arch" type="xml">
             <form string="Service Subscription">
                 <header>
-                    <button name="action_activate" type="object" string="Activate"
-                            class="btn-primary" invisible="state != 'draft'"/>
+                    <!-- ИСПРАВЛЕНО: простые кнопки без проблемных методов -->
                     <button name="action_generate_invoice" type="object" string="Generate Invoice"
-                            class="btn-secondary" invisible="state != 'active'"/>
+                            class="btn-primary" invisible="state != 'active'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,paused,terminated"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
                         <h1>
                             <field name="name" placeholder="Subscription Name"/>
                         </h1>
+                        <h2>
+                            <field name="code" readonly="1" class="badge badge-info"/>
+                        </h2>
                     </div>
                     <group>
                         <group>
@@ -52,13 +57,8 @@
                     <group>
                         <group>
                             <field name="total_amount" widget="monetary"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="currency_id"/>
                             <field name="next_invoice_date"/>
-                        </group>
-                        <group>
-                            <field name="external_subscription_id" readonly="1"
-                                   string="External Subscription"
-                                   invisible="not external_subscription_id"/>
                         </group>
                     </group>
                     <notebook>
@@ -69,10 +69,24 @@
                                     <field name="service_id"/>
                                     <field name="name"/>
                                     <field name="quantity"/>
-                                    <field name="unit_price"/>
-                                    <field name="total_price" readonly="1" sum="Total"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="total_price" widget="monetary"/>
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Invoicing">
+                            <group>
+                                <group>
+                                    <field name="invoice_count"/>
+                                    <field name="total_invoiced" widget="monetary"/>
+                                </group>
+                                <group>
+                                    <button name="action_view_invoices" type="object"
+                                            string="View Invoices"
+                                            class="btn-secondary"
+                                            invisible="invoice_count == 0"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -85,48 +99,6 @@
         </field>
     </record>
 
-    <record id="view_client_service_subscription_kanban" model="ir.ui.view">
-        <field name="name">client.service.subscription.kanban</field>
-        <field name="model">client.service.subscription</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
-                <field name="name"/>
-                <field name="client_id"/>
-                <field name="state"/>
-                <field name="total_amount"/>
-                <field name="next_invoice_date"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name"/>
-                                    </strong>
-                                </div>
-                                <span t-attf-class="o_badge o_badge_pill float-end #{record.state.raw_value == 'active' ? 'badge-success' : (record.state.raw_value == 'paused' ? 'badge-warning' : 'badge-secondary')}">
-                                    <field name="state"/>
-                                </span>
-                            </div>
-                            <div class="o_kanban_record_body">
-                                <div>
-                                    <i class="fa fa-user"/> <field name="client_id"/>
-                                </div>
-                                <div>
-                                    <i class="fa fa-money"/> <field name="total_amount"/> грн/мес
-                                </div>
-                                <div>
-                                    <i class="fa fa-calendar"/> Next: <field name="next_invoice_date"/>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Search View -->
     <record id="view_client_service_subscription_search" model="ir.ui.view">
         <field name="name">client.service.subscription.search</field>
         <field name="model">client.service.subscription</field>
@@ -134,23 +106,28 @@
             <search string="Search Subscriptions">
                 <field name="name"/>
                 <field name="client_id"/>
+
                 <separator/>
                 <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                 <filter string="Paused" name="paused" domain="[('state', '=', 'paused')]"/>
+                <filter string="Terminated" name="terminated" domain="[('state', '=', 'terminated')]"/>
+
                 <separator/>
-                <filter string="Due for Invoice" name="due_invoice"
-                        domain="[('next_invoice_date', '&lt;=', context_today())]"/>
-                <group string="Group By">
+                <filter string="Auto Invoice" name="auto_invoice" domain="[('auto_invoice', '=', True)]"/>
+                <filter string="This Month" name="this_month"
+                        domain="[('start_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+
+                <group expand="1" string="Group By">
                     <filter string="Client" name="group_client" context="{'group_by': 'client_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Next Invoice" name="group_invoice" context="{'group_by': 'next_invoice_date'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+                    <filter string="Recurring Type" name="group_recurring" context="{'group_by': 'recurring_rule_type'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Subscription Line Form View -->
+    <!-- Client Service Subscription Line Views -->
     <record id="view_client_service_subscription_line_form" model="ir.ui.view">
         <field name="name">client.service.subscription.line.form</field>
         <field name="model">client.service.subscription.line</field>
@@ -165,8 +142,9 @@
                         </group>
                         <group>
                             <field name="quantity"/>
-                            <field name="unit_price"/>
-                            <field name="total_price" readonly="1"/>
+                            <field name="unit_price" widget="monetary"/>
+                            <field name="total_price" widget="monetary"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
                     <group>
@@ -183,11 +161,6 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Integration" invisible="not external_line_id">
-                            <group>
-                                <field name="external_line_id" readonly="1"/>
-                            </group>
-                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -198,7 +171,7 @@
     <record id="action_client_service_subscription" model="ir.actions.act_window">
         <field name="name">Service Subscriptions</field>
         <field name="res_model">client.service.subscription</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first service subscription!
@@ -209,19 +182,4 @@
             </p>
         </field>
     </record>
-
-    <!-- Cron Job -->
-    <record id="cron_generate_subscription_invoices" model="ir.cron">
-        <field name="name">Generate Subscription Invoices</field>
-        <field name="model_id" ref="model_client_service_subscription"/>
-        <field name="state">code</field>
-        <field name="code">model.cron_generate_invoices()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="active">True</field>
-        <field name="doall">False</field>
-        <field name="nextcall" eval="DateTime.now().replace(hour=9, minute=0, second=0, microsecond=0)"/>
-    </record>
-
 </odoo>

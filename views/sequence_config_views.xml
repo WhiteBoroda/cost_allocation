@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sequence Configuration Views -->
+    <record id="view_sequence_config_form" model="ir.ui.view">
+        <field name="name">sequence.config.form</field>
+        <field name="model">sequence.config</field>
+        <field name="arch" type="xml">
+            <form string="Sequence Configuration">
+                <header>
+                    <button name="action_save_config" string="Save Configuration"
+                            type="object" class="btn-primary"/>
+                    <button name="action_reset_defaults" string="Reset to Defaults"
+                            type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Code Sequence Configuration</h1>
+                        <p>Configure prefixes for automatic code generation</p>
+                    </div>
+
+                    <group string="Service Management">
+                        <group>
+                            <field name="service_category_prefix" placeholder="CAT-"/>
+                            <field name="service_catalog_prefix" placeholder="SRV-"/>
+                            <field name="service_type_prefix" placeholder="ST-"/>
+                        </group>
+                        <group>
+                            <field name="client_service_prefix" placeholder="CS-"/>
+                            <field name="subscription_prefix" placeholder="SUB-"/>
+                        </group>
+                    </group>
+
+                    <group string="Cost Management">
+                        <group>
+                            <field name="cost_pool_prefix" placeholder="CP-"/>
+                            <field name="cost_driver_prefix" placeholder="CD-"/>
+                        </group>
+                        <group>
+                            <field name="cost_allocation_prefix" placeholder="CA-"/>
+                            <field name="employee_cost_prefix" placeholder="EC-"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Info:</strong> Changes will be applied to new records only.
+                        Existing records will keep their current codes.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Sequence Configuration -->
+    <record id="action_sequence_config" model="ir.actions.act_window">
+        <field name="name">Code Sequence Configuration</field>
+        <field name="res_model">sequence.config</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure automatic code generation!
+            </p>
+            <p>
+                Set custom prefixes for all automatic codes in the system.
+                This helps maintain consistent numbering across your organization.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_sequence_config"
+              name="Code Sequences"
+              parent="menu_cost_allocation_config"
+              action="action_sequence_config"
+              sequence="99"/>
+
+    <!-- Sequences Management Menu -->
+    <record id="action_ir_sequence_cost_allocation" model="ir.actions.act_window">
+        <field name="name">Sequences</field>
+        <field name="res_model">ir.sequence</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('code', 'like', 'cost_allocation.%'), '|', ('code', 'like', 'service.%'), ('code', 'like', 'client.%')]</field>
+        <field name="context">{'search_default_code': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage sequence numbering!
+            </p>
+            <p>
+                View and edit sequence configurations for automatic code generation.
+                Advanced users can modify numbering patterns and reset counters.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ir_sequence_cost_allocation"
+              name="Advanced Sequences"
+              parent="menu_cost_allocation_config"
+              action="action_ir_sequence_cost_allocation"
+              sequence="100"
+              groups="base.group_system"/>
+
+</odoo>

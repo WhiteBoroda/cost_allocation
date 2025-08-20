@@ -1,105 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Service Type Views -->
-    <record id="view_service_type_tree" model="ir.ui.view">
-        <field name="name">service.type.tree</field>
-        <field name="model">service.type</field>
-        <field name="arch" type="xml">
-            <tree string="Service Types">
-                <field name="sequence" widget="handle"/>
-                <field name="name"/>
-                <field name="code"/>
-                <field name="category_id"/>
-                <field name="service_type" widget="badge"/>
-                <field name="base_price" widget="monetary"/>
-                <field name="unit_name"/>
-                <field name="support_level" widget="badge"/>
-                <field name="active_services_count"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_service_type_form" model="ir.ui.view">
-        <field name="name">service.type.form</field>
-        <field name="model">service.type</field>
-        <field name="arch" type="xml">
-            <form string="Service Type">
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="code"/>
-                            <field name="category_id"/>
-                            <field name="service_type"/>
-                            <field name="unit_name"/>
-                            <field name="sequence"/>
-                        </group>
-                        <group>
-                            <field name="base_price" widget="monetary"/>
-                            <field name="support_level"/>
-                            <field name="workload_factor"/>
-                            <field name="auto_assign_responsible"/>
-                            <field name="active_services_count" readonly="1"/>
-                            <field name="currency_id" column_invisible="1"/>
-                        </group>
-                    </group>
-                    <field name="description"/>
-                    <notebook>
-                        <page string="SLA">
-                            <group>
-                                <group>
-                                    <field name="response_time"/>
-                                    <field name="resolution_time"/>
-                                </group>
-                                <group>
-                                    <field name="availability_sla"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Responsible Team">
-                            <group>
-                                <field name="primary_responsible_id"/>
-                            </group>
-                            <field name="default_responsible_ids" widget="many2many_tags"/>
-                            <separator string="Required Skills"/>
-                            <field name="required_skill_ids" widget="many2many_tags" invisible="not id"/>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Client Service Views -->
+    <!-- Client Service Tree View -->
     <record id="view_client_service_tree" model="ir.ui.view">
         <field name="name">client.service.tree</field>
         <field name="model">client.service</field>
         <field name="arch" type="xml">
             <tree string="Client Services"
+                  decoration-info="status=='draft'"
                   decoration-success="status=='active'"
-                  decoration-muted="status=='inactive'"
                   decoration-warning="status=='maintenance'"
-                  decoration-danger="status=='retired'"
-                  default_order="client_id, service_type_id">
+                  decoration-danger="status=='terminated'">
                 <field name="client_id"/>
-                <field name="service_type_id"/>
                 <field name="name"/>
-                <field name="responsible_employee_id"/>
+                <field name="service_type_id"/>
+                <field name="category_id"/>
                 <field name="quantity"/>
-                <field name="location"/>
-                <field name="estimated_monthly_hours"/>
+                <field name="responsible_employee_id"/>
                 <field name="status" widget="badge"
+                       decoration-info="status=='draft'"
                        decoration-success="status=='active'"
                        decoration-warning="status=='maintenance'"
-                       decoration-danger="status=='retired'"/>
+                       decoration-danger="status=='terminated'"/>
                 <field name="last_maintenance"/>
-                <field name="subscription_line_id"/>
                 <field name="auto_assigned" column_invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
 
-    <!-- ИСПРАВЛЕННАЯ ФОРМА CLIENT SERVICE -->
+    <!-- ИСПРАВЛЕННАЯ ФОРМА CLIENT SERVICE с company_id -->
     <record id="view_client_service_form" model="ir.ui.view">
         <field name="name">client.service.form</field>
         <field name="model">client.service</field>
@@ -117,7 +46,8 @@
                             <field name="status"/>
                             <field name="responsible_employee_id"/>
                             <field name="location"/>
-                            <field name="estimated_monthly_hours"/>
+                            <!-- ИСПРАВЛЕНО: добавлено поле company_id -->
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
                     <notebook>
@@ -125,7 +55,6 @@
                             <group>
                                 <group>
                                     <field name="description"/>
-                                    <field name="subscription_line_id"/>
                                     <field name="auto_assigned"/>
                                 </group>
                                 <group>
@@ -180,90 +109,36 @@
                 <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
                 <filter string="Under Maintenance" name="maintenance" domain="[('status', '=', 'maintenance')]"/>
                 <filter string="Inactive" name="inactive" domain="[('status', '=', 'inactive')]"/>
-                <filter string="Retired" name="retired" domain="[('status', '=', 'retired')]"/>
+                <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
 
                 <separator/>
-                <filter string="With Subscription" name="has_subscription"
-                        domain="[('subscription_line_id', '!=', False)]"/>
-                <filter string="Without Subscription" name="no_subscription"
-                        domain="[('subscription_line_id', '=', False)]"/>
-
-                <separator/>
-                <filter string="Auto Assigned" name="auto_assigned"
-                        domain="[('auto_assigned', '=', True)]"/>
-                <filter string="Manual Assignment" name="manual_assigned"
-                        domain="[('auto_assigned', '=', False)]"/>
-
-                <separator/>
-                <filter string="Maintenance Due" name="maintenance_due"
-                        domain="[('next_maintenance', '&lt;=', context_today())]"/>
+                <filter string="Auto Assigned" name="auto_assigned" domain="[('auto_assigned', '=', True)]"/>
 
                 <group expand="1" string="Group By">
-                    <filter string="Client" name="group_client"
-                            context="{'group_by': 'client_id'}"/>
-                    <filter string="Service Type" name="group_service_type"
-                            context="{'group_by': 'service_type_id'}"/>
-                    <filter string="Category" name="group_category"
-                            context="{'group_by': 'category_id'}"/>
-                    <filter string="Status" name="group_status"
-                            context="{'group_by': 'status'}"/>
-                    <filter string="Responsible" name="group_responsible"
-                            context="{'group_by': 'responsible_employee_id'}"/>
-                    <filter string="Location" name="group_location"
-                            context="{'group_by': 'location'}"/>
+                    <filter string="Client" name="group_client" context="{'group_by': 'client_id'}"/>
+                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Responsible" name="group_responsible" context="{'group_by': 'responsible_employee_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Employee Workload Views -->
-    <record id="view_employee_workload_tree" model="ir.ui.view">
-        <field name="name">employee.workload.tree</field>
-        <field name="model">employee.workload</field>
-        <field name="arch" type="xml">
-            <tree string="Employee Workload" decoration-danger="overloaded==True" decoration-warning="utilization_percentage &gt; 80">
-                <field name="employee_id"/>
-                <field name="period_date"/>
-                <field name="total_services"/>
-                <field name="total_estimated_hours"/>
-                <field name="available_hours"/>
-                <field name="utilization_percentage" widget="percentage"/>
-                <field name="overloaded" widget="boolean_toggle"/>
-                <field name="primary_services"/>
-                <field name="support_services"/>
-            </tree>
+    <!-- Client Service Action -->
+    <record id="action_client_service" model="ir.actions.act_window">
+        <field name="name">Client Services</field>
+        <field name="res_model">client.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first client service!
+            </p>
+            <p>
+                Track IT services and equipment provided to your clients.
+                Each service can have responsible teams and maintenance schedules.
+            </p>
         </field>
     </record>
-
-    <record id="view_employee_workload_form" model="ir.ui.view">
-        <field name="name">employee.workload.form</field>
-        <field name="model">employee.workload</field>
-        <field name="arch" type="xml">
-            <form string="Employee Workload">
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="employee_id"/>
-                            <field name="period_date"/>
-                            <field name="total_services"/>
-                        </group>
-                        <group>
-                            <field name="total_estimated_hours"/>
-                            <field name="available_hours"/>
-                            <field name="utilization_percentage" widget="percentage"/>
-                            <field name="overloaded"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="primary_services"/>
-                            <field name="support_services"/>
-                        </group>
-                    </group>
-                    <field name="workload_by_category" widget="text"/>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
 </odoo>

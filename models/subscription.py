@@ -7,15 +7,13 @@ class ClientServiceSubscription(models.Model):
     _name = 'client.service.subscription'
     _description = 'Client Service Subscription'
     _order = 'client_id, start_date desc'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'sequence.helper']  # ДОБАВЛЕНО: sequence.helper
 
+    # ДОБАВЛЕНО: поле кода для подписок
+    code = fields.Char(string='Subscription Code', readonly=True, copy=False)
     name = fields.Char(string='Subscription Name', required=True, tracking=True)
     client_id = fields.Many2one('res.partner', string='Client', required=True,
                                 domain=[('is_company', '=', True)], tracking=True)
-
-    # Remove dependency on external subscription module
-    # template_id = fields.Many2one('sale.subscription.template', string='Subscription Template')
-    # subscription_id = fields.Many2one('sale.subscription', string='Odoo Subscription')
 
     # Period
     start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today, tracking=True)
@@ -30,7 +28,7 @@ class ClientServiceSubscription(models.Model):
 
     # Pricing
     total_amount = fields.Float(string='Monthly Amount', compute='_compute_total_amount', store=True)
-    currency_id = fields.Many2one('res.currency', string='Currency',
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
                                   default=lambda self: self.env.company.currency_id)
 
     # Status
@@ -48,167 +46,162 @@ class ClientServiceSubscription(models.Model):
     # Invoicing
     auto_invoice = fields.Boolean(string='Auto Invoice', default=True)
     invoice_day = fields.Integer(string='Invoice Day', default=1, help='Day of month to generate invoice')
-    next_invoice_date = fields.Date(string='Next Invoice Date', store=True)
+    next_invoice_date = fields.Date(string='Next Invoice Date', compute='_compute_next_invoice_date', store=True)
 
-    # Integration fields (optional)
-    external_subscription_id = fields.Char(string='External Subscription ID',
-                                           help='ID from external subscription system')
+    # Analytics
+    total_invoiced = fields.Float(string='Total Invoiced', compute='_compute_invoice_stats')
+    invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_stats')
 
-    active = fields.Boolean(default=True)
-
-    @api.onchange('start_date', 'recurring_interval', 'recurring_rule_type', 'invoice_day')
-    def _onchange_compute_next_invoice_date(self):
-        """Calculate initial next invoice date when subscription details change"""
-        for record in self:
-            if record.start_date:
-                if record.recurring_rule_type == 'monthly':
-                    next_date = record.start_date.replace(day=record.invoice_day or 1)
-                    if next_date <= record.start_date:
-                        next_date = next_date + relativedelta(months=1)
-                    record.next_invoice_date = next_date
-                else:
-                    record.next_invoice_date = record.start_date
-            else:
-                record.next_invoice_date = False
-
-    def _update_next_invoice_date(self):
-        """Update next invoice date after invoice creation"""
-        for record in self:
-            if record.next_invoice_date and record.recurring_rule_type == 'monthly':
-                if record.recurring_interval:
-                    next_date = record.next_invoice_date + relativedelta(months=record.recurring_interval)
-                else:
-                    next_date = record.next_invoice_date + relativedelta(months=1)
-                try:
-                    next_date = next_date.replace(day=record.invoice_day or 1)
-                except ValueError:
-                    next_date = next_date.replace(day=min(record.invoice_day or 1, 28))
-                record.next_invoice_date = next_date
-            elif record.recurring_rule_type == 'yearly':
-                if record.next_invoice_date:
-                    next_date = record.next_invoice_date + relativedelta(years=record.recurring_interval or 1)
-                    record.next_invoice_date = next_date
+    # ИСПРАВЛЕНО: добавлено поле company_id
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
 
     @api.depends('service_line_ids.total_price')
     def _compute_total_amount(self):
-        for record in self:
-            record.total_amount = sum(record.service_line_ids.mapped('total_price'))
+        for subscription in self:
+            subscription.total_amount = sum(subscription.service_line_ids.mapped('total_price'))
 
-    @api.depends('start_date', 'recurring_interval', 'recurring_rule_type', 'invoice_day')
+    @api.depends('start_date', 'recurring_interval', 'recurring_rule_type', 'state')
     def _compute_next_invoice_date(self):
-        for record in self:
-            if record.start_date:
-                if record.recurring_rule_type == 'monthly':
-                    # Next month, specific day
-                    next_date = record.start_date.replace(day=record.invoice_day)
-                    if next_date <= record.start_date:
-                        next_date = next_date + relativedelta(months=1)
-                    record.next_invoice_date = next_date
+        for subscription in self:
+            if subscription.state != 'active' or not subscription.auto_invoice:
+                subscription.next_invoice_date = False
+                continue
+
+            if not subscription.start_date:
+                subscription.next_invoice_date = False
+                continue
+
+            # Calculate next invoice date based on recurring rule
+            if subscription.recurring_rule_type == 'monthly':
+                # Find the next invoice date
+                today = fields.Date.today()
+                start = subscription.start_date
+
+                # If subscription just started, next invoice is on invoice_day of next month
+                if start >= today:
+                    next_month = start + relativedelta(months=1)
+                    subscription.next_invoice_date = next_month.replace(day=subscription.invoice_day)
                 else:
-                    record.next_invoice_date = record.start_date
+                    # Find next occurrence based on recurring interval
+                    months_passed = ((today.year - start.year) * 12 + today.month - start.month)
+                    next_period = months_passed + subscription.recurring_interval
+                    next_date = start + relativedelta(months=next_period)
+                    subscription.next_invoice_date = next_date.replace(day=subscription.invoice_day)
             else:
-                record.next_invoice_date = False
+                # For other intervals, use simpler logic
+                subscription.next_invoice_date = subscription.start_date + relativedelta(
+                    days=subscription.recurring_interval if subscription.recurring_rule_type == 'daily' else 0,
+                    weeks=subscription.recurring_interval if subscription.recurring_rule_type == 'weekly' else 0,
+                    months=subscription.recurring_interval if subscription.recurring_rule_type == 'monthly' else 0,
+                    years=subscription.recurring_interval if subscription.recurring_rule_type == 'yearly' else 0
+                )
 
-    @api.model
-    def _subscription_module_installed(self):
-        """Check if external subscription module is available"""
-        return 'sale.subscription' in self.env.registry._init_modules
+    def _compute_invoice_stats(self):
+        for subscription in self:
+            invoices = self.env['account.move'].search([
+                ('subscription_id', '=', subscription.id),
+                ('move_type', '=', 'out_invoice')
+            ])
+            subscription.invoice_count = len(invoices)
+            subscription.total_invoiced = sum(invoices.mapped('amount_total'))
 
-    def action_activate(self):
-        """Activate subscription"""
-        for record in self:
-            # Try to integrate with external subscription module if available
-            if self._subscription_module_installed():
-                record._try_create_external_subscription()
-
-            record.state = 'active'
-            record.message_post(body="Subscription activated")
-
-    def _try_create_external_subscription(self):
-        """Try to create external subscription if module is available"""
-        try:
-            if 'sale.subscription' in self.env:
-                # Create subscription if external module is available
-                subscription_vals = {
-                    'name': self.name,
-                    'partner_id': self.client_id.id,
-                    'date_start': self.start_date,
-                    'recurring_rule_type': self.recurring_rule_type,
-                    'recurring_interval': self.recurring_interval,
-                }
-                subscription = self.env['sale.subscription'].create(subscription_vals)
-                self.external_subscription_id = str(subscription.id)
-
-                # Create subscription lines
-                for line in self.service_line_ids:
-                    line._try_create_external_subscription_line(subscription.id)
-        except Exception as e:
-            # Log error but don't fail activation
-            self.message_post(body=f"Could not create external subscription: {e}")
-
-    def action_generate_invoice(self):
-        """Generate invoice for this period"""
-        for record in self:
-            # Try external subscription first
-            if record.external_subscription_id and self._subscription_module_installed():
-                try:
-                    external_sub = self.env['sale.subscription'].browse(int(record.external_subscription_id))
-                    if external_sub.exists():
-                        external_sub.recurring_invoice()
-                        record.message_post(body="Invoice generated via external subscription")
-                        return
-                except Exception:
-                    pass
-
-            # Fallback to manual invoice creation
-            record._create_manual_invoice()
-
-    def _create_manual_invoice(self):
-        """Create invoice manually without external subscription module"""
+    def action_view_invoices(self):
         self.ensure_one()
-
-        # Create invoice
-        invoice_vals = {
-            'partner_id': self.client_id.id,
-            'move_type': 'out_invoice',
-            'invoice_date': fields.Date.today(),
-            'ref': f"{self.name} - {self.next_invoice_date.strftime('%m/%Y') if self.next_invoice_date else ''}",
-            'narration': f"Service subscription: {self.name}",
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Invoices - {self.name}',
+            'res_model': 'account.move',
+            'view_mode': 'tree,form',
+            'domain': [('subscription_id', '=', self.id)],
+            'context': {'default_subscription_id': self.id}
         }
 
+    def action_generate_invoice(self):
+        """Manually generate invoice for this subscription"""
+        self.ensure_one()
+        if not self.service_line_ids:
+            from odoo.exceptions import UserError
+            raise UserError("Cannot generate invoice without service lines.")
+
+        invoice_vals = self._prepare_invoice_vals()
         invoice = self.env['account.move'].create(invoice_vals)
 
-        # Add invoice lines
+        # Create invoice lines
         for line in self.service_line_ids:
-            product = line._get_or_create_product()
+            line_vals = line._prepare_invoice_line_vals(invoice)
+            self.env['account.move.line'].create(line_vals)
 
-            invoice_line_vals = {
-                'move_id': invoice.id,
-                'product_id': product.id,
-                'name': line.name or line.service_id.name,
-                'quantity': line.quantity,
-                'price_unit': line.unit_price,
-                'account_id': self._get_income_account().id,
-            }
-            self.env['account.move.line'].create(invoice_line_vals)
+        # ИСПРАВЛЕНО: в Odoo 17 достаточно invalidate cache, итоги пересчитываются автоматически
+        invoice.invalidate_recordset(['amount_total', 'amount_untaxed', 'amount_tax'])
 
-        self.message_post(body=f"Manual invoice created: {invoice.name}")
-        return invoice
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Generated Invoice',
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+            'views': [(False, 'form')]
+        }
 
-    def _get_income_account(self):
-        """Get default income account"""
+    def _prepare_invoice_vals(self):
+        """Prepare invoice values"""
+        return {
+            'partner_id': self.client_id.id,
+            'move_type': 'out_invoice',
+            'subscription_id': self.id,
+            'currency_id': self.currency_id.id,
+            'invoice_date': fields.Date.today(),
+            'ref': f'Subscription: {self.name}'
+        }
+
+    def _update_next_invoice_date(self):
+        """Update next invoice date after generating invoice"""
+        for subscription in self:
+            if subscription.recurring_rule_type == 'monthly':
+                subscription.next_invoice_date += relativedelta(months=subscription.recurring_interval)
+            elif subscription.recurring_rule_type == 'yearly':
+                subscription.next_invoice_date += relativedelta(years=subscription.recurring_interval)
+            elif subscription.recurring_rule_type == 'weekly':
+                subscription.next_invoice_date += timedelta(weeks=subscription.recurring_interval)
+            elif subscription.recurring_rule_type == 'daily':
+                subscription.next_invoice_date += timedelta(days=subscription.recurring_interval)
+
+    def _get_default_income_account(self):
+        """Get default income account for invoicing"""
+        # ИСПРАВЛЕНО: более надежный поиск аккаунта дохода
+        # Сначала ищем по коду 7xxx (доходы)
         income_account = self.env['account.account'].search([
             ('account_type', '=', 'income'),
-            ('company_id', '=', self.env.company.id)
+            ('company_id', '=', self.env.company.id),
+            ('deprecated', '=', False)
         ], limit=1)
 
+        # Если не найден income account, ищем по коду 70% (выручка)
         if not income_account:
             income_account = self.env['account.account'].search([
-                ('code', 'like', '7%'),
-                ('company_id', '=', self.env.company.id)
+                ('code', '=like', '70%'),
+                ('company_id', '=', self.env.company.id),
+                ('deprecated', '=', False)
+            ], limit=1)
+
+        # Крайний случай - любой доходный счет
+        if not income_account:
+            income_account = self.env['account.account'].search([
+                ('code', '=like', '7%'),
+                ('company_id', '=', self.env.company.id),
+                ('deprecated', '=', False)
             ], limit=1)
 
         return income_account
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода подписки
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('client.service.subscription.code')
+        return super().create(vals_list)
 
     @api.model
     def cron_generate_invoices(self):
@@ -238,6 +231,8 @@ class ClientServiceSubscriptionLine(models.Model):
     subscription_id = fields.Many2one('client.service.subscription', string='Subscription',
                                       required=True, ondelete='cascade')
     client_id = fields.Many2one(related='subscription_id.client_id', store=True)
+    # ИСПРАВЛЕНО: добавлен related currency_id от subscription
+    currency_id = fields.Many2one(related='subscription_id.currency_id', store=True)
 
     sequence = fields.Integer(string='Sequence', default=10)
     service_id = fields.Many2one('service.catalog', string='Service', required=True)
@@ -263,60 +258,25 @@ class ClientServiceSubscriptionLine(models.Model):
     @api.onchange('service_id')
     def _onchange_service_id(self):
         if self.service_id:
+            # Set default description and price from service catalog
+            self.name = self.service_id.description or self.service_id.name
+            # ИСПРАВЛЕНО: используем sales_price из service.catalog
             self.unit_price = self.service_id.sales_price
-            self.name = self.service_id.name
 
-    def _try_create_external_subscription_line(self, external_subscription_id):
-        """Try to create line in external subscription system"""
-        try:
-            if 'sale.subscription.line' in self.env:
-                product = self._get_or_create_product()
+    def _prepare_invoice_line_vals(self, invoice):
+        """Prepare invoice line values"""
+        # ИСПРАВЛЕНО: добавлена проверка на наличие account
+        account = self.service_id.property_account_income_id or self.subscription_id._get_default_income_account()
+        if not account:
+            from odoo.exceptions import UserError
+            raise UserError(f"No income account found for service '{self.service_id.name}'. "
+                            f"Please configure an income account for this service.")
 
-                line_vals = {
-                    'subscription_id': external_subscription_id,
-                    'product_id': product.id,
-                    'name': self.name or self.service_id.name,
-                    'quantity': self.quantity,
-                    'price_unit': self.unit_price,
-                }
-
-                subscription_line = self.env['sale.subscription.line'].create(line_vals)
-                self.external_line_id = str(subscription_line.id)
-        except Exception as e:
-            # Log error but don't fail
-            self.subscription_id.message_post(body=f"Could not create external subscription line: {e}")
-
-    def _get_or_create_product(self):
-        """Get or create product for this service"""
-        Product = self.env['product.product']
-
-        # Try to find existing product
-        product = Product.search([
-            ('default_code', '=', self.service_id.code),
-            ('name', '=', self.service_id.name)
-        ], limit=1)
-
-        if not product:
-            # Create new product
-            product_vals = {
-                'name': self.service_id.name,
-                'default_code': self.service_id.code,
-                'type': 'service',
-                'list_price': self.service_id.sales_price,
-                'categ_id': self._get_service_category().id,
-            }
-            product = Product.create(product_vals)
-
-        return product
-
-    def _get_service_category(self):
-        """Get or create IT Services product category"""
-        category = self.env['product.category'].search([
-            ('name', '=', 'IT Services')
-        ], limit=1)
-
-        if not category:
-            category = self.env['product.category'].create({
-                'name': 'IT Services',
-            })
-        return category
+        return {
+            'move_id': invoice.id,
+            'name': self.name or self.service_id.name,
+            'quantity': self.quantity,
+            'price_unit': self.unit_price,
+            'account_id': account.id,
+            'subscription_line_id': self.id
+        }

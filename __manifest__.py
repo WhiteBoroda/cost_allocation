@@ -1,50 +1,30 @@
 {
-    'name': 'Розподіл затрат / Cost Allocation',
+    'name': 'Service Cost Allocation',
     'version': '17.0.1.2.0',
     'category': 'Accounting',
-    'summary': 'ABC розрахунок собівартості IT послуг / ABC Cost Allocation for IT Services',
+    'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
-
-
-
-                                                                                    Модуль розрахунку собівартості послуг методом ABC (Activity-Based Costing) для сервісних компаній.
-
-                                                                                    🎯 Підходить для різних типів бізнесу:
-        • IT Services - технічна підтримка, обслуговування обладнання
-        • Legal Services - юридичні послуги, консалтинг  
-        • Accounting Services - бухгалтерські послуги, аудит
-        • Financial Consulting - фінансове планування, аналіз
-        • Construction Services - будівельні послуги, проектування
-        • Technical Expertise - технічна експертиза, оцінка
-
-        🚀 Основні можливості:
-        • ABC Cost Allocation (Activity-Based Costing)
-        • Каталог послуг з автоматичним ціноутворенням
-        • Управління підписками з автоматичним виставленням рахунків
-        • Interactive Dashboard з KPI та аналітикою
-        • Підтримка Дія.City податкових ставок
-        • Автоматизація через cron jobs
-        • Система безпеки з 3 рівнями доступу
-
-        Activity-Based Costing module for IT service companies.
+        Activity-Based Costing module for service companies.
         Allocates direct and indirect costs to clients based on cost drivers.
         Supports subscription billing and interactive dashboard with KPI analytics.
 
-        v1.2.0 MAJOR UPDATE:
-        - Multi-company support with proper data isolation
-        - Company-level Dія.City tax settings (instead of per-employee)
-        - Security rules for holding company structure
-        - Bulk services wizard for mass deployment
-        - Fixed subscription module dependencies
+        v1.2.0 AUTOMATIC CODE GENERATION:
+        - Added automatic code generation for all entities
+        - Created configurable sequence prefixes (CAT-, SRV-, ST-, CS-, SUB-, CP-, CD-, CA-, EC-)
+        - Added sequence configuration interface for easy prefix management
+        - All new records get automatic codes: Service Category, Service Catalog, Service Type, Client Service, Subscriptions, Cost Pools, Cost Drivers, Cost Allocations
+        - Backward compatible: existing records keep their current codes
+        - Fixed subscription views and currency display issues
     """,
     'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale'],
     'data': [
         'security/security.xml',
-        'security/security_rules.xml',
-        'security/ir.model.access.csv',
+        'data/sequence_data.xml',  # ДОБАВЛЕНО: нумераторы
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
+        'security/security_rules.xml',
+        'security/ir.model.access.csv',
         'data/cron_data.xml',
         'views/actions.xml',
         'views/billing_views.xml',
@@ -57,6 +37,7 @@
         'views/partner_views.xml',
         'views/company_views.xml',
         'views/dashboard_views.xml',
+        'views/sequence_config_views.xml',  # ДОБАВЛЕНО: настройки нумераторов
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
         'views/service_views.xml',

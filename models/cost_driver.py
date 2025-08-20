@@ -6,9 +6,10 @@ class CostDriver(models.Model):
     _name = 'cost.driver'
     _description = 'Cost Driver Configuration'
     _rec_name = 'name'
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 
     name = fields.Char(string='Driver Name', required=True)
-    code = fields.Char(string='Code', required=True)
+    code = fields.Char(string='Driver Code', readonly=True, copy=False)  # ИЗМЕНЕНО: readonly, copy=False
     description = fields.Text(string='Description')
 
     pool_id = fields.Many2one('cost.pool', string='Related Pool', required=True)
@@ -24,8 +25,13 @@ class CostDriver(models.Model):
     total_quantity = fields.Float(string='Total Quantity', compute='_compute_totals', store=True)
     cost_per_unit = fields.Float(string='Cost per Unit', compute='_compute_totals', store=True)
 
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
+                                  default=lambda self: self.env.company.currency_id)
     active = fields.Boolean(default=True)
+
+    # ДОБАВЛЕНО: поле company_id для multi-company
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
 
     @api.depends('client_driver_ids.quantity', 'pool_id.total_monthly_cost')
     def _compute_totals(self):
@@ -35,6 +41,14 @@ class CostDriver(models.Model):
                 driver.cost_per_unit = driver.pool_id.total_monthly_cost / driver.total_quantity
             else:
                 driver.cost_per_unit = 0.0
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('cost.driver.code')
+        return super().create(vals_list)
 
     _sql_constraints = [
         ('unique_code', 'unique(code)', 'Driver code must be unique!'),

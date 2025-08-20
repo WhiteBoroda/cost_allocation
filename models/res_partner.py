@@ -31,10 +31,12 @@ class ResPartner(models.Model):
         ('new', 'New Client')
     ], string='Cost Trend', compute='_compute_cost_trend')
 
-    @api.depends('client_service_ids.active', 'subscription_ids.state')
+    # ИСПРАВЛЕНО: поле client.service называется 'status', а не 'active'
+    @api.depends('client_service_ids.status', 'subscription_ids.state')
     def _compute_service_stats(self):
         for partner in self:
-            partner.service_count = len(partner.client_service_ids.filtered('active'))
+            # ИСПРАВЛЕНО: используем status='active' вместо поля 'active'
+            partner.service_count = len(partner.client_service_ids.filtered(lambda s: s.status == 'active'))
             partner.subscription_count = len(partner.subscription_ids.filtered(lambda s: s.state == 'active'))
 
     @api.depends('cost_allocation_ids.total_cost', 'cost_allocation_ids.period_date')

@@ -10,3 +10,5 @@ from . import subscription
 from . import res_partner
 from . import res_company
 from . import company_fields
+from . import account_move
+from . import sequence_config
