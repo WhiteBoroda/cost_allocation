@@ -1,4 +1,4 @@
-
+from . import sequence_config
 from . import employee_cost
 from . import cost_pool
 from . import cost_driver
@@ -11,4 +11,3 @@ from . import res_partner
 from . import res_company
 from . import company_fields
 from . import account_move
-from . import sequence_config

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Multiple Services Wizard Form -->
+    <record id="view_add_multiple_services_wizard_form" model="ir.ui.view">
+        <field name="name">add.multiple.services.wizard.form</field>
+        <field name="model">add.multiple.services.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Multiple Services">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="subscription_id" readonly="1"/>
+                        </h1>
+                        <h2>Add Multiple Services</h2>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="default_quantity"/>
+                            <field name="default_unit_price"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Select Services">
+                            <!-- ИСПРАВЛЕНО: использование правильного widget для множественного выбора -->
+                            <field name="service_ids" widget="many2many_checkboxes">
+                                <tree string="Available Services"
+                                      decoration-info="complexity_level == 'low'"
+                                      decoration-warning="complexity_level == 'medium'"
+                                      decoration-danger="complexity_level in ['high', 'critical']">
+                                    <field name="category_id"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="complexity_level" widget="badge"/>
+                                    <field name="sales_price" widget="monetary"/>
+                                    <field name="unit_of_measure"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Selected Services Preview" invisible="not service_ids">
+                            <field name="service_ids" readonly="1">
+                                <tree string="Selected Services" create="false" delete="false" edit="false">
+                                    <field name="category_id"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="sales_price" widget="monetary"/>
+                                    <field name="unit_of_measure"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <footer>
+                    <button name="action_add_services" type="object" string="Add Services"
+                            class="btn-primary" invisible="not service_ids"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for the wizard -->
+    <record id="action_add_multiple_services_wizard" model="ir.actions.act_window">
+        <field name="name">Add Multiple Services</field>
+        <field name="res_model">add.multiple.services.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_subscription_id': active_id}</field>
+    </record>
+</odoo>

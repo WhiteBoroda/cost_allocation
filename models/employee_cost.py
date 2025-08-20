@@ -6,7 +6,10 @@ class EmployeeCost(models.Model):
     _name = 'cost.employee'
     _description = 'Employee Cost Configuration'
     _rec_name = 'employee_id'
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 
+    # ДОБАВЛЕНО: поле кода
+    code = fields.Char(string='Employee Cost Code', readonly=True, copy=False)
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True)
 
     # Основные поля - зарплата уже включает все налоги
@@ -94,6 +97,14 @@ class EmployeeCost(models.Model):
         for record in self:
             if record.monthly_hours <= 0:
                 raise ValidationError('Monthly hours must be greater than 0')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('cost.employee.code')
+        return super().create(vals_list)
 
     def action_update_from_contract(self):
         """Manual action to update from contract"""

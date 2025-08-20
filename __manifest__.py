@@ -1,6 +1,6 @@
 {
     'name': 'Service Cost Allocation',
-    'version': '17.0.1.2.0',
+    'version': '17.0.1.2.1',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -8,14 +8,14 @@
         Allocates direct and indirect costs to clients based on cost drivers.
         Supports subscription billing and interactive dashboard with KPI analytics.
 
-        v1.2.0 AUTOMATIC CODE GENERATION:
+        v1.2.1 AUTOMATIC CODE GENERATION + MULTIPLE SERVICES SELECTION:
         - Added automatic code generation for all entities
         - Created configurable sequence prefixes (CAT-, SRV-, ST-, CS-, SUB-, CP-, CD-, CA-, EC-)
         - Added sequence configuration interface for easy prefix management
         - All new records get automatic codes: Service Category, Service Catalog, Service Type, Client Service, Subscriptions, Cost Pools, Cost Drivers, Cost Allocations
+        - New: Добавлен множественный выбор сервисов в подписках 
         - Backward compatible: existing records keep their current codes
-        - Fixed subscription views and currency display issues
-    """,
+        - Fixed subscription views and currency display issues    """,
     'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale'],
     'data': [
         'security/security.xml',
@@ -33,11 +33,12 @@
         'views/employee_cost_views.xml',
         'views/client_allocation_views.xml',
         'views/service_catalog_views.xml',
-        'views/subscription_views.xml',
         'views/partner_views.xml',
         'views/company_views.xml',
         'views/dashboard_views.xml',
         'views/sequence_config_views.xml',  # ДОБАВЛЕНО: настройки нумераторов
+        'views/add_multiple_services_wizard_views.xml',
+        'views/subscription_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
         'views/service_views.xml',

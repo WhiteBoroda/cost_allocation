@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Service Subscriptions" decoration-success="state == 'active'"
                   decoration-muted="state == 'terminated'" decoration-warning="state == 'paused'">
-                <field name="code"/>  <!-- ДОБАВЛЕНО: поле кода -->
+                <field name="code"/>
                 <field name="name"/>
                 <field name="client_id"/>
                 <field name="start_date"/>
@@ -26,7 +26,6 @@
         <field name="arch" type="xml">
             <form string="Service Subscription">
                 <header>
-                    <!-- ИСПРАВЛЕНО: простые кнопки без проблемных методов -->
                     <button name="action_generate_invoice" type="object" string="Generate Invoice"
                             class="btn-primary" invisible="state != 'active'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,paused,terminated"/>
@@ -41,46 +40,77 @@
                             <field name="code" readonly="1" class="badge badge-info"/>
                         </h2>
                     </div>
+
                     <group>
                         <group>
                             <field name="client_id"/>
                             <field name="start_date"/>
                             <field name="end_date"/>
-                        </group>
-                        <group>
-                            <field name="recurring_interval"/>
-                            <field name="recurring_rule_type"/>
                             <field name="auto_invoice"/>
-                            <field name="invoice_day" invisible="recurring_rule_type != 'monthly'"/>
+                            <field name="invoice_day" invisible="not auto_invoice"/>
                         </group>
-                    </group>
-                    <group>
                         <group>
+                            <field name="recurring_rule_type"/>
+                            <field name="recurring_interval"/>
                             <field name="total_amount" widget="monetary"/>
                             <field name="currency_id"/>
                             <field name="next_invoice_date"/>
                         </group>
                     </group>
+
                     <notebook>
                         <page string="Service Lines">
+                            <!-- ДОБАВЛЕНО: Кнопка для множественного добавления сервисов -->
+                            <div class="oe_button_box" style="margin-bottom: 10px;">
+                                <button name="%(action_add_multiple_services_wizard)d"
+                                        type="action"
+                                        string="Add Multiple Services"
+                                        class="btn-primary"
+                                        icon="fa-plus"
+                                        context="{'default_subscription_id': active_id}"/>
+                            </div>
+
                             <field name="service_line_ids">
-                                <tree editable="bottom">
+                                <tree string="Service Lines" editable="bottom"
+                                      decoration-info="quantity == 0"
+                                      decoration-success="total_price > 0">
                                     <field name="sequence" widget="handle"/>
-                                    <field name="service_id"/>
+                                    <field name="service_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
                                     <field name="name"/>
                                     <field name="quantity"/>
                                     <field name="unit_price" widget="monetary"/>
-                                    <field name="total_price" widget="monetary"/>
+                                    <field name="total_price" widget="monetary" readonly="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
                                 </tree>
+                                <form string="Service Line">
+                                    <group>
+                                        <group>
+                                            <field name="service_id"/>
+                                            <field name="name"/>
+                                            <field name="sequence"/>
+                                        </group>
+                                        <group>
+                                            <field name="quantity"/>
+                                            <field name="unit_price" widget="monetary"/>
+                                            <field name="total_price" widget="monetary" readonly="1"/>
+                                            <field name="currency_id"/>
+                                        </group>
+                                    </group>
+                                </form>
                             </field>
                         </page>
+
                         <page string="Invoicing">
                             <group>
                                 <group>
-                                    <field name="invoice_count"/>
-                                    <field name="total_invoiced" widget="monetary"/>
+                                    <field name="auto_invoice"/>
+                                    <field name="invoice_day" invisible="not auto_invoice"/>
+                                    <field name="next_invoice_date"/>
                                 </group>
                                 <group>
+                                    <field name="total_invoiced" widget="monetary"/>
+                                    <field name="invoice_count"/>
                                     <button name="action_view_invoices" type="object"
                                             string="View Invoices"
                                             class="btn-secondary"

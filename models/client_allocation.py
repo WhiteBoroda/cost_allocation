@@ -8,8 +8,10 @@ class ClientCostAllocation(models.Model):
     _description = 'Client Cost Allocation'
     _order = 'period_date desc, client_id'
     _rec_name = 'display_name'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'sequence.helper']  # ДОБАВЛЕНО: sequence.helper
 
+    # ДОБАВЛЕНО: поле кода
+    code = fields.Char(string='Allocation Code', readonly=True, copy=False)
     client_id = fields.Many2one('res.partner', string='Client', required=True,
                                 domain=[('is_company', '=', True)], tracking=True)
     period_date = fields.Date(string='Period', required=True, default=fields.Date.today, tracking=True)
@@ -75,6 +77,14 @@ class ClientCostAllocation(models.Model):
     def _compute_total_cost(self):
         for record in self:
             record.total_cost = record.direct_cost + record.indirect_cost + record.admin_cost
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # ДОБАВЛЕНО: автогенерация кода
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('client.cost.allocation.code')
+        return super().create(vals_list)
 
     def action_calculate_costs(self):
         """Calculate all costs for this allocation"""
