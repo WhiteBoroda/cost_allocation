@@ -42,7 +42,7 @@
                             <field name="active"/>
                         </group>
                     </group>
-                    <group string="Pricing">
+                    <group string="Pricing" name="pricing">
                         <group>
                             <field name="base_cost" widget="monetary"/>
                             <field name="markup_percent"/>

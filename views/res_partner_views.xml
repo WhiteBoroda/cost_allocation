@@ -107,7 +107,7 @@
         </field>
     </record>
 
-    <!-- Partner Kanban View Extension - упрощенная версия без t-esc -->
+    <!-- Partner Kanban View Extension -->
     <record id="view_partner_kanban_cost_allocation" model="ir.ui.view">
         <field name="name">res.partner.kanban.cost_allocation</field>
         <field name="model">res.partner</field>

@@ -85,7 +85,7 @@
         <field name="model">service.catalog</field>
         <field name="inherit_id" ref="view_service_catalog_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//group[@string='Pricing']" position="after">
+            <xpath expr="//group[@name='pricing']" position="after">
                 <group string="Cost Calculation">
                     <group>
                         <field name="cost_calculation_method"/>
