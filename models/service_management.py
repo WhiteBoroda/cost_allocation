@@ -3,7 +3,7 @@ from odoo import models, fields, api
 
 class ServiceType(models.Model):
     _name = 'service.type'
-    _description = 'IT Service Type'
+    _description = 'Service Type'
     _order = 'category_id, sequence, name'
     _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
 

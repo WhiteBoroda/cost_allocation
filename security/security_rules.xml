@@ -62,7 +62,7 @@
     <record id="client_service_subscription_company_rule" model="ir.rule">
         <field name="name">Client Service Subscription: company rule</field>
         <field name="model_id" ref="model_client_service_subscription"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="domain_force">[('client_id.company_id', 'in', company_ids)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
     </record>
 

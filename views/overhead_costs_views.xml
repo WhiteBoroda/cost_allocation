@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Company Overhead Cost Views -->
+    <record id="view_company_overhead_cost_tree" model="ir.ui.view">
+        <field name="name">company.overhead.cost.tree</field>
+        <field name="model">company.overhead.cost</field>
+        <field name="arch" type="xml">
+            <tree string="Company Overhead Costs"
+                  decoration-info="state=='draft'"
+                  decoration-success="state=='active'"
+                  decoration-muted="state=='expired'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="cost_type"/>
+                <field name="monthly_amount" widget="monetary"/>
+                <field name="pool_id"/>
+                <field name="allocation_amount" widget="monetary"/>
+                <field name="state" widget="badge"
+                       decoration-info="state=='draft'"
+                       decoration-success="state=='active'"
+                       decoration-danger="state=='expired'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_company_overhead_cost_form" model="ir.ui.view">
+        <field name="name">company.overhead.cost.form</field>
+        <field name="model">company.overhead.cost</field>
+        <field name="arch" type="xml">
+            <form string="Company Overhead Cost">
+                <header>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="btn-primary" invisible="[('state', '!=', 'draft')]"/>
+                    <button name="action_expire" type="object" string="Mark as Expired"
+                            class="btn-secondary" invisible="[('state', '!=', 'active')]"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. Office Rent - Kyiv Center"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="code" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="cost_type"/>
+                            <field name="monthly_amount" widget="monetary"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <group string="Cost Allocation">
+                        <group>
+                            <field name="pool_id" required="1"/>
+                            <field name="allocation_method"/>
+                        </group>
+                        <group>
+                            <field name="allocation_percentage"
+                                   invisible="[('allocation_method', '!=', 'percentage')]"/>
+                            <field name="allocation_amount" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Supplier Information" groups="base.group_user">
+                        <group>
+                            <field name="supplier_id"/>
+                            <field name="contract_reference"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <field name="description" placeholder="Additional details about this cost..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_company_overhead_cost_search" model="ir.ui.view">
+        <field name="name">company.overhead.cost.search</field>
+        <field name="model">company.overhead.cost</field>
+        <field name="arch" type="xml">
+            <search string="Search Overhead Costs">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="cost_type"/>
+                <field name="supplier_id"/>
+
+                <separator/>
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+
+                <separator/>
+                <filter string="Rent" name="rent" domain="[('cost_type', '=', 'rent')]"/>
+                <filter string="Software" name="software" domain="[('cost_type', '=', 'software')]"/>
+                <filter string="Transport" name="transport" domain="[('cost_type', '=', 'transport')]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Cost Type" name="group_cost_type" context="{'group_by': 'cost_type'}"/>
+                    <filter string="Cost Pool" name="group_pool" context="{'group_by': 'pool_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Extended Cost Pool Form -->
+    <record id="view_cost_pool_form_overhead" model="ir.ui.view">
+        <field name="name">cost.pool.form.overhead</field>
+        <field name="model">cost.pool</field>
+        <field name="inherit_id" ref="view_cost_pool_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Overhead Costs">
+                    <group>
+                        <div class="alert alert-info">
+                            <p><strong>Overhead Costs:</strong> Additional company expenses allocated to this cost pool</p>
+                            <p><strong>Total Overhead:</strong> <field name="total_overhead_cost" widget="monetary" readonly="1"/></p>
+                        </div>
+                    </group>
+                    <field name="overhead_allocation_ids">
+                        <tree string="Overhead Allocations" create="false" delete="false">
+                            <field name="overhead_cost_id"/>
+                            <field name="monthly_cost" widget="monetary"/>
+                            <field name="allocation_date"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_company_overhead_cost" model="ir.actions.act_window">
+        <field name="name">Company Overhead Costs</field>
+        <field name="res_model">company.overhead.cost</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first overhead cost!
+            </p>
+            <p>
+                Track company overhead costs like office rent, utilities, software subscriptions,
+                vehicle costs, and other indirect expenses. These costs will be allocated to
+                cost pools for proper service pricing.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -41,7 +41,7 @@
               action="action_client_service_subscription"
               sequence="30"/>
 
-    <!-- ИСПРАВЛЕННОЕ МЕНЮ BULK SERVICES -->
+
     <menuitem id="menu_bulk_add_services"
               name="Bulk Add Services"
               parent="menu_service_catalog"
@@ -101,5 +101,19 @@
               parent="menu_cost_allocation_operations"
               action="action_cost_report_wizard"
               sequence="30"/>
+
+        <!-- Company Overhead Costs Menu -->
+    <menuitem id="menu_company_overhead_costs"
+              name="Company Overhead Costs"
+              parent="menu_cost_allocation_config"
+              action="action_company_overhead_cost"
+              sequence="25"/>
+
+    <!-- Service Cost Calculation Menu -->
+    <menuitem id="menu_service_cost_calculation"
+              name="Service Cost Calculations"
+              parent="menu_cost_allocation_config"
+              action="action_service_cost_calculation"
+              sequence="55"/>
 
 </odoo>

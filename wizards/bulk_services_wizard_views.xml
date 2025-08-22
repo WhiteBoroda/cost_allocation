@@ -23,8 +23,8 @@
                 </group>
 
                 <!-- Template Configuration -->
-                <group string="Template Configuration" invisible="add_template == 'custom'">
-                    <group invisible="add_template != 'workstations'">
+                <group string="Template Configuration" invisible="[('add_template', '=', 'custom')]">
+                    <group invisible="[('add_template', '!=', 'workstations')]">
                         <field name="workstation_count"/>
                         <field name="user_count"/>
                         <field name="printer_count"/>
@@ -32,21 +32,33 @@
                 </group>
 
                 <!-- Services to Add -->
-                <group string="Services to Add">
-                    <field name="service_line_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="service_type_id"
-                                   options="{'no_create': True, 'no_open': True}"/>
-                            <field name="name" placeholder="Custom name (optional)"/>
-                            <field name="quantity"/>
-                            <field name="location" placeholder="Office, Server room, etc."/>
-                            <field name="auto_assign" widget="boolean_toggle"/>
-                            <field name="force_create" widget="boolean_toggle"/>
-                        </tree>
-                    </field>
-                </group>
+                <separator string="Services to Add" colspan="2"/>
+                <field name="service_line_ids" nolabel="1" colspan="2">
+                    <tree string="Services to Add" editable="bottom" create="true" delete="true">
+                        <field name="service_type_id"
+                               string="Service Type"
+                               domain="[('active', '=', True)]"
+                               options="{'no_create': True, 'no_open': True}"
+                               required="1"/>
+                        <field name="name"
+                               string="Custom Name"
+                               placeholder="Leave empty for default name"/>
+                        <field name="quantity"
+                               string="Quantity"
+                               required="1"/>
+                        <field name="location"
+                               string="Location"
+                               placeholder="Office, Room, etc."/>
+                        <field name="auto_assign"
+                               string="Auto Team"
+                               widget="boolean_toggle"/>
+                        <field name="force_create"
+                               string="Force New"
+                               widget="boolean_toggle"/>
+                    </tree>
+                </field>
 
-                <div class="alert alert-warning mt-3" invisible="not service_line_ids">
+                <div class="alert alert-warning mt-3" invisible="[('service_line_ids', '=', [])]">
                     <p><strong>Preview:</strong> This will create <strong><field name="service_count"/> service types</strong>
                        for <strong><field name="client_count"/> clients</strong>
                        = <strong><field name="total_services"/> total services</strong></p>
@@ -63,8 +75,6 @@
         </field>
     </record>
 
-
-    <!-- Menu Item -->
     <!-- Action -->
     <record id="action_bulk_services_wizard" model="ir.actions.act_window">
         <field name="name">Bulk Add Services</field>
@@ -73,6 +83,5 @@
         <field name="target">new</field>
         <field name="view_id" ref="view_bulk_services_wizard_form"/>
     </record>
-
 
 </odoo>

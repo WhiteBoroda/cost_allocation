@@ -39,6 +39,8 @@
         'views/sequence_config_views.xml',  # ДОБАВЛЕНО: настройки нумераторов
         'views/add_multiple_services_wizard_views.xml',
         'views/subscription_views.xml',
+        'views/overhead_costs_views.xml',
+        'views/service_costing_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
         'views/service_views.xml',

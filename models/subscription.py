@@ -52,9 +52,6 @@ class ClientServiceSubscription(models.Model):
     total_invoiced = fields.Float(string='Total Invoiced', compute='_compute_invoice_stats')
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_stats')
 
-    # ИСПРАВЛЕНО: добавлено поле company_id
-    company_id = fields.Many2one('res.company', string='Company', required=True,
-                                 default=lambda self: self.env.company)
 
     @api.depends('service_line_ids.total_price')
     def _compute_total_amount(self):

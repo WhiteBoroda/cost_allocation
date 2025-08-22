@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Service Cost Calculation Views -->
+    <record id="view_service_cost_calculation_tree" model="ir.ui.view">
+        <field name="name">service.cost.calculation.tree</field>
+        <field name="model">service.cost.calculation</field>
+        <field name="arch" type="xml">
+            <tree string="Service Cost Calculations">
+                <field name="service_catalog_id"/>
+                <field name="calculation_date"/>
+                <field name="calculation_method"/>
+                <field name="estimated_hours_per_unit"/>
+                <field name="direct_cost_per_unit" widget="monetary"/>
+                <field name="indirect_cost_per_unit" widget="monetary"/>
+                <field name="admin_cost_per_unit" widget="monetary"/>
+                <field name="overhead_cost_per_unit" widget="monetary"/>
+                <field name="total_cost_per_unit" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_service_cost_calculation_form" model="ir.ui.view">
+        <field name="name">service.cost.calculation.form</field>
+        <field name="model">service.cost.calculation</field>
+        <field name="arch" type="xml">
+            <form string="Service Cost Calculation">
+                <header>
+                    <button name="action_calculate_costs" type="object" string="Calculate Costs"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="service_catalog_id" readonly="1"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="calculation_date"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Calculation Parameters">
+                            <field name="calculation_method"/>
+                            <field name="estimated_hours_per_unit"
+                                   invisible="[('calculation_method', '!=', 'time_based')]"/>
+                            <field name="complexity_multiplier"
+                                   invisible="[('calculation_method', '!=', 'complexity_based')]"/>
+                            <field name="blended_hourly_rate" widget="monetary" readonly="1"
+                                   invisible="[('calculation_method', '==', 'unit_based')]"/>
+                        </group>
+                        <group string="Total Cost">
+                            <field name="total_cost_per_unit" widget="monetary" readonly="1"
+                                   class="oe_subtotal_footer_separator"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+
+                    <group string="Cost Breakdown">
+                        <group>
+                            <field name="direct_cost_per_unit" widget="monetary" readonly="1"/>
+                            <field name="indirect_cost_per_unit" widget="monetary" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="admin_cost_per_unit" widget="monetary" readonly="1"/>
+                            <field name="overhead_cost_per_unit" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info mt-3">
+                        <h5><i class="fa fa-info-circle"/> ABC Costing Methodology</h5>
+                        <p><strong>Direct Costs:</strong> Labor costs based on responsible team hourly rates</p>
+                        <p><strong>Indirect Costs:</strong> Shared resources allocated via cost drivers</p>
+                        <p><strong>Admin Costs:</strong> Administrative overhead (typically 15% of direct+indirect)</p>
+                        <p><strong>Overhead Costs:</strong> Company expenses (rent, utilities, software, etc.)</p>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Extended Service Catalog Form -->
+    <record id="view_service_catalog_form_costing" model="ir.ui.view">
+        <field name="name">service.catalog.form.costing</field>
+        <field name="model">service.catalog</field>
+        <field name="inherit_id" ref="view_service_catalog_form"/>
+        <field name="arch" type="xml">
+            <group string="Pricing" position="after">
+                <group string="Cost Calculation">
+                    <group>
+                        <field name="cost_calculation_method"/>
+                        <field name="last_calculation_date" readonly="1"/>
+                    </group>
+                    <group>
+                        <button name="action_calculate_cost" type="object"
+                                string="Calculate Cost" class="btn-primary"
+                                icon="fa-calculator"/>
+                        <button name="action_view_calculations" type="object"
+                                string="View History" class="btn-secondary"
+                                icon="fa-history"
+                                invisible="[('last_calculation_date', '=', False)]"/>
+                    </group>
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <!-- Service Cost Calculation Search -->
+    <record id="view_service_cost_calculation_search" model="ir.ui.view">
+        <field name="name">service.cost.calculation.search</field>
+        <field name="model">service.cost.calculation</field>
+        <field name="arch" type="xml">
+            <search string="Search Cost Calculations">
+                <field name="service_catalog_id"/>
+                <field name="calculation_date"/>
+
+                <separator/>
+                <filter string="This Month" name="this_month"
+                        domain="[('calculation_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-01'))]"/>
+                <filter string="Time-based" name="time_based" domain="[('calculation_method', '=', 'time_based')]"/>
+                <filter string="Unit-based" name="unit_based" domain="[('calculation_method', '=', 'unit_based')]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Service" name="group_service" context="{'group_by': 'service_catalog_id'}"/>
+                    <filter string="Method" name="group_method" context="{'group_by': 'calculation_method'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'calculation_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_service_cost_calculation" model="ir.actions.act_window">
+        <field name="name">Service Cost Calculations</field>
+        <field name="res_model">service.cost.calculation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Calculate service costs using ABC methodology!
+            </p>
+            <p>
+                Use Activity-Based Costing to calculate accurate service costs
+                including direct labor, indirect costs, administrative overhead,
+                and company expenses.
+            </p>
+        </field>
+    </record>
+
+</odoo>

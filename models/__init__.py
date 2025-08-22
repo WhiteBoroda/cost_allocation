@@ -11,3 +11,5 @@ from . import res_partner
 from . import res_company
 from . import company_fields
 from . import account_move
+from . import overhead_costs
+from . import service_costing
