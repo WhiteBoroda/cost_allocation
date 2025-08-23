@@ -64,7 +64,6 @@ class ServiceCostingSetupWizard(models.TransientModel):
                 self.env['cost.employee'].create({
                     'employee_id': employee.id,
                     'monthly_hours': 168.0,
-                    'is_diia_city_own': True,  # Default for Ukrainian companies
                 })
 
     def _setup_cost_pools(self):

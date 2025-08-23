@@ -110,4 +110,69 @@
         </field>
     </record>
 
+    <!-- Action for Sequence Configuration -->
+    <record id="action_sequence_config" model="ir.actions.act_window">
+        <field name="name">Code Sequence Configuration</field>
+        <field name="res_model">sequence.config</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure automatic code generation!
+            </p>
+            <p>
+                Set custom prefixes for all automatic codes in the system.
+                This helps maintain consistent numbering across your organization.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sequences Management Menu -->
+    <record id="action_ir_sequence_cost_allocation" model="ir.actions.act_window">
+        <field name="name">Sequences</field>
+        <field name="res_model">ir.sequence</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('code', 'like', 'cost_allocation.%'), '|', ('code', 'like', 'service.%'), ('code', 'like', 'client.%')]</field>
+        <field name="context">{'search_default_code': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage sequence numbering!
+            </p>
+            <p>
+                View and edit sequence configurations for automatic code generation.
+                Advanced users can modify numbering patterns and reset counters.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_cost_allocation_settings" model="ir.actions.act_window">
+        <field name="name">Cost Allocation Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cost.allocation.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'cost_allocation'}</field>
+    </record>
+
+    <record id="action_holding_companies" model="ir.actions.act_window">
+        <field name="name">Holding Companies</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('is_company', '=', True), ('parent_id', '=', False)]</field>
+        <field name="context">{
+            'default_is_company': True,
+            'search_default_is_company': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add companies to your holding structure!
+            </p>
+            <p>
+                These are the main companies in your holding that you provide services to.
+                Use this to manage your holding structure and client relationships.
+            </p>
+        </field>
+    </record>
+
+
 </odoo>

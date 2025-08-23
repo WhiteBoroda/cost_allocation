@@ -41,18 +41,41 @@
               action="action_client_service_subscription"
               sequence="30"/>
 
-
     <menuitem id="menu_bulk_add_services"
               name="Bulk Add Services"
               parent="menu_service_catalog"
               action="action_bulk_services_wizard"
               sequence="35"/>
 
+    <menuitem id="menu_holding_companies"
+              name="Holding Companies"
+              parent="menu_service_catalog"
+              action="action_holding_companies"
+              sequence="40"/>
+
+
     <!-- Configuration Menu -->
+
     <menuitem id="menu_cost_allocation_config"
               name="Configuration"
               parent="menu_cost_allocation_root"
               sequence="20"/>
+
+
+    <menuitem id="menu_cost_allocation_settings"
+              name="Settings"
+              parent="menu_cost_allocation_config"
+              action="action_cost_allocation_settings"
+              sequence="1"/>
+
+
+    <menuitem id="menu_setup_wizard"
+              name="Setup Wizard"
+              parent="menu_cost_allocation_config"
+              action="action_service_costing_setup_wizard"
+              sequence="5"/>
+
+
 
     <menuitem id="menu_employee_costs"
               name="Employee Costs"
@@ -64,7 +87,7 @@
               name="Cost Pools"
               parent="menu_cost_allocation_config"
               action="action_cost_pool"
-              sequence="20"/>
+              sequence="22"/>
 
     <menuitem id="menu_cost_drivers"
               name="Cost Drivers"
@@ -77,6 +100,33 @@
               parent="menu_cost_allocation_config"
               action="action_employee_workload"
               sequence="40"/>
+
+    <!-- Company Overhead Costs Menu -->
+    <menuitem id="menu_company_overhead_costs"
+              name="Company Overhead Costs"
+              parent="menu_cost_allocation_config"
+              action="action_company_overhead_cost"
+              sequence="25"/>
+
+    <!-- Service Cost Calculation Menu -->
+    <menuitem id="menu_service_cost_calculation"
+              name="Service Cost Calculations"
+              parent="menu_cost_allocation_config"
+              action="action_service_cost_calculation"
+              sequence="55"/>
+
+    <menuitem id="menu_sequence_config"
+              name="Code Sequences"
+              parent="menu_cost_allocation_config"
+              action="action_sequence_config"
+              sequence="99"/>
+
+    <menuitem id="menu_ir_sequence_cost_allocation"
+              name="Advanced Sequences"
+              parent="menu_cost_allocation_config"
+              action="action_ir_sequence_cost_allocation"
+              sequence="100"/>
+
 
     <!-- Operations Menu -->
     <menuitem id="menu_cost_allocation_operations"
@@ -102,18 +152,5 @@
               action="action_cost_report_wizard"
               sequence="30"/>
 
-        <!-- Company Overhead Costs Menu -->
-    <menuitem id="menu_company_overhead_costs"
-              name="Company Overhead Costs"
-              parent="menu_cost_allocation_config"
-              action="action_company_overhead_cost"
-              sequence="25"/>
-
-    <!-- Service Cost Calculation Menu -->
-    <menuitem id="menu_service_cost_calculation"
-              name="Service Cost Calculations"
-              parent="menu_cost_allocation_config"
-              action="action_service_cost_calculation"
-              sequence="55"/>
 
 </odoo>

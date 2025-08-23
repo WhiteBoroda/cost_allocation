@@ -55,8 +55,8 @@
     </record>
 
     <!-- Partner tree view with holding filter -->
-    <record id="view_partner_tree_holding_clients" model="ir.ui.view">
-        <field name="name">res.partner.tree.holding.clients</field>
+    <record id="view_partner_tree_holding_companies" model="ir.ui.view">
+        <field name="name">res.partner.tree.holding.companies</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
@@ -67,30 +67,7 @@
     </record>
 
     <!-- Add action for viewing only client companies -->
-    <record id="action_holding_clients" model="ir.actions.act_window">
-        <field name="name">Client Companies</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[('is_company', '=', True)]</field>
-        <field name="context">{
-            'default_is_company': True,
-            'search_default_customer': 1
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add your first client company!
-            </p>
-            <p>
-                These are the companies you provide services to within the holding structure.
-            </p>
-        </field>
-    </record>
 
     <!-- Menu for client companies -->
-    <menuitem id="menu_holding_clients"
-              name="Client Companies"
-              parent="menu_service_catalog"
-              action="action_holding_clients"
-              sequence="5"/>
 
 </odoo>

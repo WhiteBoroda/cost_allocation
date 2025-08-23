@@ -175,19 +175,6 @@
         </field>
     </record>
 
-    <record id="action_cost_allocation_settings" model="ir.actions.act_window">
-        <field name="name">Cost Allocation Settings</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">cost.allocation.settings</field>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
-        <field name="context">{'module': 'cost_allocation'}</field>
-    </record>
 
-    <menuitem id="menu_cost_allocation_settings"
-              name="Settings"
-              parent="menu_cost_allocation_config"
-              action="action_cost_allocation_settings"
-              sequence="1"/>
 
 </odoo>

@@ -127,12 +127,20 @@
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Overhead Costs">
-                    <group>
-                        <div class="alert alert-info">
-                            <p><strong>Overhead Costs:</strong> Additional company expenses allocated to this cost pool</p>
-                            <p><strong>Total Overhead:</strong> <field name="total_overhead_cost" widget="monetary" readonly="1"/></p>
+                    <!-- Compact info header -->
+                    <div class="alert alert-info o_form_sheet_bg" style="margin-bottom: 16px;">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <strong>Overhead Costs:</strong> Additional company expenses allocated to this cost pool
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <strong>Total Overhead:</strong>
+                                <field name="total_overhead_cost" widget="monetary" readonly="1" class="text-success"/>
+                            </div>
                         </div>
-                    </group>
+                    </div>
+
+                    <!-- Overhead allocations list -->
                     <field name="overhead_allocation_ids">
                         <tree string="Overhead Allocations" create="false" delete="false">
                             <field name="overhead_cost_id"/>

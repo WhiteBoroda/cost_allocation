@@ -50,53 +50,9 @@
         </field>
     </record>
 
-    <!-- Action for Sequence Configuration -->
-    <record id="action_sequence_config" model="ir.actions.act_window">
-        <field name="name">Code Sequence Configuration</field>
-        <field name="res_model">sequence.config</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Configure automatic code generation!
-            </p>
-            <p>
-                Set custom prefixes for all automatic codes in the system.
-                This helps maintain consistent numbering across your organization.
-            </p>
-        </field>
-    </record>
+
 
     <!-- Menu Item -->
-    <menuitem id="menu_sequence_config"
-              name="Code Sequences"
-              parent="menu_cost_allocation_config"
-              action="action_sequence_config"
-              sequence="99"/>
 
-    <!-- Sequences Management Menu -->
-    <record id="action_ir_sequence_cost_allocation" model="ir.actions.act_window">
-        <field name="name">Sequences</field>
-        <field name="res_model">ir.sequence</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('code', 'like', 'cost_allocation.%'), '|', ('code', 'like', 'service.%'), ('code', 'like', 'client.%')]</field>
-        <field name="context">{'search_default_code': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Manage sequence numbering!
-            </p>
-            <p>
-                View and edit sequence configurations for automatic code generation.
-                Advanced users can modify numbering patterns and reset counters.
-            </p>
-        </field>
-    </record>
-
-    <menuitem id="menu_ir_sequence_cost_allocation"
-              name="Advanced Sequences"
-              parent="menu_cost_allocation_config"
-              action="action_ir_sequence_cost_allocation"
-              sequence="100"
-              groups="base.group_system"/>
 
 </odoo>
