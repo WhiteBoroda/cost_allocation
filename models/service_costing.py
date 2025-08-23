@@ -206,7 +206,9 @@ class ServiceCostCalculation(models.Model):
             working_util = self.env['working.days.util']
             average_working_hours = working_util.get_current_month_working_hours()
 
-        utilization_rate = 0.75  # 75% utilization - это можно сделать настраиваемым
+        utilization_rate = float(self.env['ir.config_parameter'].sudo().get_param(
+            'cost_allocation.utilization_rate', '75.0'
+        )) / 100.0
 
         return total_employees * average_working_hours * utilization_rate
 
@@ -227,8 +229,8 @@ class ServiceCostCalculation(models.Model):
 
         # Get utilization rate from settings (default 75%)
         utilization_rate = float(self.env['ir.config_parameter'].sudo().get_param(
-            'cost_allocation.utilization_rate', '0.75'
-        ))
+            'cost_allocation.utilization_rate', '75.0'
+        )) / 100.0
 
         return total_employees * working_hours_in_period * utilization_rate
 

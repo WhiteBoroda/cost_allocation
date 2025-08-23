@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Cost Allocation Settings Form -->
     <record id="view_cost_allocation_settings_form" model="ir.ui.view">
         <field name="name">cost.allocation.settings.form</field>
         <field name="model">cost.allocation.settings</field>
@@ -11,6 +10,7 @@
                     <button string="Save" type="object" name="execute" class="oe_highlight"/>
                     <button string="Cancel" special="cancel"/>
                 </header>
+
                 <sheet>
                     <div class="app_settings_header" data-key="cost_allocation">
                         <img src="/cost_allocation/static/description/icon.png" alt="Cost Allocation"/>
@@ -21,7 +21,8 @@
                     </div>
 
                     <div class="row mt-3 o_settings_container">
-                        <!-- Administrative Costs Section -->
+
+                        <!-- Auto-generate Codes -->
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_left_pane">
                                 <field name="auto_generate_codes" widget="boolean_toggle"/>
@@ -34,98 +35,137 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- Section Header -->
+                        <div class="col-12">
+                            <h2>Cost Allocation Methods</h2>
+                        </div>
+
+                        <!-- Administrative Cost Method -->
+                        <div class="col-12 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="admin_allocation_method" widget="radio"/>
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for="admin_allocation_method" string="Administrative Cost Method"/>
                                 <div class="text-muted">
                                     Choose how administrative costs are allocated to services
                                 </div>
+                                <field name="admin_allocation_method" widget="radio" options="{'horizontal': false}"/>
 
-                                <div class="content-group mt16" invisible="admin_allocation_method != 'percentage'">
+                                <!-- Percentage input - показывается только при выборе percentage -->
+                                <div class="mt-3" invisible="admin_allocation_method != 'percentage'">
                                     <div class="row">
-                                        <label for="admin_cost_percentage" class="col-3 o_light_label"/>
-                                        <field name="admin_cost_percentage" class="col-2" widget="float"/>
-                                        <span class="col-1">%</span>
+                                        <div class="col-12">
+                                            <label for="admin_cost_percentage" class="o_form_label">
+                                                Admin Cost Percentage
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="input-group">
+                                                <field name="admin_cost_percentage" class="form-control"/>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-muted">
+                                    <div class="text-muted mt-1">
                                         Percentage of direct + indirect costs allocated as administrative costs
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- Overhead Allocation Method -->
+                        <div class="col-12 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="overhead_allocation_method" widget="radio"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="overhead_allocation_method" string="Overhead Allocation"/>
+                                <label for="overhead_allocation_method" string="Overhead Allocation Method"/>
                                 <div class="text-muted">
                                     Method for allocating overhead costs to services
                                 </div>
+                                <field name="overhead_allocation_method" widget="radio" options="{'horizontal': false}"/>
                             </div>
                         </div>
 
-                        <!-- Working Time Defaults Section -->
+                        <!-- Section Header -->
                         <div class="col-12">
                             <h2>Working Time Configuration</h2>
                         </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- Working Hours Method -->
+                        <div class="col-12 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="working_hours_method" widget="radio"/>
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for="working_hours_method" string="Working Hours Calculation"/>
                                 <div class="text-muted">
                                     Method for calculating employee working hours per month
                                 </div>
+                                <field name="working_hours_method" widget="radio" options="{'horizontal': false}"/>
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- Employee Utilization Rate -->
+                        <div class="col-12 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="utilization_rate" widget="percentage"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="utilization_rate"/>
+                                <label for="utilization_rate" string="Employee Utilization Rate"/>
                                 <div class="text-muted">
                                     Expected employee utilization rate for capacity planning
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="default_working_hours_month" widget="float"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="default_working_hours_month"/>
-                                <div class="text-muted">
-                                    Default working hours per month (used as fallback)
+                                <div class="input-group mt-2" style="width: 150px;">
+                                    <field name="utilization_rate" class="form-control"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- Default Working Hours -->
+                        <div class="col-12 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="default_working_days_month" widget="float"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="default_working_days_month"/>
+                                <label for="default_working_hours_month" string="Default Working Hours per Month"/>
+                                <div class="text-muted">
+                                    Default working hours per month (used as fallback)
+                                </div>
+                                <div class="input-group mt-2" style="width: 150px;">
+                                    <field name="default_working_hours_month" class="form-control"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">hrs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Default Working Days -->
+                        <div class="col-12 o_setting_box">
+                            <div class="o_setting_left_pane">
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="default_working_days_month" string="Default Working Days per Month"/>
                                 <div class="text-muted">
                                     Default working days per month (used as fallback)
+                                </div>
+                                <div class="input-group mt-2" style="width: 150px;">
+                                    <field name="default_working_days_month" class="form-control"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">days</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
+                    <!-- Warning Note -->
                     <div class="alert alert-warning mt-3" invisible="admin_allocation_method != 'percentage'">
-                        <i class="fa fa-warning"/> <strong>Note:</strong>
+                        <i class="fa fa-warning"/>
+                        <strong>Note:</strong>
                         Changing the administrative cost percentage will affect future cost calculations.
                         Existing allocations will not be automatically recalculated.
                     </div>
@@ -135,7 +175,6 @@
         </field>
     </record>
 
-    <!-- Action for Settings -->
     <record id="action_cost_allocation_settings" model="ir.actions.act_window">
         <field name="name">Cost Allocation Settings</field>
         <field name="type">ir.actions.act_window</field>
@@ -145,7 +184,6 @@
         <field name="context">{'module': 'cost_allocation'}</field>
     </record>
 
-    <!-- Menu Item -->
     <menuitem id="menu_cost_allocation_settings"
               name="Settings"
               parent="menu_cost_allocation_config"

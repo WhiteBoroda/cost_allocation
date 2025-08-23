@@ -32,10 +32,10 @@
         <field name="value">22.0</field>
     </record>
 
-    <!-- Employee utilization rate -->
+    <!-- Employee utilization rate (fixed to use percentage instead of decimal) -->
     <record id="config_utilization_rate" model="ir.config_parameter">
         <field name="key">cost_allocation.utilization_rate</field>
-        <field name="value">0.75</field>
+        <field name="value">75.0</field>
     </record>
 
     <!-- Working hours calculation method -->
