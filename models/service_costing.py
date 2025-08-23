@@ -149,9 +149,22 @@ class ServiceCostCalculation(models.Model):
         base_cost = self.direct_cost_per_unit + self.indirect_cost_per_unit
 
         if base_cost > 0:
-            # Admin costs are typically 10-20% of direct+indirect costs
-            admin_percentage = 0.15  # 15%
+            # Get admin percentage from configuration (default 15%)
+            admin_percentage = float(self.env['ir.config_parameter'].sudo().get_param(
+                'cost_allocation.admin_cost_percentage', '15.0'
+            )) / 100.0
+
             self.admin_cost_per_unit = base_cost * admin_percentage
+        else:
+            # If no base cost, distribute admin costs proportionally
+            if total_admin_cost > 0:
+                total_allocation_base = self._get_total_allocation_base()
+                if total_allocation_base > 0:
+                    admin_per_base_unit = total_admin_cost / total_allocation_base
+                    if self.calculation_method == 'time_based':
+                        self.admin_cost_per_unit = admin_per_base_unit * self.estimated_hours_per_unit
+                    else:
+                        self.admin_cost_per_unit = admin_per_base_unit
 
     def _calculate_overhead_costs(self):
         """Calculate overhead costs allocation"""
@@ -171,16 +184,73 @@ class ServiceCostCalculation(models.Model):
                 self.overhead_cost_per_unit = overhead_per_base_unit
 
     def _get_total_allocation_base(self):
-        """Get total allocation base (hours, units, etc.)"""
+        """Get total allocation base (hours, units, etc.) - УЛУЧШЕНО: динамический расчет"""
         # This should be calculated based on historical data or estimates
-        # For now, using a simplified approach
 
-        # Get total estimated monthly capacity
-        total_employees = self.env['cost.employee'].search_count([])
-        working_hours_per_month = 160  # Standard working hours
-        utilization_rate = 0.75  # 75% utilization
 
-        return total_employees * working_hours_per_month * utilization_rate
+        # Get total estimated monthly capacity using dynamic working hours
+        total_employees = self.env['cost.employee'].search_count([('active', '=', True)])
+
+        if total_employees == 0:
+            return 1.0  # Avoid division by zero
+
+        # Calculate average working hours from employee cost configurations
+        employee_costs = self.env['cost.employee'].search([('active', '=', True)])
+
+        if employee_costs:
+            # Use actual calculated working hours from employee configurations
+            total_working_hours = sum(employee_costs.mapped('monthly_hours'))
+            average_working_hours = total_working_hours / len(employee_costs)
+        else:
+            # Fallback to dynamic calculation for current month
+            working_util = self.env['working.days.util']
+            average_working_hours = working_util.get_current_month_working_hours()
+
+        utilization_rate = 0.75  # 75% utilization - это можно сделать настраиваемым
+
+        return total_employees * average_working_hours * utilization_rate
+
+    def _calculate_allocation_base_for_period(self, period_date):
+        """Calculate allocation base for specific period"""
+        # Get total estimated capacity for specific month
+        total_employees = self.env['cost.employee'].search_count([('active', '=', True)])
+
+        if total_employees == 0:
+            return 1.0
+
+        # Get working hours for specific period
+        working_util = self.env['working.days.util']
+        working_hours_in_period = working_util.get_working_hours_in_month(
+            period_date.year,
+            period_date.month
+        )
+
+        # Get utilization rate from settings (default 75%)
+        utilization_rate = float(self.env['ir.config_parameter'].sudo().get_param(
+            'cost_allocation.utilization_rate', '0.75'
+        ))
+
+        return total_employees * working_hours_in_period * utilization_rate
+
+    def _get_employee_capacity_for_month(self, employee_id, year, month):
+        """Get specific employee capacity for given month"""
+        employee_cost = self.env['cost.employee'].search([
+            ('employee_id', '=', employee_id),
+            ('active', '=', True)
+        ], limit=1)
+
+        if employee_cost and employee_cost.use_dynamic_hours:
+            # Use employee's specific calendar if set
+            working_util = self.env['working.days.util']
+            calendar_id = employee_cost.resource_calendar_id.id if employee_cost.resource_calendar_id else None
+
+            return working_util.get_working_hours_in_month(year, month, calendar_id)
+        elif employee_cost:
+            return employee_cost.monthly_hours
+        else:
+            # Fallback to company default
+            working_util = self.env['working.days.util']
+            return working_util.get_working_hours_in_month(year, month)
 
 
 # Extend Service Catalog model

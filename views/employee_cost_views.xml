@@ -41,7 +41,6 @@
 
                     <group>
                         <group>
-                            <field name="monthly_hours"/>
                             <field name="use_manual"/>
                             <field name="active"/>
                         </group>
@@ -52,6 +51,45 @@
                             <field name="currency_id" column_invisible="1"/>
                         </group>
                     </group>
+                    <group string="Working Hours Configuration" name="working_hours">
+                        <group>
+                            <field name="use_dynamic_hours" widget="boolean_toggle"/>
+                            <field name="calculation_period"
+                                   invisible="not use_dynamic_hours"/>
+                            <field name="resource_calendar_id"
+                                   invisible="not use_dynamic_hours"
+                                   placeholder="Use company default calendar"/>
+                        </group>
+                        <group>
+                            <field name="manual_monthly_hours"
+                                   invisible="use_dynamic_hours"
+                                   required="not use_dynamic_hours"/>
+                            <field name="monthly_hours" readonly="1"/>
+                            <button name="action_recalculate_hours"
+                                    type="object"
+                                    string="Recalculate Hours"
+                                    class="btn-secondary"
+                                    invisible="not use_dynamic_hours"
+                                    icon="fa-refresh"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info mt-3" invisible="not use_dynamic_hours">
+                        <h5><i class="fa fa-info-circle"/> Dynamic Working Hours</h5>
+                        <p><strong>Enabled:</strong> Working hours are calculated automatically based on:</p>
+                        <ul>
+                            <li>Company or employee-specific working calendar</li>
+                            <li>Weekends and public holidays</li>
+                            <li>Actual working days in each month</li>
+                        </ul>
+                        <p>Hours are updated automatically at the beginning of each month.</p>
+                    </div>
+
+                    <div class="alert alert-warning mt-3" invisible="use_dynamic_hours">
+                        <h5><i class="fa fa-warning"/> Manual Working Hours</h5>
+                        <p><strong>Fixed Value:</strong> Using manual working hours override.</p>
+                        <p>Consider enabling dynamic calculation for more accurate cost allocation.</p>
+                    </div>
 
                     <notebook>
                         <page string="Cost Data">

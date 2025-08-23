@@ -4,43 +4,59 @@ from odoo.exceptions import ValidationError
 
 class CostDriver(models.Model):
     _name = 'cost.driver'
-    _description = 'Cost Driver Configuration'
+    _description = 'Cost Driver'
     _rec_name = 'name'
-    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
+    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: sequence.helper
 
     name = fields.Char(string='Driver Name', required=True)
-    code = fields.Char(string='Driver Code', readonly=True, copy=False)  # ИЗМЕНЕНО: readonly, copy=False
+    code = fields.Char(string='Driver Code', readonly=True, copy=False)  # ДОБАВЛЕНО: поле кода
     description = fields.Text(string='Description')
 
-    pool_id = fields.Many2one('cost.pool', string='Related Pool', required=True)
-
-    # Гибкое решение - любой тип драйвера
+    # ВАЖНО: Поля должны быть здесь!
     driver_category = fields.Char(string='Category', help='E.g.: Hardware, Software, Users, Infrastructure')
-    unit_name = fields.Char(string='Unit Name', default='Unit', required=True)
+    unit_name = fields.Char(string='Unit Name', default='Unit', required=True)  # ДОБАВЛЕНО: недостающее поле!
 
-    # Client driver values
-    client_driver_ids = fields.One2many('client.cost.driver', 'driver_id', string='Client Driver Values')
+    pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True)
+    unit_of_measure = fields.Selection([
+        ('user', 'Users'),
+        ('workstation', 'Workstations'),
+        ('printer', 'Printers'),
+        ('server', 'Servers'),
+        ('gb', 'GB Storage'),
+        ('license', 'Licenses'),
+        ('hour', 'Hours'),
+        ('unit', 'Units')
+    ], string='Unit of Measure', default='user', required=True)
 
-    # Calculated fields
+    # Cost calculation
+    cost_per_unit = fields.Float(string='Cost per Unit', compute='_compute_cost_per_unit', store=True)
     total_quantity = fields.Float(string='Total Quantity', compute='_compute_totals', store=True)
-    cost_per_unit = fields.Float(string='Cost per Unit', compute='_compute_totals', store=True)
 
-    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
-                                  default=lambda self: self.env.company.currency_id)
-    active = fields.Boolean(default=True)
+    # Client allocations
+    client_driver_ids = fields.One2many('client.cost.driver', 'driver_id', string='Client Allocations')
 
-    # ДОБАВЛЕНО: поле company_id для multi-company
+    # Status
+    active = fields.Boolean(string='Active', default=True)
+
+    # Currency
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+
+    # Company
     company_id = fields.Many2one('res.company', string='Company', required=True,
                                  default=lambda self: self.env.company)
 
-    @api.depends('client_driver_ids.quantity', 'pool_id.total_monthly_cost')
-    def _compute_totals(self):
+    @api.depends('pool_id.total_monthly_cost', 'total_quantity')
+    def _compute_cost_per_unit(self):
         for driver in self:
-            driver.total_quantity = sum(driver.client_driver_ids.mapped('quantity'))
-            if driver.total_quantity > 0 and driver.pool_id.total_monthly_cost > 0:
+            if driver.total_quantity > 0 and driver.pool_id:
                 driver.cost_per_unit = driver.pool_id.total_monthly_cost / driver.total_quantity
             else:
                 driver.cost_per_unit = 0.0
+
+    @api.depends('client_driver_ids.quantity')
+    def _compute_totals(self):
+        for driver in self:
+            driver.total_quantity = sum(driver.client_driver_ids.mapped('quantity'))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -50,9 +66,14 @@ class CostDriver(models.Model):
                 vals['code'] = self._generate_code('cost.driver.code')
         return super().create(vals_list)
 
+    @api.constrains('cost_per_unit')
+    def _check_cost_per_unit(self):
+        for record in self:
+            if record.cost_per_unit < 0:
+                raise ValidationError("Cost per unit cannot be negative")
+
     _sql_constraints = [
-        ('unique_code', 'unique(code)', 'Driver code must be unique!'),
-        ('unique_pool', 'unique(pool_id)', 'Each pool can have only one driver!')
+        ('unique_code', 'unique(code)', 'Driver code must be unique!')
     ]
 
 

@@ -146,5 +146,19 @@
         <field name="key">cost_allocation.sequence.employee_cost.prefix</field>
         <field name="value">EC-</field>
     </record>
+    <record id="seq_company_overhead_cost" model="ir.sequence">
+        <field name="name">Company Overhead Cost Code</field>
+        <field name="code">company.overhead.cost.code</field>
+        <field name="prefix">OH-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <!-- Configuration parameter for overhead cost prefix -->
+    <record id="sequence_prefix_overhead_cost" model="ir.config_parameter">
+        <field name="key">cost_allocation.sequence.overhead_cost.prefix</field>
+        <field name="value">OH-</field>
+    </record>
 
 </odoo>

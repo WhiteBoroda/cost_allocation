@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configuration Parameters -->
+
+    <!-- Administrative Costs Percentage (default 15%) -->
+    <record id="config_admin_cost_percentage" model="ir.config_parameter">
+        <field name="key">cost_allocation.admin_cost_percentage</field>
+        <field name="value">15.0</field>
+    </record>
+
+    <!-- Alternative allocation method for admin costs -->
+    <record id="config_admin_allocation_method" model="ir.config_parameter">
+        <field name="key">cost_allocation.admin_allocation_method</field>
+        <field name="value">percentage</field>
+    </record>
+
+    <!-- Overhead allocation method -->
+    <record id="config_overhead_allocation_method" model="ir.config_parameter">
+        <field name="key">cost_allocation.overhead_allocation_method</field>
+        <field name="value">proportional</field>
+    </record>
+
+    <!-- Default working hours per month -->
+    <record id="config_default_working_hours" model="ir.config_parameter">
+        <field name="key">cost_allocation.default_working_hours_month</field>
+        <field name="value">176.0</field>
+    </record>
+
+    <!-- Default working days per month -->
+    <record id="config_default_working_days" model="ir.config_parameter">
+        <field name="key">cost_allocation.default_working_days_month</field>
+        <field name="value">22.0</field>
+    </record>
+
+    <!-- Employee utilization rate -->
+    <record id="config_utilization_rate" model="ir.config_parameter">
+        <field name="key">cost_allocation.utilization_rate</field>
+        <field name="value">0.75</field>
+    </record>
+
+    <!-- Working hours calculation method -->
+    <record id="config_working_hours_method" model="ir.config_parameter">
+        <field name="key">cost_allocation.working_hours_method</field>
+        <field name="value">dynamic</field>
+    </record>
+
+    <!-- Auto-generate codes by default -->
+    <record id="config_auto_generate_codes" model="ir.config_parameter">
+        <field name="key">cost_allocation.auto_generate_codes</field>
+        <field name="value">True</field>
+    </record>
+
+</odoo>

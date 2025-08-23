@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cron job to update working hours monthly -->
+    <record id="cron_update_working_hours" model="ir.cron">
+        <field name="name">Update Monthly Working Hours</field>
+        <field name="model_id" ref="model_cost_employee"/>
+        <field name="state">code</field>
+        <field name="code">model.update_monthly_working_hours()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="priority">20</field>
+    </record>
+
+    <!-- Cron job to update working days cache -->
+    <record id="cron_update_working_days_cache" model="ir.cron">
+        <field name="name">Update Working Days Cache</field>
+        <field name="model_id" ref="model_working_days_util"/>
+        <field name="state">code</field>
+        <field name="code">model.update_working_days_cache()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="priority">30</field>
+    </record>
+
+</odoo>

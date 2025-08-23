@@ -1,6 +1,6 @@
 {
     'name': 'Service Cost Allocation',
-    'version': '17.0.1.2.1',
+    'version': '17.0.1.4.0',  # УВЕЛИЧЕНА ВЕРСИЯ
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -8,18 +8,30 @@
         Allocates direct and indirect costs to clients based on cost drivers.
         Supports subscription billing and interactive dashboard with KPI analytics.
 
+        v1.4.0 DYNAMIC WORKING DAYS CALCULATION:
+        - Implemented dynamic working days/hours calculation based on company calendars
+        - Removed hardcoded working days per month (22.0) and hours (168.0/176.0)
+        - Added WorkingDaysUtil for calendar-based calculations with caching
+        - Employee costs now use actual working hours for each month
+        - Automatic monthly updates via cron jobs
+        - Configurable utilization rates and calculation methods
+        - Support for employee-specific working calendars
+        - Accounts for weekends, holidays, and company-specific schedules
+
         v1.2.1 AUTOMATIC CODE GENERATION + MULTIPLE SERVICES SELECTION:
         - Added automatic code generation for all entities
-        - Created configurable sequence prefixes (CAT-, SRV-, ST-, CS-, SUB-, CP-, CD-, CA-, EC-)
+        - Created configurable sequence prefixes (CAT-, SRV-, ST-, CS-, SUB-, CP-, CD-, CA-, EC-, OH-)
         - Added sequence configuration interface for easy prefix management
         - All new records get automatic codes: Service Category, Service Catalog, Service Type, Client Service, Subscriptions, Cost Pools, Cost Drivers, Cost Allocations
         - New: Добавлен множественный выбор сервисов в подписках 
         - Backward compatible: existing records keep their current codes
         - Fixed subscription views and currency display issues    """,
-    'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale'],
+    'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale', 'resource'],  # ДОБАВЛЕНО: resource
     'data': [
         'security/security.xml',
         'data/sequence_data.xml',  # ДОБАВЛЕНО: нумераторы
+        'data/config_data.xml',  # ДОБАВЛЕНО: конфигурационные параметры
+        'data/working_hours_cron.xml',  # ДОБАВЛЕНО: cron для рабочих часов
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
@@ -37,6 +49,7 @@
         'views/company_views.xml',
         'views/dashboard_views.xml',
         'views/sequence_config_views.xml',  # ДОБАВЛЕНО: настройки нумераторов
+        'views/cost_settings_views.xml',  # ДОБАВЛЕНО: настройки затрат
         'views/add_multiple_services_wizard_views.xml',
         'views/subscription_views.xml',
         'views/overhead_costs_views.xml',
