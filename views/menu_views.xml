@@ -69,7 +69,7 @@
               sequence="1"/>
 
 
-    <menuitem id="menu_setup_wizard"
+    <menuitem id="menu_service_costing_setup"
               name="Setup Wizard"
               parent="menu_cost_allocation_config"
               action="action_service_costing_setup_wizard"

@@ -87,13 +87,6 @@
         <field name="target">new</field>
     </record>
 
-    <record id="action_cost_report_wizard" model="ir.actions.act_window">
-        <field name="name">Cost Allocation Report</field>
-        <field name="res_model">cost.report.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-    </record>
-
     <record id="action_service_cost_calculation" model="ir.actions.act_window">
         <field name="name">Service Cost Calculations</field>
         <field name="res_model">service.cost.calculation</field>
@@ -106,6 +99,30 @@
                 Use Activity-Based Costing to calculate accurate service costs
                 including direct labor, indirect costs, administrative overhead,
                 and company expenses.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_cost_report_wizard" model="ir.actions.act_window">
+        <field name="name">Cost Allocation Report</field>
+        <field name="res_model">cost.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <record id="action_service_costing_setup_wizard" model="ir.actions.act_window">
+        <field name="name">Service Costing Setup</field>
+        <field name="res_model">service.costing.setup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Quick Setup for Service Costing
+            </p>
+            <p>
+                Configure your service costing module based on your business type.
+                This wizard will create cost pools, drivers, and categories automatically.
             </p>
         </field>
     </record>
