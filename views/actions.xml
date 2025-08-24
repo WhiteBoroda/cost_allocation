@@ -111,6 +111,7 @@
     </record>
 
 
+     <!-- Action -->
     <record id="action_service_costing_setup_wizard" model="ir.actions.act_window">
         <field name="name">Service Costing Setup</field>
         <field name="res_model">service.costing.setup.wizard</field>

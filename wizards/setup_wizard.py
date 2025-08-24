@@ -60,21 +60,13 @@ class ServiceCostingSetupWizard(models.TransientModel):
 
         # Show success message and redirect
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Setup Complete!'),
-                'message': _(
-                    'Basic configuration for %s created. You can edit cost pools and drivers in Configuration menu.') %
-                           dict(self._fields["company_type"].selection)[self.company_type],
-                'type': 'success',
-                'sticky': True,
-                'next': {
-                    'type': 'ir.actions.act_window',
-                    'name': _('Cost Pools'),
-                    'res_model': 'cost.pool',
-                    'view_mode': 'tree,form',
-                }
+            'type': 'ir.actions.act_window',
+            'name': _('Setup Complete! ✅ Cost Pools Created'),
+            'res_model': 'cost.pool',
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'context': {
+                'search_default_active': True,
             }
         }
 
@@ -237,27 +229,27 @@ class ServiceCostingSetupWizard(models.TransientModel):
                 {'name': _('Users'), 'unit_of_measure': 'user', 'driver_category': 'User', 'unit_name': _('User')},
                 {'name': _('Servers'), 'unit_of_measure': 'server', 'driver_category': 'Infrastructure',
                  'unit_name': _('Server')},
-                {'name': _('Applications'), 'unit_of_measure': 'application', 'driver_category': 'Software',
+                {'name': _('Applications'), 'unit_of_measure': 'license', 'driver_category': 'Software',
                  'unit_name': _('Application')},
             ],
             'legal': [
-                {'name': _('Cases'), 'unit_of_measure': 'case', 'driver_category': 'Legal', 'unit_name': _('Case')},
-                {'name': _('Contracts'), 'unit_of_measure': 'contract', 'driver_category': 'Legal',
+                {'name': _('Cases'), 'unit_of_measure': 'unit', 'driver_category': 'Legal', 'unit_name': _('Case')},
+                {'name': _('Contracts'), 'unit_of_measure': 'unit', 'driver_category': 'Legal',
                  'unit_name': _('Contract')},
                 {'name': _('Work Hours'), 'unit_of_measure': 'hour', 'driver_category': 'Time', 'unit_name': _('Hour')},
             ],
             'accounting': [
-                {'name': _('Transactions'), 'unit_of_measure': 'transaction', 'driver_category': 'Accounting',
+                {'name': _('Transactions'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
                  'unit_name': _('Transaction')},
-                {'name': _('Accounts'), 'unit_of_measure': 'account', 'driver_category': 'Accounting',
+                {'name': _('Accounts'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
                  'unit_name': _('Account')},
-                {'name': _('Reports'), 'unit_of_measure': 'report', 'driver_category': 'Accounting',
+                {'name': _('Reports'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
                  'unit_name': _('Report')},
             ],
         }
 
         return drivers_mapping.get(self.company_type, [
-            {'name': _('Main Driver'), 'unit_of_measure': 'unit', 'driver_category': 'General', 'unit_name': _('Unit')},
+            {'name': _('Main Driver'), 'unit_of_measure': 'Unit', 'driver_category': 'General', 'unit_name': _('Unit')},
         ])
 
     def _get_driver_pool_mapping(self):

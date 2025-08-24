@@ -1,166 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_service_costing_setup_wizard" model="ir.ui.view">
-
         <field name="name">service.costing.setup.wizard.form</field>
         <field name="model">service.costing.setup.wizard</field>
         <field name="arch" type="xml">
             <form string="Service Costing Setup Wizard">
-                <header>
-                    <button name="action_setup_company" type="object" string="Start Setup" class="btn-primary"/>
-                </header>
-                <!-- Header with info -->
                 <div class="alert alert-info">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <i class="fa fa-cogs fa-3x"/>
-                        </div>
-                        <div class="col-md-11">
-                            <h4>Welcome to Service Costing Module!</h4>
-                            <p class="mb-1">This wizard will help you set up the module for your business type.</p>
-                            <p class="mb-0">Choose your business category and select what components to configure.</p>
-                        </div>
-                    </div>
+                    <h3><i class="fa fa-magic"/> Service Costing Setup Wizard</h3>
+                    <p>This wizard will configure the ABC (Activity-Based Costing) system for your business.
+                    It creates cost pools to group employee costs, cost drivers to allocate costs to clients,
+                    and service categories to organize your offerings.</p>
                 </div>
 
                 <sheet>
-                    <group>
-                        <!-- Business Type Selection -->
-                        <group string="Business Type" col="1">
-                            <field name="company_type" widget="radio" nolabel="1"/>
-                        </group>
-
-                        <!-- Setup Options -->
-                        <group string="Setup Components">
-                            <div class="o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="setup_employees"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="setup_employees"/>
-                                    <div class="text-muted">
-                                        Create cost records for existing employees
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="setup_pools"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="setup_pools"/>
-                                    <div class="text-muted">
-                                        Create cost pools based on business type
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="setup_drivers"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="setup_drivers"/>
-                                    <div class="text-muted">
-                                        Create cost drivers for allocation
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="setup_services"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="setup_services"/>
-                                    <div class="text-muted">
-                                        Setup service categories for your business
-                                    </div>
-                                </div>
-                            </div>
-                        </group>
+                    <group string="Choose Your Business Type">
+                        <field name="company_type"/>
                     </group>
 
-                    <!-- Preview section -->
-                    <group string="What will be created:" invisible="company_type == 'custom'">
-                        <div class="row">
-                            <div class="col-md-6" invisible="not setup_pools">
-                                <h6><i class="fa fa-circle-o"/> Cost Pools:</h6>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'it'">
-                                    <li>• Hardware Support</li>
-                                    <li>• Software Support</li>
-                                    <li>• Infrastructure</li>
-                                    <li>• User Support</li>
-                                    <li>• Administration</li>
-                                </ul>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'legal'">
-                                    <li>• Corporate Law</li>
-                                    <li>• Contract Law</li>
-                                    <li>• Litigation</li>
-                                    <li>• Compliance</li>
-                                    <li>• Administration</li>
-                                </ul>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'accounting'">
-                                    <li>• Bookkeeping</li>
-                                    <li>• Tax Services</li>
-                                    <li>• Audit</li>
-                                    <li>• Advisory</li>
-                                    <li>• Administration</li>
-                                </ul>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'financial'">
-                                    <li>• Investment Consulting</li>
-                                    <li>• Risk Analysis</li>
-                                    <li>• Planning</li>
-                                    <li>• Administration</li>
-                                </ul>
-                            </div>
+                    <separator string="Setup Options"/>
 
-                            <div class="col-md-6" invisible="not setup_drivers">
-                                <h6><i class="fa fa-circle-o"/> Cost Drivers:</h6>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'it'">
-                                    <li>• Workstations</li>
-                                    <li>• Users</li>
-                                    <li>• Servers</li>
-                                    <li>• Applications</li>
-                                </ul>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'legal'">
-                                    <li>• Cases</li>
-                                    <li>• Contracts</li>
-                                    <li>• Work Hours</li>
-                                </ul>
-                                <ul class="list-unstyled ml-3" invisible="company_type != 'accounting'">
-                                    <li>• Transactions</li>
-                                    <li>• Accounts</li>
-                                    <li>• Reports</li>
-                                </ul>
-                            </div>
-                        </div>
+                    <group string="Components to Setup" col="4">
+                        <field name="setup_employees"
+                               help="Creates cost records for employees to track salaries, benefits, and hourly rates. Required for cost allocation calculations."/>
+                        <field name="setup_pools"
+                               help="Groups employee costs by activity type (e.g. Hardware Support, Software Development). Each pool represents different work your company does."/>
+                        <field name="setup_drivers"
+                               help="Defines how costs from pools are allocated to clients (e.g. per workstation, per user). Cost drivers determine the allocation basis for each pool."/>
+                        <field name="setup_services"
+                               help="Creates service categories to organize your service catalog. Helps classify different types of services you offer."/>
                     </group>
 
-                    <!-- Warning for custom setup -->
-                    <div class="alert alert-warning" invisible="company_type != 'custom'">
-                        <div class="row">
-                            <div class="col-md-1">
-                                <i class="fa fa-exclamation-triangle fa-2x"/>
-                            </div>
-                            <div class="col-md-11">
-                                <strong>Custom Setup Selected</strong>
-                                <p class="mb-0">You will need to manually configure cost pools, drivers, and service categories after completing this wizard. Go to Configuration menu to set them up.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Preview notebook -->
+                    <notebook>
+                        <page string="What Will Be Created" invisible="company_type == 'custom'">
 
-                    <!-- Important notes -->
-                    <div class="alert alert-info mt-3">
-                        <h6><i class="fa fa-info-circle"/> Important Notes:</h6>
-                        <ul class="mb-0">
-                            <li>All created items can be edited or deleted later</li>
-                            <li>Only records for your company will be created/modified</li>
-                            <li>Existing records with same names will not be duplicated</li>
-                            <li>You need Manager or Financial Manager role to run this wizard</li>
-                        </ul>
-                    </div>
+                            <div invisible="company_type != 'it'">
+                                <h3>IT Services Configuration</h3>
+                                <p><strong>Cost Pools:</strong> Hardware Support, Software Support, Infrastructure, User Support, Administration</p>
+                                <p><strong>Cost Drivers:</strong> Workstations, Users, Servers, Applications</p>
+                                <p><strong>Service Categories:</strong> IT Hardware, IT Software, IT Infrastructure, IT Support</p>
+                            </div>
+
+                            <div invisible="company_type != 'legal'">
+                                <h3>Legal Services Configuration</h3>
+                                <p><strong>Cost Pools:</strong> Corporate Law, Contract Law, Litigation, Compliance, Administration</p>
+                                <p><strong>Cost Drivers:</strong> Cases, Contracts, Work Hours</p>
+                                <p><strong>Service Categories:</strong> Corporate Law, Contract Law, Litigation</p>
+                            </div>
+
+                            <div invisible="company_type != 'accounting'">
+                                <h3>Accounting Services Configuration</h3>
+                                <p><strong>Cost Pools:</strong> Bookkeeping, Tax Services, Audit, Advisory, Administration</p>
+                                <p><strong>Cost Drivers:</strong> Transactions, Accounts, Reports</p>
+                                <p><strong>Service Categories:</strong> Bookkeeping, Tax Services, Audit</p>
+                            </div>
+
+                            <div invisible="company_type != 'financial'">
+                                <h3>Financial Consulting Configuration</h3>
+                                <p><strong>Cost Pools:</strong> Investment Consulting, Risk Analysis, Planning, Administration</p>
+                                <p><strong>Cost Drivers:</strong> Clients, Assets Under Management, Reports</p>
+                                <p><strong>Service Categories:</strong> Financial Consulting, Investment Advisory</p>
+                            </div>
+
+                        </page>
+
+                        <page string="Custom Setup" invisible="company_type != 'custom'">
+                            <div class="alert alert-warning">
+                                <h4><i class="fa fa-exclamation-triangle"/> Custom Configuration</h4>
+                                <p>You've selected custom setup. The wizard will only create employee cost records.
+                                You'll need to manually create:</p>
+                                <ul>
+                                    <li>Cost pools that match your business activities</li>
+                                    <li>Cost drivers for allocating costs to clients</li>
+                                    <li>Service categories for your service catalog</li>
+                                </ul>
+                                <p>Go to <strong>Service Costing → Configuration</strong> menu after running this wizard.</p>
+                            </div>
+                        </page>
+
+                        <page string="Next Steps">
+                            <div class="alert alert-success">
+                                <h4><i class="fa fa-lightbulb-o"/> After Setup</h4>
+                                <p>Once the wizard completes, you can:</p>
+                                <ul>
+                                    <li><strong>Review and edit</strong> created cost pools and drivers</li>
+                                    <li><strong>Assign employees</strong> to cost pools with time percentages</li>
+                                    <li><strong>Set client cost driver values</strong> (e.g., number of workstations per client)</li>
+                                    <li><strong>Create service catalog</strong> with ABC cost calculations</li>
+                                    <li><strong>Generate cost allocations</strong> for clients</li>
+                                </ul>
+                                <p>All items created by this wizard can be modified or deleted later.</p>
+                            </div>
+                        </page>
+                    </notebook>
                 </sheet>
 
                 <footer>
@@ -170,29 +102,4 @@
             </form>
         </field>
     </record>
-
-    <!-- Action -->
-    <record id="action_service_costing_setup_wizard" model="ir.actions.act_window">
-        <field name="name">Service Costing Setup</field>
-        <field name="res_model">service.costing.setup.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Quick Setup for Service Costing
-            </p>
-            <p>
-                Configure your service costing module based on your business type.
-                This wizard will create cost pools, drivers, and categories automatically.
-            </p>
-        </field>
-    </record>
-
-    <!-- Menu item for setup -->
-    <menuitem id="menu_service_costing_setup"
-              name="Setup Wizard"
-              parent="menu_cost_allocation_config"
-              action="action_service_costing_setup_wizard"
-              sequence="5"/>
-
 </odoo>

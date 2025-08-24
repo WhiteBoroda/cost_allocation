@@ -1,6 +1,6 @@
 {
-    'name': 'Service Cost Allocation',
-    'version': '17.0.1.4.0',  # УВЕЛИЧЕНА ВЕРСИЯ
+    'name': 'Розподіл витрат / Service Cost Allocation',
+    'version': '17.0.1.4.1',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -29,9 +29,9 @@
     'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale', 'resource'],  # ДОБАВЛЕНО: resource
     'data': [
         'security/security.xml',
-        'data/sequence_data.xml',  # ДОБАВЛЕНО: нумераторы
-        'data/config_data.xml',  # ДОБАВЛЕНО: конфигурационные параметры
-        'data/working_hours_cron.xml',  # ДОБАВЛЕНО: cron для рабочих часов
+        'data/sequence_data.xml',
+        'data/config_data.xml',
+        'data/working_hours_cron.xml',
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
@@ -48,8 +48,8 @@
         'views/partner_views.xml',
         'views/company_views.xml',
         'views/dashboard_views.xml',
-        'views/sequence_config_views.xml',  # ДОБАВЛЕНО: настройки нумераторов
-        'views/cost_settings_views.xml',  # ДОБАВЛЕНО: настройки затрат
+        'views/sequence_config_views.xml',
+        'views/cost_settings_views.xml',
         'views/add_multiple_services_wizard_views.xml',
         'views/subscription_views.xml',
         'views/overhead_costs_views.xml',
