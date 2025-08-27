@@ -9,6 +9,7 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="driver_category"/>
+                <field name="unit_id"/>
                 <field name="pool_id"/>
                 <field name="total_quantity"/>
                 <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
@@ -35,7 +36,7 @@
                         <group>
                             <field name="code"/>
                             <field name="driver_category"/>
-                            <field name="unit_name"/>
+                            <field name="unit_id" options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name="pool_id"/>
@@ -66,9 +67,45 @@
                                 </tree>
                             </field>
                         </page>
+
+                        <!-- Legacy/Deprecated Tab for compatibility -->
+                        <page string="Legacy Settings" groups="base.group_no_one">
+                            <div class="alert alert-warning">
+                                <strong>Deprecated Fields</strong>
+                                <p>These fields are kept for data migration purposes only.</p>
+                            </div>
+                            <group>
+                                <field name="unit_of_measure" readonly="1"/>
+                                <field name="unit_name" readonly="1"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <!-- Cost Driver Search View -->
+    <record id="view_cost_driver_search" model="ir.ui.view">
+        <field name="name">cost.driver.search</field>
+        <field name="model">cost.driver</field>
+        <field name="arch" type="xml">
+            <search string="Cost Drivers">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="driver_category"/>
+                <field name="pool_id"/>
+                <field name="unit_id"/>
+
+                <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" domain="[]" context="{'group_by':'driver_category'}"/>
+                    <filter name="group_pool" string="Cost Pool" domain="[]" context="{'group_by':'pool_id'}"/>
+                    <filter name="group_unit" string="Unit of Measure" domain="[]" context="{'group_by':'unit_id'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

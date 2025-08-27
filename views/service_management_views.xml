@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Service Type Views -->
+    <record id="view_service_type_tree" model="ir.ui.view">
+        <field name="name">service.type.tree</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <tree string="Service Types">
+                <field name="category_id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="service_type"/>
+                <field name="unit_id"/>
+                <field name="base_price" widget="monetary"/>
+                <field name="support_level"/>
+                <field name="active_services_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_service_type_form" model="ir.ui.view">
+        <field name="name">service.type.form</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <form string="Service Type">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Service Type Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="category_id"/>
+                            <field name="sequence"/>
+                            <field name="service_type"/>
+                        </group>
+                        <group>
+                            <field name="unit_id" options="{'no_create': True}"/>
+                            <field name="base_price" widget="monetary"/>
+                            <field name="support_level"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="SLA Parameters">
+                        <group>
+                            <field name="response_time" widget="float_time"/>
+                            <field name="resolution_time" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="availability_sla"/>
+                            <field name="workload_factor"/>
+                        </group>
+                    </group>
+
+                    <field name="description" placeholder="Describe this service type..."/>
+
+                    <notebook>
+                        <page string="Responsible Team">
+                            <group>
+                                <field name="primary_responsible_id"/>
+                                <field name="auto_assign_responsible"/>
+                            </group>
+                            <field name="default_responsible_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="work_email"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Skills &amp; Requirements">
+                            <field name="required_skill_ids" widget="many2many_tags"/>
+                        </page>
+
+                        <page string="Statistics">
+                            <group>
+                                <field name="active_services_count" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- Legacy/Deprecated Tab for compatibility -->
+                        <page string="Legacy Settings" groups="base.group_no_one">
+                            <div class="alert alert-warning">
+                                <strong>Deprecated Fields</strong>
+                                <p>These fields are kept for data migration purposes only.</p>
+                            </div>
+                            <group>
+                                <field name="unit_name" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_service_type_search" model="ir.ui.view">
+        <field name="name">service.type.search</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <search string="Service Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="primary_responsible_id"/>
+
+                <filter name="equipment_based" string="Equipment Based" domain="[('service_type','=','equipment')]"/>
+                <filter name="user_based" string="User Based" domain="[('service_type','=','user')]"/>
+                <filter name="fixed_price" string="Fixed Price" domain="[('service_type','=','fixed')]"/>
+                <filter name="consumption_based" string="Consumption Based" domain="[('service_type','=','consumption')]"/>
+
+                <separator/>
+                <filter name="basic_support" string="Basic Support" domain="[('support_level','=','basic')]"/>
+                <filter name="standard_support" string="Standard Support" domain="[('support_level','=','standard')]"/>
+                <filter name="premium_support" string="Premium Support" domain="[('support_level','=','premium')]"/>
+                <filter name="enterprise_support" string="Enterprise Support" domain="[('support_level','=','enterprise')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                    <filter name="group_service_type" string="Service Type" domain="[]" context="{'group_by':'service_type'}"/>
+                    <filter name="group_support_level" string="Support Level" domain="[]" context="{'group_by':'support_level'}"/>
+                    <filter name="group_responsible" string="Primary Responsible" domain="[]" context="{'group_by':'primary_responsible_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Service Type Kanban View (optional) -->
+    <record id="view_service_type_kanban" model="ir.ui.view">
+        <field name="name">service.type.kanban</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="base_price"/>
+                <field name="active_services_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary"><field name="name"/></div>
+                                    <div class="text-muted"><field name="category_id"/></div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="service_type"/>
+                                </div>
+                                <div class="text-muted">
+                                    Base Price: <field name="base_price" widget="monetary"/>
+                                </div>
+                                <div class="text-muted">
+                                    Active Services: <field name="active_services_count"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>

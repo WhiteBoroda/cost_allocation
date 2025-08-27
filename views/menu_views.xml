@@ -152,5 +152,21 @@
               action="action_cost_report_wizard"
               sequence="30"/>
 
+    <menuitem id="menu_unit_measure_config"
+              name="Units of Measure"
+              parent="menu_cost_allocation_config"
+              sequence="80"/>
+
+    <menuitem id="menu_unit_measure_categories"
+              name="Unit Categories"
+              parent="menu_unit_measure_config"
+              action="action_unit_measure_category"
+              sequence="10"/>
+
+    <menuitem id="menu_unit_measures"
+              name="Units"
+              parent="menu_unit_measure_config"
+              action="action_unit_measure"
+              sequence="20"/>
 
 </odoo>

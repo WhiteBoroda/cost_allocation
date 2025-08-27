@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Unit Measure Categories -->
+    <record id="unit_category_quantity" model="unit.measure.category">
+        <field name="name">Quantity</field>
+        <field name="sequence">10</field>
+        <field name="description">General quantity units</field>
+    </record>
+
+    <record id="unit_category_time" model="unit.measure.category">
+        <field name="name">Time</field>
+        <field name="sequence">20</field>
+        <field name="description">Time-based units</field>
+    </record>
+
+    <record id="unit_category_storage" model="unit.measure.category">
+        <field name="name">Storage</field>
+        <field name="sequence">30</field>
+        <field name="description">Data storage units</field>
+    </record>
+
+    <record id="unit_category_users" model="unit.measure.category">
+        <field name="name">Users</field>
+        <field name="sequence">40</field>
+        <field name="description">User-based units</field>
+    </record>
+
+    <record id="unit_category_hardware" model="unit.measure.category">
+        <field name="name">Hardware</field>
+        <field name="sequence">50</field>
+        <field name="description">Hardware equipment units</field>
+    </record>
+
+    <!-- Quantity Units -->
+    <record id="unit_piece" model="unit.of.measure">
+        <field name="name">Piece</field>
+        <field name="symbol">PC</field>
+        <field name="category_id" ref="unit_category_quantity"/>
+    </record>
+
+    <record id="unit_unit" model="unit.of.measure">
+        <field name="name">Unit</field>
+        <field name="symbol">Unit</field>
+        <field name="category_id" ref="unit_category_quantity"/>
+    </record>
+
+    <record id="unit_license" model="unit.of.measure">
+        <field name="name">License</field>
+        <field name="symbol">Lic</field>
+        <field name="category_id" ref="unit_category_quantity"/>
+    </record>
+
+    <!-- Time Units -->
+    <record id="unit_hour" model="unit.of.measure">
+        <field name="name">Hour</field>
+        <field name="symbol">Hr</field>
+        <field name="category_id" ref="unit_category_time"/>
+    </record>
+
+    <record id="unit_month" model="unit.of.measure">
+        <field name="name">Month</field>
+        <field name="symbol">Mon</field>
+        <field name="category_id" ref="unit_category_time"/>
+    </record>
+
+    <record id="unit_year" model="unit.of.measure">
+        <field name="name">Year</field>
+        <field name="symbol">Yr</field>
+        <field name="category_id" ref="unit_category_time"/>
+    </record>
+
+    <!-- Storage Units -->
+    <record id="unit_gigabyte" model="unit.of.measure">
+        <field name="name">Gigabyte</field>
+        <field name="symbol">GB</field>
+        <field name="category_id" ref="unit_category_storage"/>
+    </record>
+
+    <record id="unit_terabyte" model="unit.of.measure">
+        <field name="name">Terabyte</field>
+        <field name="symbol">TB</field>
+        <field name="category_id" ref="unit_category_storage"/>
+    </record>
+
+    <!-- User Units -->
+    <record id="unit_user" model="unit.of.measure">
+        <field name="name">User</field>
+        <field name="symbol">User</field>
+        <field name="category_id" ref="unit_category_users"/>
+    </record>
+
+    <record id="unit_concurrent_user" model="unit.of.measure">
+        <field name="name">Concurrent User</field>
+        <field name="symbol">CU</field>
+        <field name="category_id" ref="unit_category_users"/>
+    </record>
+
+    <!-- Hardware Units -->
+    <record id="unit_workstation" model="unit.of.measure">
+        <field name="name">Workstation</field>
+        <field name="symbol">WS</field>
+        <field name="category_id" ref="unit_category_hardware"/>
+    </record>
+
+    <record id="unit_server" model="unit.of.measure">
+        <field name="name">Server</field>
+        <field name="symbol">Srv</field>
+        <field name="category_id" ref="unit_category_hardware"/>
+    </record>
+
+    <record id="unit_printer" model="unit.of.measure">
+        <field name="name">Printer</field>
+        <field name="symbol">Prt</field>
+        <field name="category_id" ref="unit_category_hardware"/>
+    </record>
+
+</odoo>

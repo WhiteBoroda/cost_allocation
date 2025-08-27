@@ -1,6 +1,7 @@
 from . import sequence_config
 from . import cost_settings  # ДОБАВЛЕНО: настройки затрат
 from . import working_days_util  # ДОБАВЛЕНО: утилита рабочих дней
+from . import unit_measure
 from . import employee_cost
 from . import cost_pool
 from . import cost_driver

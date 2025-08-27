@@ -4,9 +4,9 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    # Service statistics
-    service_count = fields.Integer(string='Active Services', compute='_compute_service_stats')
-    subscription_count = fields.Integer(string='Active Subscriptions', compute='_compute_service_stats')
+    # Service statistics - ИСПРАВЛЕНО: добавил store=True для возможности поиска
+    service_count = fields.Integer(string='Active Services', compute='_compute_service_stats', store=True)
+    subscription_count = fields.Integer(string='Active Subscriptions', compute='_compute_service_stats', store=True)
 
     # Cost driver quantities
     workstation_count = fields.Integer(string='Workstations', default=0)
@@ -21,15 +21,15 @@ class ResPartner(models.Model):
     cost_allocation_ids = fields.One2many('client.cost.allocation', 'client_id', string='Cost Allocations')
     cost_driver_ids = fields.One2many('client.cost.driver', 'client_id', string='Cost Driver Values')
 
-    # Last cost data
-    last_monthly_cost = fields.Float(string='Last Monthly Cost', compute='_compute_cost_stats')
-    last_cost_date = fields.Date(string='Last Cost Date', compute='_compute_cost_stats')
+    # Last cost data - ИСПРАВЛЕНО: добавил store=True для полей, которые используются в поиске
+    last_monthly_cost = fields.Float(string='Last Monthly Cost', compute='_compute_cost_stats', store=True)
+    last_cost_date = fields.Date(string='Last Cost Date', compute='_compute_cost_stats', store=True)
     cost_trend = fields.Selection([
         ('up', 'Increasing'),
         ('down', 'Decreasing'),
         ('stable', 'Stable'),
         ('new', 'New Client')
-    ], string='Cost Trend', compute='_compute_cost_trend')
+    ], string='Cost Trend', compute='_compute_cost_trend', store=True)
 
     # ИСПРАВЛЕНО: поле client.service называется 'status', а не 'active'
     @api.depends('client_service_ids.status', 'subscription_ids.state')
@@ -148,16 +148,17 @@ class ResPartner(models.Model):
                 elif 'server' in driver.name.lower() or 'сервер' in driver.name.lower():
                     # Считаем серверы
                     servers = partner.client_service_ids.filtered(
-                        lambda s: 'server' in s.service_type_id.name.lower() or 'сервер' in s.service_type_id.name.lower()
+                        lambda s: any(word in s.service_type_id.name.lower()
+                                      for word in ['server', 'сервер', 'srv'])
                     )
                     quantity = sum(servers.mapped('quantity'))
                     partner.server_count = quantity
 
                 elif 'phone' in driver.name.lower() or 'телефон' in driver.name.lower():
-                    # Считаем телефоны
+                    # Считаем IP телефоны
                     phones = partner.client_service_ids.filtered(
                         lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['phone', 'ip', 'телефон'])
+                                      for word in ['phone', 'ip phone', 'voip', 'телефон'])
                     )
                     quantity = sum(phones.mapped('quantity'))
                     partner.phone_count = quantity
@@ -166,7 +167,7 @@ class ResPartner(models.Model):
                     # Считаем принтеры
                     printers = partner.client_service_ids.filtered(
                         lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['printer', 'mfp', 'принтер'])
+                                      for word in ['printer', 'print', 'mfp', 'принтер'])
                     )
                     quantity = sum(printers.mapped('quantity'))
                     partner.printer_count = quantity

@@ -1,3 +1,4 @@
+# models/cost_driver.py
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
@@ -6,17 +7,23 @@ class CostDriver(models.Model):
     _name = 'cost.driver'
     _description = 'Cost Driver'
     _rec_name = 'name'
-    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: sequence.helper
+    _inherit = ['sequence.helper']
 
     name = fields.Char(string='Driver Name', required=True)
-    code = fields.Char(string='Driver Code', readonly=True, copy=False)  # ДОБАВЛЕНО: поле кода
+    code = fields.Char(string='Driver Code', readonly=True, copy=False)
     description = fields.Text(string='Description')
 
     # ВАЖНО: Поля должны быть здесь!
     driver_category = fields.Char(string='Category', help='E.g.: Hardware, Software, Users, Infrastructure')
-    unit_name = fields.Char(string='Unit Name', default='Unit', required=True)  # ДОБАВЛЕНО: недостающее поле!
+
+    # ИЗМЕНЕНО: заменил unit_name на Many2one поле
+    unit_id = fields.Many2one('unit.of.measure', string='Unit of Measure', required=True)
+    # Оставлю для обратной совместимости, но deprecated
+    unit_name = fields.Char(string='Unit Name', related='unit_id.name', store=False, readonly=True)
 
     pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True)
+
+    # DEPRECATED: оставляю для совместимости с существующими представлениями
     unit_of_measure = fields.Selection([
         ('user', 'Users'),
         ('workstation', 'Workstations'),
@@ -26,7 +33,7 @@ class CostDriver(models.Model):
         ('license', 'Licenses'),
         ('hour', 'Hours'),
         ('unit', 'Units')
-    ], string='Unit of Measure', default='user', required=True)
+    ], string='Legacy Unit of Measure', help='Deprecated: Use Unit of Measure field instead')
 
     # Cost calculation
     cost_per_unit = fields.Float(string='Cost per Unit', compute='_compute_cost_per_unit', store=True)
@@ -61,9 +68,32 @@ class CostDriver(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            # ДОБАВЛЕНО: автогенерация кода
+            # Автогенерация кода
             if not vals.get('code'):
                 vals['code'] = self._generate_code('cost.driver.code')
+
+            # Если unit_id не задан, но есть unit_of_measure, попытаемся найти подходящую единицу
+            if not vals.get('unit_id') and vals.get('unit_of_measure'):
+                legacy_unit_mapping = {
+                    'user': 'unit_user',
+                    'workstation': 'unit_workstation',
+                    'printer': 'unit_printer',
+                    'server': 'unit_server',
+                    'gb': 'unit_gigabyte',
+                    'license': 'unit_license',
+                    'hour': 'unit_hour',
+                    'unit': 'unit_unit'
+                }
+
+                unit_ref = legacy_unit_mapping.get(vals['unit_of_measure'])
+                if unit_ref:
+                    try:
+                        unit = self.env.ref(f'cost_allocation.{unit_ref}')
+                        vals['unit_id'] = unit.id
+                    except:
+                        # Если не найдем, оставим как есть
+                        pass
+
         return super().create(vals_list)
 
     @api.constrains('cost_per_unit')

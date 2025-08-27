@@ -5,10 +5,10 @@ class ServiceType(models.Model):
     _name = 'service.type'
     _description = 'Service Type'
     _order = 'category_id, sequence, name'
-    _inherit = ['sequence.helper']  # ДОБАВЛЕНО: наследование для автогенерации кодов
+    _inherit = ['sequence.helper']
 
     name = fields.Char(string='Service Name', required=True)
-    code = fields.Char(string='Code', readonly=True, copy=False)  # ИЗМЕНЕНО: readonly, copy=False
+    code = fields.Char(string='Code', readonly=True, copy=False)
     category_id = fields.Many2one('service.category', string='Category', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
@@ -21,7 +21,11 @@ class ServiceType(models.Model):
         ('consumption', 'Consumption Based')
     ], string='Billing Type', required=True, default='equipment')
 
-    unit_name = fields.Char(string='Unit Name', default='Unit')
+    # ИЗМЕНЕНО: заменил unit_name на Many2one поле
+    unit_id = fields.Many2one('unit.of.measure', string='Unit of Measure', required=True)
+    # Оставляю для обратной совместимости
+    unit_name = fields.Char(string='Unit Name', related='unit_id.name', store=False, readonly=True)
+
     base_price = fields.Float(string='Base Price per Unit')
 
     # Technical details
@@ -56,11 +60,11 @@ class ServiceType(models.Model):
     # Statistics
     active_services_count = fields.Integer(string='Active Services', compute='_compute_service_count')
 
-    active = fields.Boolean(default=True)
-    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
-                                  default=lambda self: self.env.company.currency_id)
+    # Company
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
 
-    @api.depends('name')
+    @api.depends('name')  # зависимость нужно будет проверить в полном файле
     def _compute_service_count(self):
         for service_type in self:
             service_type.active_services_count = len(self.env['client.service'].search([
@@ -80,12 +84,25 @@ class ServiceType(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Автогенерация кода
             if not vals.get('code'):
                 vals['code'] = self._generate_code('service.type.code')
+
+            # Если unit_id не задан, устанавливаем Unit по умолчанию
+            if not vals.get('unit_id'):
+                try:
+                    default_unit = self.env.ref('cost_allocation.unit_unit')
+                    vals['unit_id'] = default_unit.id
+                except:
+                    # Если не найдем unit по умолчанию, попробуем первую доступную
+                    unit = self.env['unit.of.measure'].search([], limit=1)
+                    if unit:
+                        vals['unit_id'] = unit.id
+
         return super().create(vals_list)
 
     _sql_constraints = [
-        ('unique_code', 'unique(code)', 'Service code must be unique!')
+        ('unique_code', 'unique(code)', 'Service Type code must be unique!')
     ]
 
 

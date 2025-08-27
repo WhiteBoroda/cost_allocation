@@ -219,31 +219,66 @@ class ServiceCostingSetupWizard(models.TransientModel):
 
     def _get_drivers_data(self):
         """Get cost drivers data based on company type"""
+        # Карта соответствия старых значений unit_of_measure к новым unit_id
+        unit_mapping = {
+            'workstation': 'cost_allocation.unit_workstation',
+            'user': 'cost_allocation.unit_user',
+            'server': 'cost_allocation.unit_server',
+            'license': 'cost_allocation.unit_license',
+            'unit': 'cost_allocation.unit_unit',
+            'hour': 'cost_allocation.unit_hour',
+        }
+
         drivers_mapping = {
             'it': [
-                {'name': _('Workstations'), 'unit_of_measure': 'workstation', 'driver_category': 'Hardware',
-                 'unit_name': _('Workstation')},
-                {'name': _('Users'), 'unit_of_measure': 'user', 'driver_category': 'User', 'unit_name': _('User')},
-                {'name': _('Servers'), 'unit_of_measure': 'server', 'driver_category': 'Infrastructure',
-                 'unit_name': _('Server')},
-                {'name': _('Applications'), 'unit_of_measure': 'license', 'driver_category': 'Software',
-                 'unit_name': _('Application')},
+                {'name': _('Workstations'), 'unit_ref': 'cost_allocation.unit_workstation',
+                 'driver_category': 'Hardware'},
+                {'name': _('Users'), 'unit_ref': 'cost_allocation.unit_user', 'driver_category': 'User'},
+                {'name': _('Servers'), 'unit_ref': 'cost_allocation.unit_server', 'driver_category': 'Infrastructure'},
+                {'name': _('Applications'), 'unit_ref': 'cost_allocation.unit_license', 'driver_category': 'Software'},
             ],
             'legal': [
-                {'name': _('Cases'), 'unit_of_measure': 'unit', 'driver_category': 'Legal', 'unit_name': _('Case')},
-                {'name': _('Contracts'), 'unit_of_measure': 'unit', 'driver_category': 'Legal',
-                 'unit_name': _('Contract')},
-                {'name': _('Work Hours'), 'unit_of_measure': 'hour', 'driver_category': 'Time', 'unit_name': _('Hour')},
+                {'name': _('Cases'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'Legal'},
+                {'name': _('Contracts'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'Legal'},
+                {'name': _('Work Hours'), 'unit_ref': 'cost_allocation.unit_hour', 'driver_category': 'Time'},
             ],
             'accounting': [
-                {'name': _('Transactions'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
-                 'unit_name': _('Transaction')},
-                {'name': _('Accounts'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
-                 'unit_name': _('Account')},
-                {'name': _('Reports'), 'unit_of_measure': 'unit', 'driver_category': 'Accounting',
-                 'unit_name': _('Report')},
+                {'name': _('Transactions'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'Accounting'},
+                {'name': _('Accounts'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'Accounting'},
+                {'name': _('Reports'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'Accounting'},
             ],
         }
+
+        # Получаем базовые данные драйверов
+        base_drivers = drivers_mapping.get(self.company_type, [
+            {'name': _('Main Driver'), 'unit_ref': 'cost_allocation.unit_unit', 'driver_category': 'General'},
+        ])
+
+        # Преобразуем unit_ref в unit_id
+        processed_drivers = []
+        for driver_data in base_drivers:
+            try:
+                unit = self.env.ref(driver_data['unit_ref'])
+                driver_data['unit_id'] = unit.id
+                # Удаляем временное поле
+                del driver_data['unit_ref']
+                processed_drivers.append(driver_data)
+            except Exception as e:
+                # Если не найдем единицу измерения, попробуем найти Unit по умолчанию
+                try:
+                    default_unit = self.env.ref('cost_allocation.unit_unit')
+                    driver_data['unit_id'] = default_unit.id
+                    del driver_data['unit_ref']
+                    processed_drivers.append(driver_data)
+                except:
+                    # Если и это не сработает, найдем любую доступную единицу
+                    unit = self.env['unit.of.measure'].search([], limit=1)
+                    if unit:
+                        driver_data['unit_id'] = unit.id
+                        del driver_data['unit_ref']
+                        processed_drivers.append(driver_data)
+
+        return processed_drivers
 
         return drivers_mapping.get(self.company_type, [
             {'name': _('Main Driver'), 'unit_of_measure': 'Unit', 'driver_category': 'General', 'unit_name': _('Unit')},

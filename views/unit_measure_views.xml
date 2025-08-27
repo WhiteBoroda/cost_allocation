@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Unit of Measure Views -->
+    <record id="view_unit_measure_tree" model="ir.ui.view">
+        <field name="name">unit.of.measure.tree</field>
+        <field name="model">unit.of.measure</field>
+        <field name="arch" type="xml">
+            <tree string="Units of Measure">
+                <field name="category_id"/>
+                <field name="name"/>
+                <field name="symbol"/>
+                <field name="ratio"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_unit_measure_form" model="ir.ui.view">
+        <field name="name">unit.of.measure.form</field>
+        <field name="model">unit.of.measure</field>
+        <field name="arch" type="xml">
+            <form string="Unit of Measure">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Unit Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="symbol"/>
+                        </group>
+                        <group>
+                            <field name="ratio" help="1.0 = base unit"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <field name="description" placeholder="Description of this unit..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_unit_measure_search" model="ir.ui.view">
+        <field name="name">unit.of.measure.search</field>
+        <field name="model">unit.of.measure</field>
+        <field name="arch" type="xml">
+            <search string="Units of Measure">
+                <field name="name"/>
+                <field name="symbol"/>
+                <field name="category_id"/>
+                <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Unit Measure Category Views -->
+    <record id="view_unit_measure_category_tree" model="ir.ui.view">
+        <field name="name">unit.measure.category.tree</field>
+        <field name="model">unit.measure.category</field>
+        <field name="arch" type="xml">
+            <tree string="Unit Categories">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="unit_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_unit_measure_category_form" model="ir.ui.view">
+        <field name="name">unit.measure.category.form</field>
+        <field name="model">unit.measure.category</field>
+        <field name="arch" type="xml">
+            <form string="Unit Category">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Category Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="unit_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <field name="description" placeholder="Description of this category..."/>
+
+                    <notebook>
+                        <page string="Units" name="units">
+                            <field name="unit_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="symbol"/>
+                                    <field name="ratio"/>
+                                    <field name="active"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+    <!-- Menu Items -->
+
+
+</odoo>
