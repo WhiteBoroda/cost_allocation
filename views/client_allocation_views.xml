@@ -10,14 +10,14 @@
                 <field name="client_id"/>
                 <field name="period_date"/>
                 <!-- ИСПРАВЛЕНО: добавлены группы доступа для всех финансовых полей -->
-                <field name="direct_cost" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="indirect_cost" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="admin_cost" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="total_cost" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="direct_cost" widget="monetary"/>
+<!--                       groups="cost_allocation.group_cost_allocation_financial"/> -->
+                <field name="indirect_cost" widget="monetary"/>
+<!--                       groups="cost_allocation.group_cost_allocation_financial"/> -->
+                <field name="admin_cost" widget="monetary"/>
+<!--                       groups="cost_allocation.group_cost_allocation_financial"/> -->
+                <field name="total_cost" widget="monetary"/>
+<!--                       groups="cost_allocation.group_cost_allocation_financial"/> -->
                 <field name="state" widget="badge"/>
                 <field name="currency_id" column_invisible="1"/>
             </tree>

@@ -55,8 +55,8 @@ access_bulk_services_wizard_line_manager,bulk.services.wizard.line,model_bulk_se
 access_bulk_services_wizard_line_user,bulk.services.wizard.line,model_bulk_services_wizard_line,group_cost_allocation_user,1,1,1,1
 access_sequence_config_financial,sequence.config,model_sequence_config,group_cost_allocation_financial,1,1,1,1
 access_sequence_config_manager,sequence.config,model_sequence_config,group_cost_allocation_manager,1,1,1,1
-access_currency_financial,res.currency,base.model_res_currency,group_cost_allocation_financial,1,0,0,0
-access_currency_manager,res.currency,base.model_res_currency,group_cost_allocation_manager,1,0,0,0
+access_currency_financial,res.currency,base.model_res_currency,group_cost_allocation_financial,1,1,0,0
+access_currency_manager,res.currency,base.model_res_currency,group_cost_allocation_manager,1,1,0,0
 access_currency_user,res.currency,base.model_res_currency,group_cost_allocation_user,1,0,0,0
 access_account_account_financial,account.account,account.model_account_account,group_cost_allocation_financial,1,0,0,0
 access_account_account_manager,account.account,account.model_account_account,group_cost_allocation_manager,1,0,0,0
@@ -85,3 +85,7 @@ access_billing_automation_user,billing.automation,model_billing_automation,group
 access_service_cost_calculation_financial,service.cost.calculation,model_service_cost_calculation,group_cost_allocation_financial,1,1,1,1
 access_service_cost_calculation_manager,service.cost.calculation,model_service_cost_calculation,group_cost_allocation_manager,1,1,1,1
 access_service_cost_calculation_user,service.cost.calculation,model_service_cost_calculation,group_cost_allocation_user,1,0,0,0
+access_cost_employee_manager,cost.employee,model_cost_employee,group_cost_allocation_manager,1,0,0,0
+access_partner_financial,res.partner,base.model_res_partner,group_cost_allocation_financial,1,1,1,0
+access_partner_manager,res.partner,base.model_res_partner,group_cost_allocation_manager,1,1,1,0
+access_partner_user,res.partner,base.model_res_partner,group_cost_allocation_user,1,0,0,0

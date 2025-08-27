@@ -138,40 +138,37 @@ class ServiceCostingSetupWizard(models.TransientModel):
         return created_count
 
     def _setup_service_categories(self):
-        """Setup service categories SAFELY - only for current company"""
+        """Setup service categories SAFELY - только активируем нужные для выбранного типа бизнеса"""
         if self.company_type == 'custom':
             return 0
 
-        # ИСПРАВЛЕНО: Работаем только с категориями текущей компании
-        current_company_categories = self.env['service.category'].search([
-            ('company_id', '=', self.env.company.id)
-        ])
-
-        # Деактивируем только категории текущей компании
-        if current_company_categories:
-            current_company_categories.write({'active': False})
-
-        # Получаем категории для активации
+        # Получаем список категорий для активации
         categories_to_activate = self._get_categories_to_create()
         activated_count = 0
 
-        # Создаем/активируем нужные категории
+        # Активируем только нужные категории (НЕ трогаем существующие!)
         for cat_data in categories_to_activate:
-            cat_data['company_id'] = self.env.company.id
-
-            existing = self.env['service.category'].search([
+            # Ищем категорию по имени в текущей компании
+            existing = self.env['service.category'].with_context(active_test=False).search([
                 ('name', '=', cat_data['name']),
-                ('company_id', '=', self.env.company.id)
-            ])
+                ('company_id', 'in', [self.env.company.id, False])  # включаем записи без компании
+            ], limit=1)
 
             if existing:
-                existing.write({'active': True})
+                # Активируем найденную категорию и привязываем к компании
+                existing.write({
+                    'active': True,
+                    'company_id': self.env.company.id
+                })
                 activated_count += 1
             else:
-                # Создаем новую категорию
+                # Создаем новую категорию, если не найдена
+                cat_data['company_id'] = self.env.company.id
+                cat_data['active'] = True
                 self.env['service.category'].create(cat_data)
                 activated_count += 1
 
+        print(f"Активировано категорий: {activated_count} для типа бизнеса {self.company_type}")
         return activated_count
 
     def _get_pools_data(self):
@@ -269,30 +266,37 @@ class ServiceCostingSetupWizard(models.TransientModel):
         return mapping
 
     def _get_categories_to_create(self):
-        """Get service categories to create/activate based on company type"""
+        """Get service categories to create/activate based on company type - ТОЧНЫЕ названия из XML"""
         categories_mapping = {
             'it': [
-                {'name': _('IT Hardware'), 'active': True},
-                {'name': _('IT Software'), 'active': True},
-                {'name': _('IT Infrastructure'), 'active': True},
-                {'name': _('IT Support'), 'active': True},
+                {'name': 'IT Hardware', 'active': True, 'service_type': 'hardware'},
+                {'name': 'IT Software', 'active': True, 'service_type': 'saas'},
+                {'name': 'IT Infrastructure', 'active': True, 'service_type': 'iaas'},
+                {'name': 'IT Support', 'active': True, 'service_type': 'support'},
             ],
             'legal': [
-                {'name': _('Corporate Law'), 'active': True},
-                {'name': _('Contract Law'), 'active': True},
-                {'name': _('Litigation'), 'active': True},
+                {'name': 'Corporate Law', 'active': True, 'service_type': 'support'},
+                {'name': 'Contract Law', 'active': True, 'service_type': 'support'},
+                {'name': 'Litigation', 'active': True, 'service_type': 'support'},
             ],
             'accounting': [
-                {'name': _('Bookkeeping'), 'active': True},
-                {'name': _('Tax Services'), 'active': True},
-                {'name': _('Audit'), 'active': True},
+                {'name': 'Bookkeeping', 'active': True, 'service_type': 'support'},
+                {'name': 'Tax Services', 'active': True, 'service_type': 'support'},
+                {'name': 'Audit & Review', 'active': True, 'service_type': 'support'},  # & вместо &amp;
             ],
             'financial': [
-                {'name': _('Financial Consulting'), 'active': True},
-                {'name': _('Investment Advisory'), 'active': True},
+                {'name': 'Financial Consulting', 'active': True, 'service_type': 'support'},
+                {'name': 'Financial Analysis', 'active': True, 'service_type': 'support'},
+            ],
+            'construction': [
+                {'name': 'Design & Planning', 'active': True, 'service_type': 'support'},  # & вместо &amp;
+                {'name': 'Construction Work', 'active': True, 'service_type': 'support'},
+            ],
+            'expertise': [
+                {'name': 'Technical Expertise', 'active': True, 'service_type': 'support'},
             ],
         }
 
         return categories_mapping.get(self.company_type, [
-            {'name': _('Main Services'), 'active': True},
+            {'name': 'Main Services', 'active': True, 'service_type': 'support'},
         ])

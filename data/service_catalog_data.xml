@@ -6,6 +6,7 @@
         <field name="service_type">hardware</field>
         <field name="sequence">10</field>
         <field name="description">Computer equipment, servers, network devices</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_it_software" model="service.category">
@@ -13,6 +14,7 @@
         <field name="service_type">saas</field>
         <field name="sequence">20</field>
         <field name="description">Software licenses, cloud services, SaaS platforms</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_it_infrastructure" model="service.category">
@@ -20,6 +22,7 @@
         <field name="service_type">iaas</field>
         <field name="sequence">30</field>
         <field name="description">Infrastructure services, hosting, cloud platforms</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_it_support" model="service.category">
@@ -27,6 +30,7 @@
         <field name="service_type">support</field>
         <field name="sequence">40</field>
         <field name="description">Technical support, helpdesk, maintenance</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Legal Services Categories -->
@@ -35,6 +39,7 @@
         <field name="service_type">support</field>
         <field name="sequence">110</field>
         <field name="description">Corporate law, compliance, governance</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_legal_contracts" model="service.category">
@@ -42,6 +47,7 @@
         <field name="service_type">support</field>
         <field name="sequence">120</field>
         <field name="description">Contract drafting, review, negotiation</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_legal_litigation" model="service.category">
@@ -49,6 +55,7 @@
         <field name="service_type">support</field>
         <field name="sequence">130</field>
         <field name="description">Court proceedings, dispute resolution</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Accounting Services Categories -->
@@ -57,6 +64,7 @@
         <field name="service_type">support</field>
         <field name="sequence">210</field>
         <field name="description">Daily bookkeeping, transaction recording</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_accounting_tax" model="service.category">
@@ -64,6 +72,7 @@
         <field name="service_type">support</field>
         <field name="sequence">220</field>
         <field name="description">Tax preparation, planning, compliance</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_accounting_audit" model="service.category">
@@ -71,6 +80,7 @@
         <field name="service_type">support</field>
         <field name="sequence">230</field>
         <field name="description">Financial audits, reviews, assurance</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Financial Services Categories -->
@@ -79,6 +89,7 @@
         <field name="service_type">support</field>
         <field name="sequence">310</field>
         <field name="description">Financial planning, investment advice</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_financial_analysis" model="service.category">
@@ -86,6 +97,7 @@
         <field name="service_type">support</field>
         <field name="sequence">320</field>
         <field name="description">Financial modeling, valuations, due diligence</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Construction Services Categories -->
@@ -94,6 +106,7 @@
         <field name="service_type">support</field>
         <field name="sequence">410</field>
         <field name="description">Architectural design, project planning</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="category_construction_execution" model="service.category">
@@ -101,6 +114,7 @@
         <field name="service_type">support</field>
         <field name="sequence">420</field>
         <field name="description">Building, renovation, construction management</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Technical Expertise Categories -->
@@ -109,6 +123,7 @@
         <field name="service_type">support</field>
         <field name="sequence">510</field>
         <field name="description">Technical assessments, expert opinions</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample IT Services -->
@@ -120,6 +135,7 @@
         <field name="complexity_level">medium</field>
         <field name="support_hours">3</field>
         <field name="base_cost">200</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_server_management" model="service.catalog">
@@ -130,6 +146,7 @@
         <field name="complexity_level">critical</field>
         <field name="support_hours">8</field>
         <field name="base_cost">800</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_user_support" model="service.catalog">
@@ -140,6 +157,7 @@
         <field name="complexity_level">medium</field>
         <field name="support_hours">1</field>
         <field name="base_cost">25</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample Legal Services -->
@@ -151,6 +169,7 @@
         <field name="complexity_level">high</field>
         <field name="support_hours">1</field>
         <field name="base_cost">150</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_corporate_compliance" model="service.catalog">
@@ -161,6 +180,7 @@
         <field name="complexity_level">high</field>
         <field name="support_hours">10</field>
         <field name="base_cost">2000</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample Accounting Services -->
@@ -172,6 +192,7 @@
         <field name="complexity_level">medium</field>
         <field name="support_hours">20</field>
         <field name="base_cost">1500</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_tax_preparation" model="service.catalog">
@@ -182,6 +203,7 @@
         <field name="complexity_level">high</field>
         <field name="support_hours">8</field>
         <field name="base_cost">800</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample Financial Services -->
@@ -193,6 +215,7 @@
         <field name="complexity_level">high</field>
         <field name="support_hours">1</field>
         <field name="base_cost">200</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_due_diligence" model="service.catalog">
@@ -203,6 +226,7 @@
         <field name="complexity_level">critical</field>
         <field name="support_hours">40</field>
         <field name="base_cost">5000</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample Construction Services -->
@@ -214,6 +238,7 @@
         <field name="complexity_level">high</field>
         <field name="support_hours">80</field>
         <field name="base_cost">8000</field>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="service_project_management" model="service.catalog">
@@ -224,6 +249,7 @@
         <field name="complexity_level">critical</field>
         <field name="support_hours">160</field>
         <field name="base_cost">12000</field>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- Sample Technical Expertise -->
@@ -235,6 +261,7 @@
         <field name="complexity_level">critical</field>
         <field name="support_hours">16</field>
         <field name="base_cost">2400</field>
+        <field name="active" eval="False"/>
     </record>
 
 </odoo>

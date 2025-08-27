@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 17.0+e-20250624\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-23 12:20+0000\n"
-"PO-Revision-Date: 2025-08-23 16:31+0300\n"
+"PO-Revision-Date: 2025-08-27 16:18+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk_UA\n"
@@ -5436,7 +5436,7 @@ msgstr "Коннектор Sendcloud"
 #: model:ir.model.fields,field_description:cost_allocation.field_service_category__sequence
 #: model:ir.model.fields,field_description:cost_allocation.field_service_type__sequence
 msgid "Sequence"
-msgstr "Порядок дій"
+msgstr "Послідовність"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_sequence_config model_terms:ir.ui.view,arch_db:cost_allocation.view_sequence_config_form
@@ -6598,13 +6598,13 @@ msgstr "В стадії обслуговування"
 #: code:addons/cost_allocation/wizards/setup_wizard.py:0
 #, python-format
 msgid "Unit"
-msgstr "Секція"
+msgstr "Одиниця"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__unit_name
 #: model:ir.model.fields,field_description:cost_allocation.field_service_type__unit_name
 msgid "Unit Name"
-msgstr "Назва"
+msgstr "Назва одиниці"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_client_service_subscription_line__unit_price
@@ -6984,7 +6984,7 @@ msgstr "Пакет робочих станцій"
 #. module: cost_allocation
 #: model:ir.model.fields.selection,name:cost_allocation.selection__client_service_subscription__recurring_rule_type__yearly
 msgid "Year(s)"
-msgstr "Рік"
+msgstr "Рік(Роки)"
 
 #. module: cost_allocation
 #: model:ir.model.fields.selection,name:cost_allocation.selection__billing_automation__billing_period__yearly
