@@ -61,7 +61,7 @@ msgstr "<i class=\"fa fa-exclamation-triangle\"/> Стандартний под�
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_cost_calculation_form
 msgid "<i class=\"fa fa-info-circle\"/> ABC Costing Methodology"
-msgstr "<i class=\"fa fa-info-circle\"/> Методологія калькуляції собівартості ABC"
+msgstr "<i class=\"fa fa-info-circle\"/> Методологія ABC-костинг"
 
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
@@ -263,7 +263,7 @@ msgstr "Для ввімкнення перекладу повідомлень п
 #. module: cost_allocation
 #: model:ir.model.fields.selection,name:cost_allocation.selection__service_catalog__cost_calculation_method__calculated
 msgid "ABC Calculated"
-msgstr "ABC Calculated"
+msgstr "Розраховано методом ABC-костинг"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__unsplash_access_key
@@ -979,7 +979,7 @@ msgstr "Сканер штрих-коду"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__base_cost
 msgid "Base Cost"
-msgstr "Базова щомісячна вартість"
+msgstr "Базова вартість"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_service_type__base_price
@@ -994,7 +994,7 @@ msgstr "Рахунок для отримання базового податку
 #. module: cost_allocation
 #: model:ir.model.fields,help:cost_allocation.field_service_catalog__base_cost
 msgid "Base cost per unit - can be manually set or calculated using ABC costing"
-msgstr "Базова собівартість одиниці продукції - може бути встановлена вручну або розрахована за допомогою АВС-калькулювання"
+msgstr "Базова вартість одиниці продукції - може бути встановлена вручну або розрахована методом ABC-костинг"
 
 #. module: cost_allocation
 #: model:ir.model.fields,help:cost_allocation.field_cost_allocation_settings__sfu_server_key
@@ -1240,7 +1240,7 @@ msgstr "Може отримувати доступ до зарплат спів�
 #. module: cost_allocation
 #: model:res.groups,comment:cost_allocation.group_cost_allocation_manager
 msgid "Can manage cost pools, drivers, and service catalog"
-msgstr "Може управляти пулами затрат, драйверами та каталогом послуг"
+msgstr "Може управляти пулами витрат, драйверами та каталогом послуг"
 
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_add_multiple_services_wizard_form model_terms:ir.ui.view,arch_db:cost_allocation.view_allocation_wizard_form
@@ -1365,17 +1365,17 @@ msgstr "Розподіли затрат по клієнтах"
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_cost_driver
 msgid "Client Cost Driver Values"
-msgstr "Вартість клієнта Цінності драйверів витрат"
+msgstr "Значення драйверів витрат клієнта"
 
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_driver_tree
 msgid "Client Cost Drivers"
-msgstr "Фактори, що впливають на витрати клієнта"
+msgstr "Драйвери витрат клієнтів"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_service
 msgid "Client IT Services and Equipment"
-msgstr "ІТ-послуги та обладнання для клієнтів"
+msgstr "Послуги та обладнання клієнтів"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_indirect_cost
@@ -1390,22 +1390,22 @@ msgstr "Інформація про клієнта"
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_client_service_form
 msgid "Client Service"
-msgstr "Обслуговування клієнтів"
+msgstr "Послуга клієнта"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_sequence_config__client_service_prefix
 msgid "Client Service Prefix"
-msgstr "Префікс обслуговування клієнтів"
+msgstr "Префікс послуг клієнта"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_service_subscription
 msgid "Client Service Subscription"
-msgstr "Підписка на обслуговування клієнтів"
+msgstr "Підписка на послуги клієнта"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_service_subscription_line
 msgid "Client Service Subscription Line"
-msgstr "Абонентська лінія клієнтського сервісу"
+msgstr "Підписка на послуги"
 
 #. module: cost_allocation
 #: model:ir.actions.act_window,name:cost_allocation.action_client_service
@@ -1417,7 +1417,7 @@ msgstr "Послуги клієнтів"
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
 msgid "Client Values"
-msgstr "Цінності клієнтів"
+msgstr "Значення для клієнтів"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_allocation_wizard__client_ids
@@ -1778,7 +1778,7 @@ msgstr "Дані про витрати"
 #: model:ir.model.fields,field_description:cost_allocation.field_client_indirect_cost__driver_id
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__driver_id model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
 msgid "Cost Driver"
-msgstr "Конфігурація драйверів витрат"
+msgstr "Драйвери витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields.selection,name:cost_allocation.selection__cost_allocation_settings__overhead_allocation_method__driver_based
@@ -1788,19 +1788,19 @@ msgstr "На основі драйверів витрат"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_sequence_config__cost_driver_prefix
 msgid "Cost Driver Prefix"
-msgstr "Префікс драйвера вартості"
+msgstr "Префікс драйвера витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_res_partner__cost_driver_ids
 #: model:ir.model.fields,field_description:cost_allocation.field_res_users__cost_driver_ids
 msgid "Cost Driver Values"
-msgstr "Цінності драйверів витрат"
+msgstr "Значення драйверів витрат"
 
 #. module: cost_allocation
 #: model:ir.actions.act_window,name:cost_allocation.action_cost_driver model:ir.ui.menu,name:cost_allocation.menu_cost_drivers
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_tree
 msgid "Cost Drivers"
-msgstr "Драйвери затрат"
+msgstr "Драйвери витрат"
 
 #. module: cost_allocation
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_sequence_config_form
@@ -1841,7 +1841,7 @@ msgstr "Префікс пулу витрат"
 #: model:ir.ui.menu,name:cost_allocation.menu_cost_pools model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_tree
 #, python-format
 msgid "Cost Pools"
-msgstr "Пули затрат"
+msgstr "Пули витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_res_partner__cost_trend
@@ -1962,7 +1962,7 @@ msgstr ""
 #. module: cost_allocation
 #: model_terms:ir.actions.act_window,help:cost_allocation.action_client_service
 msgid "Create your first client service!"
-msgstr "Створіть свій перший клієнтський сервіс!"
+msgstr "Створіть свій перший клієнтську послугу!"
 
 #. module: cost_allocation
 #: model_terms:ir.actions.act_window,help:cost_allocation.action_client_allocation
@@ -2622,22 +2622,22 @@ msgstr "Чернетка"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__code
 msgid "Driver Code"
-msgstr "Код"
+msgstr "Код драйвера"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__name model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
 msgid "Driver Name"
-msgstr "Найменування драйверу"
+msgstr "Драйвер витрат"
 
 #. module: cost_allocation
 #: model:ir.model.constraint,message:cost_allocation.constraint_cost_driver_unique_code
 msgid "Driver code must be unique!"
-msgstr "Код драйвера повинен бути унікальним!"
+msgstr "Код драйвера витрат повинен бути унікальним!"
 
 #. module: cost_allocation
 #: model:ir.model.constraint,message:cost_allocation.constraint_client_cost_driver_unique_driver_client
 msgid "Driver-Client combination must be unique!"
-msgstr "Комбінація драйвер-клієнт повинна бути унікальною!"
+msgstr "Комбінація 'драйвер витрат - клієнт' повинна бути унікальною!"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__module_stock_dropshipping
@@ -2704,7 +2704,7 @@ msgstr "Після отримання інвойсу клієнту буде н�
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool_allocation__employee_cost_id
 #: model:ir.model.fields,field_description:cost_allocation.field_employee_workload__employee_id
 msgid "Employee"
-msgstr "Працівник"
+msgstr "Співробітник"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__allocation_ids model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
@@ -2724,7 +2724,7 @@ msgstr "Код витрат на персонал"
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_cost_employee
 msgid "Employee Cost Configuration"
-msgstr "Конфігурація витрат на працівників"
+msgstr "Конфігурація витрат на персонал"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_sequence_config__employee_cost_prefix
@@ -2825,7 +2825,7 @@ msgstr "Автоматично збагачуйте ваших потенцій�
 #. module: cost_allocation
 #: model:ir.model.fields.selection,name:cost_allocation.selection__service_type__support_level__enterprise
 msgid "Enterprise Support"
-msgstr "Підтримка підприємств"
+msgstr "Підтримка Enterprise-level"
 
 #. module: cost_allocation
 #. odoo-python
@@ -4009,7 +4009,7 @@ msgstr "Маркетинг та реклама"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__markup_percent
 msgid "Markup %"
-msgstr "Націнка в % від вартості"
+msgstr "Націнка в %"
 
 #. module: cost_allocation
 #: model:ir.model.fields,help:cost_allocation.field_service_catalog__markup_percent
@@ -4696,17 +4696,17 @@ msgstr "Журнал торгової точки"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__code
 msgid "Pool Code"
-msgstr "Код пулу"
+msgstr "Код пулу витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__name model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_form
 msgid "Pool Name"
-msgstr "Назва пулу"
+msgstr "Назва пулу витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_pool__pool_type model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_pool_search
 msgid "Pool Type"
-msgstr "Тип пулу"
+msgstr "Тип пулу витрат"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__pos_allowed_pricelist_ids
@@ -4741,7 +4741,7 @@ msgstr "Предиктивні мітки полів для підрахунку
 #. module: cost_allocation
 #: model:ir.model.fields,help:cost_allocation.field_sequence_config__client_service_prefix
 msgid "Prefix for client service codes"
-msgstr "Префікс для кодів обслуговування клієнтів"
+msgstr "Префікс для кодів послуг клієнтів"
 
 #. module: cost_allocation
 #: model:ir.model.fields,help:cost_allocation.field_sequence_config__cost_allocation_prefix
@@ -4791,7 +4791,7 @@ msgstr "Преміум-підтримка"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__module_pos_preparation_display
 msgid "Preparation Display"
-msgstr "Дисплей підготовки"
+msgstr "Підготовка"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__prepayment_percent
@@ -5206,7 +5206,7 @@ msgstr "Ключ сервера SFU"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_service_catalog__sla_response_time
 msgid "SLA Response Time (hours)"
-msgstr "Час відгуку SLA (хвилини)"
+msgstr "Час відгуку за SLA (години)"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__module_stock_sms
@@ -5222,7 +5222,7 @@ msgstr "Помилка доставки SMS"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__stock_sms_confirmation_template_id
 msgid "SMS Template"
-msgstr "Шаблон Email"
+msgstr "Шаблон SMS"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_allocation_settings__stock_move_sms_validation
@@ -7040,3 +7040,178 @@ msgstr "види послуг"
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_bulk_services_wizard_form
 msgid "total services"
 msgstr "всього послуг"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_unit_of_measure
+msgid "Unit of Measure"
+msgstr "Одиниця вимірювання"
+
+#. module: cost_allocation
+#: model:ir.model,name:cost_allocation.model_unit_measure_category
+msgid "Unit of Measure Category"
+msgstr "Категорія одиниць вимірювання"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_of_measure__name
+msgid "Unit Name"
+msgstr "Назва одиниці"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_of_measure__symbol
+msgid "Symbol"
+msgstr "Символ"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_of_measure__category_id
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__name
+msgid "Category"
+msgstr "Категорія"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_of_measure__display_name
+msgid "Display Name"
+msgstr "Відображувана назва"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_of_measure__ratio
+msgid "Ratio to Base Unit"
+msgstr "Коефіцієнт до базової одиниці"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__sequence
+msgid "Sequence"
+msgstr "Послідовність"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__unit_ids
+msgid "Units"
+msgstr "Одиниці"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__unit_count
+msgid "Unit Count"
+msgstr "Кількість одиниць"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__unit_id
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__unit_id
+msgid "Unit of Measure"
+msgstr "Одиниця вимірювання"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_unit_of_measure__symbol
+msgid "Short symbol for this unit (e.g., \"PC\", \"Hr\", \"GB\")"
+msgstr "Короткий символ для цієї одиниці (наприклад, \"ШТ\", \"Год\", \"ГБ\")"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_unit_of_measure__ratio
+msgid "How many of this unit = 1 base unit"
+msgstr "Скільки цих одиниць = 1 базова одиниця"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_unit_measure
+#: model:ir.ui.menu,name:cost_allocation.menu_unit_measures
+msgid "Units"
+msgstr "Одиниці"
+
+#. module: cost_allocation
+#: model:ir.actions.act_window,name:cost_allocation.action_unit_measure_category
+#: model:ir.ui.menu,name:cost_allocation.menu_unit_measure_categories
+msgid "Unit Categories"
+msgstr "Категорії одиниць"
+
+#. module: cost_allocation
+#: model:ir.ui.menu,name:cost_allocation.menu_unit_measure_config
+msgid "Units of Measure"
+msgstr "Одиниці вимірювання"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_service_type__active
+msgid "Active"
+msgstr "Активний"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_unit_of_measure_unique_name_category
+msgid "Unit name must be unique per category!"
+msgstr "Назва одиниці повинна бути унікальною в межах категорії!"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_unit_of_measure_unique_symbol_category
+msgid "Unit symbol must be unique per category!"
+msgstr "Символ одиниці повинен бути унікальним в межах категорії!"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_unit_measure_category_unique_name
+msgid "Category name must be unique!"
+msgstr "Назва категорії повинна бути унікальною!"
+
+#. module: cost_allocation
+#: model:ir.model.constraint,message:cost_allocation.constraint_service_type_unique_code
+msgid "Service Type code must be unique!"
+msgstr "Код типу послуги повинен бути унікальним!"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_unit_measure
+msgid ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Create your first unit of measure!\n"
+"            </p>\n"
+"            <p>\n"
+"                Units of measure define how quantities are calculated.<br/>\n"
+"                Examples: Pieces, Hours, Users, Gigabytes, etc.\n"
+"            </p>"
+msgstr ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Створіть свою першу одиницю вимірювання!\n"
+"            </p>\n"
+"            <p>\n"
+"                Одиниці вимірювання визначають, як розраховуються кількості.<br/>\n"
+"                Приклади: Штуки, Години, Користувачі, Гігабайти тощо.\n"
+"            </p>"
+
+#. module: cost_allocation
+#: model_terms:ir.actions.act_window,help:cost_allocation.action_unit_measure_category
+msgid ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Create your first unit category!\n"
+"            </p>\n"
+"            <p>\n"
+"                Categories organize units of measure by type.<br/>\n"
+"                Examples: Time, Quantity, Storage, Users, etc.\n"
+"            </p>"
+msgstr ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                Створіть свою першу категорію одиниць!\n"
+"            </p>\n"
+"            <p>\n"
+"                Категорії організовують одиниці вимірювання за типом.<br/>\n"
+"                Приклади: Час, Кількість, Зберігання, Користувачі тощо.\n"
+"            </p>"
+
+#. module: cost_allocation
+#: model:ir.model.fields,help:cost_allocation.field_cost_driver__unit_of_measure
+msgid "Deprecated: Use Unit of Measure field instead"
+msgstr "Застаріло: Використовуйте поле 'Одиниця вимірювання'"
+
+#. module: cost_allocation
+#: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__unit_of_measure
+msgid "Legacy Unit of Measure"
+msgstr "Застаріла одиниця вимірювання"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "Legacy Settings"
+msgstr "Застарілі налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "Deprecated Fields"
+msgstr "Застарілі поля"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_cost_driver_form
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
+msgid "These fields are kept for data migration purposes only."
+msgstr "Ці поля зберігаються лише для цілей міграції даних."

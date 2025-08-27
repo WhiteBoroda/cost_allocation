@@ -89,3 +89,9 @@ access_cost_employee_manager,cost.employee,model_cost_employee,group_cost_alloca
 access_partner_financial,res.partner,base.model_res_partner,group_cost_allocation_financial,1,1,1,0
 access_partner_manager,res.partner,base.model_res_partner,group_cost_allocation_manager,1,1,1,0
 access_partner_user,res.partner,base.model_res_partner,group_cost_allocation_user,1,0,0,0
+access_unit_of_measure_financial,unit.of.measure,model_unit_of_measure,group_cost_allocation_financial,1,1,1,1
+access_unit_of_measure_manager,unit.of.measure,model_unit_of_measure,group_cost_allocation_manager,1,1,1,1
+access_unit_of_measure_user,unit.of.measure,model_unit_of_measure,group_cost_allocation_user,1,0,0,0
+access_unit_measure_category_financial,unit.measure.category,model_unit_measure_category,group_cost_allocation_financial,1,1,1,1
+access_unit_measure_category_manager,unit.measure.category,model_unit_measure_category,group_cost_allocation_manager,1,1,1,1
+access_unit_measure_category_user,unit.measure.category,model_unit_measure_category,group_cost_allocation_user,1,0,0,0

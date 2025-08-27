@@ -60,6 +60,9 @@ class ServiceType(models.Model):
     # Statistics
     active_services_count = fields.Integer(string='Active Services', compute='_compute_service_count')
 
+    # Status - ДОБАВЛЕНО: недостающее поле active
+    active = fields.Boolean(string='Active', default=True)
+
     # Company
     company_id = fields.Many2one('res.company', string='Company', required=True,
                                  default=lambda self: self.env.company)
