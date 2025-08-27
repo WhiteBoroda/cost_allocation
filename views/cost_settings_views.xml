@@ -163,8 +163,8 @@
                     </div>
 
                     <!-- Warning Note -->
-                    <div class="alert alert-warning mt-3" invisible="admin_allocation_method != 'percentage'">
-                        <i class="fa fa-warning"/>
+                    <div class="alert alert-warning mt-3" role="status" invisible="admin_allocation_method != 'percentage'">
+                        <i class="fa fa-warning" title="Warning"/>
                         <strong>Note:</strong>
                         Changing the administrative cost percentage will affect future cost calculations.
                         Existing allocations will not be automatically recalculated.

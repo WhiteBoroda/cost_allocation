@@ -5,8 +5,8 @@
         <field name="model">service.costing.setup.wizard</field>
         <field name="arch" type="xml">
             <form string="Service Costing Setup Wizard">
-                <div class="alert alert-info">
-                    <h3><i class="fa fa-magic"/> Service Costing Setup Wizard</h3>
+                <div class="alert alert-info" role="status">
+                    <h3><i class="fa fa-magic" title="Setup Wizard"/> Service Costing Setup Wizard</h3>
                     <p>This wizard will configure the ABC (Activity-Based Costing) system for your business.
                     It creates cost pools to group employee costs, cost drivers to allocate costs to clients,
                     and service categories to organize your offerings.</p>
@@ -65,8 +65,8 @@
                         </page>
 
                         <page string="Custom Setup" invisible="company_type != 'custom'">
-                            <div class="alert alert-warning">
-                                <h4><i class="fa fa-exclamation-triangle"/> Custom Configuration</h4>
+                            <div class="alert alert-warning" role="status">
+                                <h4><i class="fa fa-exclamation-triangle" title="Warning"/> Custom Configuration</h4>
                                 <p>You've selected custom setup. The wizard will only create employee cost records.
                                 You'll need to manually create:</p>
                                 <ul>
@@ -79,7 +79,7 @@
                         </page>
 
                         <page string="Next Steps">
-                            <div class="alert alert-success">
+                            <div class="alert alert-success" role="status">
                                 <h4><i class="fa fa-lightbulb-o"/> After Setup</h4>
                                 <p>Once the wizard completes, you can:</p>
                                 <ul>

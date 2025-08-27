@@ -6,7 +6,7 @@
         <field name="model">allocation.wizard</field>
         <field name="arch" type="xml">
             <form string="Create Cost Allocations">
-                <div class="alert alert-info mb-3">
+                <div class="alert alert-info mb-3" role="status">
                     <h4>Create Cost Allocations</h4>
                     <p>This wizard will create cost allocations for selected clients for the specified period.</p>
                 </div>
@@ -43,7 +43,7 @@
         <field name="model">cost.report.wizard</field>
         <field name="arch" type="xml">
             <form string="Cost Allocation Report">
-                <div class="alert alert-info mb-3">
+                <div class="alert alert-info mb-3" role="status">
                     <h4>Generate Cost Report</h4>
                     <p>Select period and clients to generate cost allocation reports.</p>
                 </div>

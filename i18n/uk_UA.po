@@ -5436,7 +5436,7 @@ msgstr "Коннектор Sendcloud"
 #: model:ir.model.fields,field_description:cost_allocation.field_service_category__sequence
 #: model:ir.model.fields,field_description:cost_allocation.field_service_type__sequence
 msgid "Sequence"
-msgstr "Послідовність"
+msgstr "Порядок сортування"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_sequence_config model_terms:ir.ui.view,arch_db:cost_allocation.view_sequence_config_form
@@ -7080,7 +7080,7 @@ msgstr "Коефіцієнт до базової одиниці"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__sequence
 msgid "Sequence"
-msgstr "Послідовність"
+msgstr "Порядок сортування"
 
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_unit_measure_category__unit_ids
@@ -7215,3 +7215,359 @@ msgstr "Застарілі поля"
 #: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_type_form
 msgid "These fields are kept for data migration purposes only."
 msgstr "Ці поля зберігаються лише для цілей міграції даних."
+
+# ДОБАВИТЬ В i18n/uk_UA.po:
+
+# ================ UNIT MEASURE CATEGORIES ================
+
+#. module: cost_allocation
+#: model:unit.measure.category,name:cost_allocation.unit_category_quantity
+msgid "Quantity"
+msgstr "Кількість"
+
+#. module: cost_allocation
+#: model:unit.measure.category,description:cost_allocation.unit_category_quantity
+msgid "General quantity units"
+msgstr "Загальні одиниці кількості"
+
+#. module: cost_allocation
+#: model:unit.measure.category,name:cost_allocation.unit_category_time
+msgid "Time"
+msgstr "Час"
+
+#. module: cost_allocation
+#: model:unit.measure.category,description:cost_allocation.unit_category_time
+msgid "Time-based units"
+msgstr "Часові одиниці"
+
+#. module: cost_allocation
+#: model:unit.measure.category,name:cost_allocation.unit_category_storage
+msgid "Storage"
+msgstr "Зберігання"
+
+#. module: cost_allocation
+#: model:unit.measure.category,description:cost_allocation.unit_category_storage
+msgid "Data storage units"
+msgstr "Одиниці зберігання даних"
+
+#. module: cost_allocation
+#: model:unit.measure.category,name:cost_allocation.unit_category_users
+msgid "Users"
+msgstr "Користувачі"
+
+#. module: cost_allocation
+#: model:unit.measure.category,description:cost_allocation.unit_category_users
+msgid "User-based units"
+msgstr "Користувацькі одиниці"
+
+#. module: cost_allocation
+#: model:unit.measure.category,name:cost_allocation.unit_category_hardware
+msgid "Hardware"
+msgstr "Обладнання"
+
+#. module: cost_allocation
+#: model:unit.measure.category,description:cost_allocation.unit_category_hardware
+msgid "Hardware equipment units"
+msgstr "Одиниці обладнання"
+
+# ================ QUANTITY UNITS ================
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_piece
+msgid "Piece"
+msgstr "Штука"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_unit
+msgid "Unit"
+msgstr "Одиниця"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_license
+msgid "License"
+msgstr "Ліцензія"
+
+# ================ TIME UNITS ================
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_hour
+msgid "Hour"
+msgstr "Година"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_month
+msgid "Month"
+msgstr "Місяць"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_year
+msgid "Year"
+msgstr "Рік"
+
+# ================ STORAGE UNITS ================
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_gigabyte
+msgid "Gigabyte"
+msgstr "Гігабайт"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_terabyte
+msgid "Terabyte"
+msgstr "Терабайт"
+
+# ================ USER UNITS ================
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_user
+msgid "User"
+msgstr "Користувач"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_concurrent_user
+msgid "Concurrent User"
+msgstr "Одночасний користувач"
+
+# ================ HARDWARE UNITS ================
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_workstation
+msgid "Workstation"
+msgstr "Робоче місце"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_server
+msgid "Server"
+msgstr "Сервер"
+
+#. module: cost_allocation
+#: model:unit.of.measure,name:cost_allocation.unit_printer
+msgid "Printer"
+msgstr "Принтер"
+
+# ДОПОЛНИТЕЛЬНЫЕ ПЕРЕВОДЫ ДЛЯ SETUP WIZARD - ДОБАВИТЬ В i18n/uk_UA.po:
+
+# ================ SETUP WIZARD MAIN FORM ================
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Service Costing Setup Wizard"
+msgstr "Майстер налаштування калькуляції послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "This wizard will configure the ABC (Activity-Based Costing) system for your business. It creates cost pools to group employee costs, cost drivers to allocate costs to clients, and service categories to organize your offerings."
+msgstr "Цей майстер налаштує систему ABC (Activity-Based Costing) для вашого бізнесу. Він створює пули витрат для групування витрат на персонал, драйвери витрат для розподілу витрат між клієнтами та категорії послуг для організації ваших пропозицій."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Choose Your Business Type"
+msgstr "Оберіть тип вашого бізнесу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Setup Options"
+msgstr "Опції налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Components to Setup"
+msgstr "Компоненти для налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Creates cost records for employees to track salaries, benefits, and hourly rates. Required for cost allocation calculations."
+msgstr "Створює записи витрат для працівників для відстеження зарплат, пільг та погодинних ставок. Необхідно для розрахунків розподілу витрат."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Groups employee costs by activity type (e.g. Hardware Support, Software Development). Each pool represents different work your company does."
+msgstr "Групує витрати на персонал за типом діяльності (наприклад, підтримка обладнання, розробка ПЗ). Кожен пул представляє різну роботу вашої компанії."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Defines how costs from pools are allocated to clients (e.g. per workstation, per user). Cost drivers determine the allocation basis for each pool."
+msgstr "Визначає, як витрати з пулів розподіляються між клієнтами (наприклад, на робоче місце, на користувача). Драйвери витрат визначають основу розподілу для кожного пулу."
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Creates service categories to organize your service catalog. Helps classify different types of services you offer."
+msgstr "Створює категорії послуг для організації вашого каталогу послуг. Допомагає класифікувати різні типи послуг, які ви пропонуєте."
+
+# ================ PREVIEW PAGES ================
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "What Will Be Created"
+msgstr "Що буде створено"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "IT Services Configuration"
+msgstr "Конфігурація IT послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Legal Services Configuration"
+msgstr "Конфігурація юридичних послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Accounting Services Configuration"
+msgstr "Конфігурація бухгалтерських послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Financial Consulting Configuration"
+msgstr "Конфігурація фінансового консалтингу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Pools:</strong> Hardware Support, Software Support, Infrastructure, User Support, Administration"
+msgstr "<strong>Пули витрат:</strong> Підтримка обладнання, Підтримка ПЗ, Інфраструктура, Підтримка користувачів, Адміністрування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Drivers:</strong> Workstations, Users, Servers, Applications"
+msgstr "<strong>Драйвери витрат:</strong> Робочі місця, Користувачі, Сервери, Додатки"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Service Categories:</strong> IT Hardware, IT Software, IT Infrastructure, IT Support"
+msgstr "<strong>Категорії послуг:</strong> IT Обладнання, IT Програмне забезпечення, IT Інфраструктура, IT Підтримка"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Pools:</strong> Corporate Law, Contract Law, Litigation, Compliance, Administration"
+msgstr "<strong>Пули витрат:</strong> Корпоративне право, Договірне право, Судові спори, Комплаєнс, Адміністрування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Drivers:</strong> Cases, Contracts, Work Hours"
+msgstr "<strong>Драйвери витрат:</strong> Справи, Контракти, Робочі години"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Service Categories:</strong> Corporate Law, Contract Law, Litigation"
+msgstr "<strong>Категорії послуг:</strong> Корпоративне право, Договірне право, Судові спори"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Pools:</strong> Bookkeeping, Tax Services, Audit, Advisory, Administration"
+msgstr "<strong>Пули витрат:</strong> Бухгалтерія, Податкові послуги, Аудит, Консультації, Адміністрування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Drivers:</strong> Transactions, Accounts, Reports"
+msgstr "<strong>Драйвери витрат:</strong> Транзакції, Рахунки, Звіти"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Service Categories:</strong> Bookkeeping, Tax Services, Audit"
+msgstr "<strong>Категорії послуг:</strong> Бухгалтерія, Податкові послуги, Аудит"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Pools:</strong> Investment Consulting, Risk Analysis, Planning, Administration"
+msgstr "<strong>Пули витрат:</strong> Інвестиційний консалтинг, Аналіз ризиків, Планування, Адміністрування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Cost Drivers:</strong> Clients, Assets Under Management, Reports"
+msgstr "<strong>Драйвери витрат:</strong> Клієнти, Активи під управлінням, Звіти"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Service Categories:</strong> Financial Consulting, Investment Advisory"
+msgstr "<strong>Категорії послуг:</strong> Фінансовий консалтинг, Інвестиційні консультації"
+
+# ================ CUSTOM SETUP PAGE ================
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Custom Setup"
+msgstr "Власне налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Custom Configuration"
+msgstr "Власна конфігурація"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "You've selected custom setup. The wizard will only create employee cost records. You'll need to manually create:"
+msgstr "Ви обрали власне налаштування. Майстер створить тільки записи витрат на персонал. Вам потрібно буде вручну створити:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cost pools that match your business activities"
+msgstr "Пули витрат, що відповідають вашій діяльності"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Cost drivers for allocating costs to clients"
+msgstr "Драйвери витрат для розподілу витрат між клієнтами"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Service categories for your service catalog"
+msgstr "Категорії послуг для вашого каталогу послуг"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Go to <strong>Service Costing → Configuration</strong> menu after running this wizard."
+msgstr "Перейдіть до меню <strong>Калькуляція послуг → Конфігурація</strong> після виконання цього майстра."
+
+# ================ NEXT STEPS PAGE ================
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Next Steps"
+msgstr "Наступні кроки"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "After Setup"
+msgstr "Після налаштування"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Once the wizard completes, you can:"
+msgstr "Після завершення роботи майстра ви можете:"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Review and edit</strong> created cost pools and drivers"
+msgstr "<strong>Переглянути та редагувати</strong> створені пули витрат та драйвери"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Assign employees</strong> to cost pools with time percentages"
+msgstr "<strong>Призначити працівників</strong> до пулів витрат з відсотками часу"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Set client cost driver values</strong> (e.g., number of workstations per client)"
+msgstr "<strong>Встановити значення драйверів витрат клієнтів</strong> (наприклад, кількість робочих місць на клієнта)"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Create service catalog</strong> with ABC cost calculations"
+msgstr "<strong>Створити каталог послуг</strong> з розрахунками витрат ABC"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "<strong>Generate cost allocations</strong> for clients"
+msgstr "<strong>Генерувати розподіли витрат</strong> для клієнтів"
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "All items created by this wizard can be modified or deleted later."
+msgstr "Усі елементи, створені цим майстром, можна буде змінювати або видаляти пізніше."
+
+# ================ BUTTONS ================
+
+#. module: cost_allocation
+#: model_terms:ir.ui.view,arch_db:cost_allocation.view_service_costing_setup_wizard
+msgid "Start Setup"
+msgstr "Почати налаштування"

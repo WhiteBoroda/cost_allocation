@@ -67,8 +67,8 @@
                         </group>
                     </group>
 
-                    <div class="alert alert-info mt-3">
-                        <h5><i class="fa fa-info-circle"/> ABC Costing Methodology</h5>
+                    <div class="alert alert-info mt-3" role="status">
+                        <h5><i class="fa fa-info-circle" title="Information"/> ABC Costing Methodology</h5>
                         <p><strong>Direct Costs:</strong> Labor costs based on responsible team hourly rates</p>
                         <p><strong>Indirect Costs:</strong> Shared resources allocated via cost drivers</p>
                         <p><strong>Admin Costs:</strong> Administrative overhead (typically 15% of direct+indirect)</p>

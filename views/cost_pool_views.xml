@@ -52,8 +52,8 @@
 
                     <notebook>
                         <page string="Employee Allocations" groups="cost_allocation.group_cost_allocation_financial">
-                            <div class="alert alert-info">
-                                <h4><i class="fa fa-info-circle"/> Employee Allocation</h4>
+                            <div class="alert alert-info" role="status">
+                                <h4><i class="fa fa-info-circle" title="Information"/> Employee Allocation</h4>
                                 <p>Distribute employee costs across this cost pool by percentage of their time.</p>
                                 <p><strong>Example:</strong> If an employee spends 50% of time on this pool, enter 50%</p>
                             </div>

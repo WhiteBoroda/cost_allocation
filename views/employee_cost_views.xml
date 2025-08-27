@@ -74,8 +74,8 @@
                         </group>
                     </group>
 
-                    <div class="alert alert-info mt-3" invisible="not use_dynamic_hours">
-                        <h5><i class="fa fa-info-circle"/> Dynamic Working Hours</h5>
+                    <div class="alert alert-info mt-3" role="status" invisible="not use_dynamic_hours">
+                        <h5><i class="fa fa-info-circle" title="Information"/> Dynamic Working Hours</h5>
                         <p><strong>Enabled:</strong> Working hours are calculated automatically based on:</p>
                         <ul>
                             <li>Company or employee-specific working calendar</li>
@@ -85,16 +85,16 @@
                         <p>Hours are updated automatically at the beginning of each month.</p>
                     </div>
 
-                    <div class="alert alert-warning mt-3" invisible="use_dynamic_hours">
-                        <h5><i class="fa fa-warning"/> Manual Working Hours</h5>
+                    <div class="alert alert-warning mt-3" role="status" invisible="use_dynamic_hours">
+                        <h5><i class="fa fa-warning" title="Warning"/> Manual Working Hours</h5>
                         <p><strong>Fixed Value:</strong> Using manual working hours override.</p>
                         <p>Consider enabling dynamic calculation for more accurate cost allocation.</p>
                     </div>
 
                     <notebook>
                         <page string="Cost Data">
-                            <div class="alert alert-info">
-                                <h4><i class="fa fa-info-circle"/> How it works</h4>
+                            <div class="alert alert-info" role="status">
+                                <h4><i class="fa fa-info-circle" title="Information"/> How it works</h4>
                                 <p><strong>Contract Wage:</strong> Enter the total monthly cost in HR contract (salary + all taxes + contributions)</p>
                                 <p><strong>Benefits:</strong> Any additional costs like health insurance, bonuses, etc.</p>
                                 <p><strong>Manual Override:</strong> Use when you need custom values different from contract</p>
@@ -122,8 +122,8 @@
                                 </group>
                             </group>
 
-                            <div class="alert alert-warning" invisible="not use_manual">
-                                <i class="fa fa-exclamation-triangle"/> Manual override is active.
+                            <div class="alert alert-warning" role="status" invisible="not use_manual">
+                                <i class="fa fa-exclamation-triangle" title="Warning"/> Manual override is active.
                                 Contract updates will be ignored until you disable manual mode.
                             </div>
                         </page>

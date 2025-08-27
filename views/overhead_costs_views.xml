@@ -128,7 +128,7 @@
             <notebook position="inside">
                 <page string="Overhead Costs">
                     <!-- Compact info header -->
-                    <div class="alert alert-info o_form_sheet_bg" style="margin-bottom: 16px;">
+                    <div class="alert alert-info o_form_sheet_bg" role="status" style="margin-bottom: 16px;">
                         <div class="row">
                             <div class="col-md-8">
                                 <strong>Overhead Costs:</strong> Additional company expenses allocated to this cost pool

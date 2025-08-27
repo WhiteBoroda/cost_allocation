@@ -6,8 +6,8 @@
         <field name="model">bulk.services.wizard</field>
         <field name="arch" type="xml">
             <form string="Bulk Add Services">
-                <div class="alert alert-info mb-3">
-                    <h4><i class="fa fa-magic"/> Bulk Add Services to Clients</h4>
+                <div class="alert alert-info mb-3" role="status">
+                    <h4><i class="fa fa-magic" title="Setup Wizard"/> Bulk Add Services to Clients</h4>
                     <p>Quickly add multiple services to one or more clients using templates or custom selection.</p>
                 </div>
 
@@ -58,11 +58,11 @@
                     </tree>
                 </field>
 
-                <div class="alert alert-warning mt-3" invisible="[('service_line_ids', '=', [])]">
+                <div class="alert alert-warning mt-3" role="status" invisible="[('service_line_ids', '=', [])]">
                     <p><strong>Preview:</strong> This will create <strong><field name="service_count"/> service types</strong>
                        for <strong><field name="client_count"/> clients</strong>
                        = <strong><field name="total_services"/> total services</strong></p>
-                    <p><i class="fa fa-info-circle"/> Existing services will have their quantities updated unless "Force Create New" is checked.</p>
+                    <p><i class="fa fa-info-circle" title="Information"/> Existing services will have their quantities updated unless "Force Create New" is checked.</p>
                 </div>
 
                 <footer>

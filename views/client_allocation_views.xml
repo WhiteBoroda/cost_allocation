@@ -86,8 +86,8 @@
                                 <field name="client_id" readonly="1"/>
                                 <field name="period_date" readonly="1"/>
                             </group>
-                            <div class="alert alert-info" invisible="state != 'draft'">
-                                <h4><i class="fa fa-info-circle"/> How it works</h4>
+                            <div class="alert alert-info" role="status" invisible="state != 'draft'">
+                                <h4><i class="fa fa-info-circle" title="Information"/> How it works</h4>
                                 <p><strong>Direct Costs:</strong> From project timesheets for this client</p>
                                 <p><strong>Indirect Costs:</strong> Distributed based on cost drivers (workstations, users, etc.)</p>
                                 <p><strong>Admin Costs:</strong> Administrative overhead distributed proportionally</p>

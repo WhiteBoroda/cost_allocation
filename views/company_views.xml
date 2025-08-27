@@ -18,8 +18,8 @@
                         </group>
                     </group>
 
-                    <div class="alert alert-info" invisible="not is_diia_city_resident">
-                        <h4><i class="fa fa-info-circle"/> Dія.City Tax Regime</h4>
+                    <div class="alert alert-info" role="status" invisible="not is_diia_city_resident">
+                        <h4><i class="fa fa-info-circle" title="Information"/> Dія.City Tax Regime</h4>
                         <p>This company operates under Dія.City special tax regime:</p>
                         <ul>
                             <li><strong>5%</strong> Income Tax (instead of 18%)</li>
@@ -31,8 +31,8 @@
                         </p>
                     </div>
 
-                    <div class="alert alert-warning" invisible="is_diia_city_resident">
-                        <h4><i class="fa fa-exclamation-triangle"/> Standard Tax Regime</h4>
+                    <div class="alert alert-warning" role="status" invisible="is_diia_city_resident">
+                        <h4><i class="fa fa-exclamation-triangle" title="Warning"/> Standard Tax Regime</h4>
                         <p>This company uses standard Ukrainian tax calculation:</p>
                         <ul>
                             <li><strong>22% ESV</strong> calculated from full salary</li>

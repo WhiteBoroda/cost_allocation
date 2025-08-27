@@ -70,6 +70,6 @@
         <field name="res_model">add.multiple.services.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="context">{'default_subscription_id': active_id}</field>
+        <field name="context">{'default_subscription_id': context.get('active_id')}</field>
     </record>
 </odoo>

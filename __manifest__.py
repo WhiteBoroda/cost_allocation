@@ -35,13 +35,13 @@
                            - Backward compatibility with legacy unit_of_measure Selection fields
                            - Centralized unit management with proper categorization
                            """,
-    'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale', 'resource'],  # ДОБАВЛЕНО: resource
+    'depends': ['base', 'hr', 'hr_timesheet', 'project', 'account', 'sale', 'resource'],
     'data': [
         'security/security.xml',
         'data/sequence_data.xml',
         'data/config_data.xml',
         'data/working_hours_cron.xml',
-        'data/unit_measure_data.xml',  # ДОБАВЛЕНО: новые данные единиц измерения
+        'data/unit_measure_data.xml',
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
@@ -49,7 +49,7 @@
         'security/ir.model.access.csv',
         'data/cron_data.xml',
         'views/actions.xml',
-        'views/unit_measure_views.xml',  # ДОБАВЛЕНО: новые представления единиц измерения
+        'views/unit_measure_views.xml',
         'views/billing_views.xml',
         'views/cost_pool_views.xml',
         'views/cost_driver_views.xml',
@@ -79,6 +79,8 @@
             'cost_allocation/static/src/js/dashboard.js',
         ],
     },
+    'pre_init_hook': 'pre_init_hook',
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'auto_install': False,
     'application': True,

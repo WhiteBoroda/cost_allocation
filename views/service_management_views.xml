@@ -86,7 +86,7 @@
 
                         <!-- Legacy/Deprecated Tab for compatibility -->
                         <page string="Legacy Settings" groups="base.group_no_one">
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning" role="status">
                                 <strong>Deprecated Fields</strong>
                                 <p>These fields are kept for data migration purposes only.</p>
                             </div>

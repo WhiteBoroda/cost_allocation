@@ -67,7 +67,7 @@
                                         string="Add Multiple Services"
                                         class="btn-primary"
                                         icon="fa-plus"
-                                        context="{'default_subscription_id': active_id}"/>
+                                        context="{'default_subscription_id': context.get('active_id')}"/>
                             </div>
 
                             <field name="service_line_ids">

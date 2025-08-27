@@ -53,8 +53,8 @@
                     <notebook>
                         <!-- ИСПРАВЛЕНО: убрана группа доступа с page, менеджеры теперь могут добавлять предприятия -->
                         <page string="Client Values">
-                            <div class="alert alert-info">
-                                <h4><i class="fa fa-info-circle"/> Cost Driver Values</h4>
+                            <div class="alert alert-info" role="status">
+                                <h4><i class="fa fa-info-circle" title="Information"/> Cost Driver Values</h4>
                                 <p>Set the quantity for each client to determine cost allocation.</p>
                                 <p><strong>Example:</strong> For "Workstations" driver, set number of workstations per client</p>
                             </div>
@@ -70,7 +70,7 @@
 
                         <!-- Legacy/Deprecated Tab for compatibility -->
                         <page string="Legacy Settings" groups="base.group_no_one">
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning" role="status">
                                 <strong>Deprecated Fields</strong>
                                 <p>These fields are kept for data migration purposes only.</p>
                             </div>

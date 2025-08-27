@@ -1,117 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <!-- Unit Measure Categories -->
+    <!-- Категорії одиниць вимірювання -->
     <record id="unit_category_quantity" model="unit.measure.category">
-        <field name="name">Quantity</field>
+        <field name="name">Кількість</field>
         <field name="sequence">10</field>
-        <field name="description">General quantity units</field>
+        <field name="description">Загальні одиниці кількості</field>
     </record>
 
     <record id="unit_category_time" model="unit.measure.category">
-        <field name="name">Time</field>
+        <field name="name">Час</field>
         <field name="sequence">20</field>
-        <field name="description">Time-based units</field>
+        <field name="description">Часові одиниці</field>
     </record>
 
     <record id="unit_category_storage" model="unit.measure.category">
-        <field name="name">Storage</field>
+        <field name="name">Зберігання</field>
         <field name="sequence">30</field>
-        <field name="description">Data storage units</field>
+        <field name="description">Одиниці зберігання даних</field>
     </record>
 
     <record id="unit_category_users" model="unit.measure.category">
-        <field name="name">Users</field>
+        <field name="name">Користувачі</field>
         <field name="sequence">40</field>
-        <field name="description">User-based units</field>
+        <field name="description">Користувацькі одиниці</field>
     </record>
 
     <record id="unit_category_hardware" model="unit.measure.category">
-        <field name="name">Hardware</field>
+        <field name="name">Обладнання</field>
         <field name="sequence">50</field>
-        <field name="description">Hardware equipment units</field>
+        <field name="description">Одиниці обладнання</field>
     </record>
 
-    <!-- Quantity Units -->
+    <!-- Одиниці кількості -->
     <record id="unit_piece" model="unit.of.measure">
-        <field name="name">Piece</field>
-        <field name="symbol">PC</field>
+        <field name="name">Штука</field>
+        <field name="symbol">ШТ</field>
         <field name="category_id" ref="unit_category_quantity"/>
     </record>
 
     <record id="unit_unit" model="unit.of.measure">
-        <field name="name">Unit</field>
-        <field name="symbol">Unit</field>
+        <field name="name">Одиниця</field>
+        <field name="symbol">Од</field>
         <field name="category_id" ref="unit_category_quantity"/>
     </record>
 
     <record id="unit_license" model="unit.of.measure">
-        <field name="name">License</field>
-        <field name="symbol">Lic</field>
+        <field name="name">Ліцензія</field>
+        <field name="symbol">Ліц</field>
         <field name="category_id" ref="unit_category_quantity"/>
     </record>
 
-    <!-- Time Units -->
+    <!-- Одиниці часу -->
     <record id="unit_hour" model="unit.of.measure">
-        <field name="name">Hour</field>
-        <field name="symbol">Hr</field>
+        <field name="name">Година</field>
+        <field name="symbol">Год</field>
         <field name="category_id" ref="unit_category_time"/>
     </record>
 
     <record id="unit_month" model="unit.of.measure">
-        <field name="name">Month</field>
-        <field name="symbol">Mon</field>
+        <field name="name">Місяць</field>
+        <field name="symbol">Міс</field>
         <field name="category_id" ref="unit_category_time"/>
     </record>
 
     <record id="unit_year" model="unit.of.measure">
-        <field name="name">Year</field>
-        <field name="symbol">Yr</field>
+        <field name="name">Рік</field>
+        <field name="symbol">Р</field>
         <field name="category_id" ref="unit_category_time"/>
     </record>
 
-    <!-- Storage Units -->
+    <!-- Одиниці зберігання -->
     <record id="unit_gigabyte" model="unit.of.measure">
-        <field name="name">Gigabyte</field>
-        <field name="symbol">GB</field>
+        <field name="name">Гігабайт</field>
+        <field name="symbol">ГБ</field>
         <field name="category_id" ref="unit_category_storage"/>
     </record>
 
     <record id="unit_terabyte" model="unit.of.measure">
-        <field name="name">Terabyte</field>
-        <field name="symbol">TB</field>
+        <field name="name">Терабайт</field>
+        <field name="symbol">ТБ</field>
         <field name="category_id" ref="unit_category_storage"/>
     </record>
 
-    <!-- User Units -->
+    <!-- Користувацькі одиниці -->
     <record id="unit_user" model="unit.of.measure">
-        <field name="name">User</field>
-        <field name="symbol">User</field>
+        <field name="name">Користувач</field>
+        <field name="symbol">Корист</field>
         <field name="category_id" ref="unit_category_users"/>
     </record>
 
     <record id="unit_concurrent_user" model="unit.of.measure">
-        <field name="name">Concurrent User</field>
-        <field name="symbol">CU</field>
+        <field name="name">Одночасний користувач</field>
+        <field name="symbol">ОК</field>
         <field name="category_id" ref="unit_category_users"/>
     </record>
 
-    <!-- Hardware Units -->
+    <!-- Одиниці обладнання -->
     <record id="unit_workstation" model="unit.of.measure">
-        <field name="name">Workstation</field>
-        <field name="symbol">WS</field>
+        <field name="name">Робоче місце</field>
+        <field name="symbol">РМ</field>
         <field name="category_id" ref="unit_category_hardware"/>
     </record>
 
     <record id="unit_server" model="unit.of.measure">
-        <field name="name">Server</field>
-        <field name="symbol">Srv</field>
+        <field name="name">Сервер</field>
+        <field name="symbol">Серв</field>
         <field name="category_id" ref="unit_category_hardware"/>
     </record>
 
     <record id="unit_printer" model="unit.of.measure">
-        <field name="name">Printer</field>
-        <field name="symbol">Prt</field>
+        <field name="name">Принтер</field>
+        <field name="symbol">Принт</field>
         <field name="category_id" ref="unit_category_hardware"/>
     </record>
 
