@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cost Driver Category Tree View -->
+    <record id="view_cost_driver_category_tree" model="ir.ui.view">
+        <field name="name">cost.driver.category.tree</field>
+        <field name="model">cost.driver.category</field>
+        <field name="arch" type="xml">
+            <tree string="Driver Categories">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Cost Driver Category Form View -->
+    <record id="view_cost_driver_category_form" model="ir.ui.view">
+        <field name="name">cost.driver.category.form</field>
+        <field name="model">cost.driver.category</field>
+        <field name="arch" type="xml">
+            <form string="Driver Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Category description..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -116,10 +116,10 @@
             <xpath expr="//div[hasclass('oe_kanban_partner_categories')]" position="after">
                 <div class="mt-1" invisible="not is_company or service_count == 0">
                     <span class="badge badge-pill badge-info">
-                        <i class="fa fa-cogs"/> Services: <field name="service_count"/>
+                        <i class="fa fa-cogs" title="Services"/> Services: <field name="service_count"/>
                     </span>
                     <span class="badge badge-pill badge-success" invisible="last_monthly_cost == 0">
-                        <i class="fa fa-money"/> <field name="last_monthly_cost" widget="monetary"/>
+                        <i class="fa fa-money" title="Monthly Cost"/> <field name="last_monthly_cost" widget="monetary"/>
                     </span>
                 </div>
             </xpath>

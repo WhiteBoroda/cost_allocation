@@ -225,5 +225,12 @@
         </field>
     </record>
 
+    <!-- Action -->
+    <record id="action_cost_driver_category" model="ir.actions.act_window">
+        <field name="name">Driver Categories</field>
+        <field name="res_model">cost.driver.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
 
 </odoo>

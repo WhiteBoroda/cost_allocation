@@ -1,6 +1,6 @@
 {
     'name': 'Розподіл витрат / Service Cost Allocation',
-    'version': '17.0.1.4.2',
+    'version': '17.0.1.4.4',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -45,6 +45,7 @@
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
+        'data/driver_categories_data.xml',
         'security/security_rules.xml',
         'security/ir.model.access.csv',
         'data/cron_data.xml',
@@ -69,6 +70,7 @@
         'wizards/setup_wizard_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
+        'views/cost_driver_category_views.xml',
         'views/service_views.xml',
         'views/holding_structure_views.xml',
         'views/menu_views.xml',
@@ -79,8 +81,7 @@
             'cost_allocation/static/src/js/dashboard.js',
         ],
     },
-    'pre_init_hook': 'pre_init_hook',
-    'post_init_hook': 'post_init_hook',
+
     'installable': True,
     'auto_install': False,
     'application': True,

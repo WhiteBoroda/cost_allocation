@@ -10,7 +10,7 @@ class ResPartner(models.Model):
 
     # Cost driver quantities
     workstation_count = fields.Integer(string='Workstations', default=0)
-    user_count = fields.Integer(string='Users', default=0)
+    user_count = fields.Integer(string='User Count', default=0)
     server_count = fields.Integer(string='Servers', default=0)
     phone_count = fields.Integer(string='IP Phones', default=0)
     printer_count = fields.Integer(string='Printers', default=0)

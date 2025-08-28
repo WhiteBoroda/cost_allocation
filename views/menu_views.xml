@@ -169,4 +169,10 @@
               action="action_unit_measure"
               sequence="20"/>
 
+    <menuitem id="menu_cost_driver_categories"
+              name="Driver Categories"
+              parent="menu_cost_allocation_config"
+              action="action_cost_driver_category"
+              sequence="45"/>
+
 </odoo>

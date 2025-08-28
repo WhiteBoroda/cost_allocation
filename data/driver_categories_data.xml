@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="category_hardware" model="cost.driver.category">
+        <field name="name">Hardware</field>
+        <field name="code">HW</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="category_software" model="cost.driver.category">
+        <field name="name">Software</field>
+        <field name="code">SW</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="category_users" model="cost.driver.category">
+        <field name="name">Users</field>
+        <field name="code">USR</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="category_infrastructure" model="cost.driver.category">
+        <field name="name">Infrastructure</field>
+        <field name="code">INF</field>
+        <field name="sequence">40</field>
+    </record>
+</odoo>

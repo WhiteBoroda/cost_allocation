@@ -16,3 +16,5 @@ from . import company_fields
 from . import account_move
 from . import overhead_costs
 from . import service_costing
+from . import res_users
+from . import cost_driver_category

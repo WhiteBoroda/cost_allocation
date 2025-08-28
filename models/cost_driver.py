@@ -14,7 +14,7 @@ class CostDriver(models.Model):
     description = fields.Text(string='Description')
 
     # ВАЖНО: Поля должны быть здесь!
-    driver_category = fields.Char(string='Category', help='E.g.: Hardware, Software, Users, Infrastructure')
+    driver_category_id = fields.Many2one('cost.driver.category', string='Category')
 
     # ИЗМЕНЕНО: заменил unit_name на Many2one поле
     unit_id = fields.Many2one('unit.of.measure', string='Unit of Measure', required=True)

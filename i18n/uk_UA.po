@@ -1350,12 +1350,12 @@ msgstr "Клієнт"
 #. module: cost_allocation
 #: model:ir.model.fields,field_description:cost_allocation.field_cost_driver__client_driver_ids model:ir.ui.menu,name:cost_allocation.menu_client_allocations
 msgid "Client Allocations"
-msgstr "Цінності клієнта-драйвера"
+msgstr "Розподіли клієнтів"
 
 #. module: cost_allocation
 #: model:ir.model,name:cost_allocation.model_client_cost_allocation model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_form
 msgid "Client Cost Allocation"
-msgstr "Розподіл витрат клієнта"
+msgstr "Розподіли затрат по клієнтах"
 
 #. module: cost_allocation
 #: model:ir.actions.act_window,name:cost_allocation.action_client_allocation model_terms:ir.ui.view,arch_db:cost_allocation.view_client_cost_allocation_tree

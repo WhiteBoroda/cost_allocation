@@ -75,7 +75,7 @@
                                 <tree>
                                     <field name="name"/>
                                     <field name="code"/>
-                                    <field name="driver_category"/>
+                                    <field name="driver_category_id"/>
                                     <field name="total_quantity"/>
                                     <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
                                     <field name="cost_per_unit" widget="monetary"
