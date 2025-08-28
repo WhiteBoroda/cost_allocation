@@ -45,7 +45,13 @@ class EmployeeCost(models.Model):
     hourly_cost = fields.Float(string='Hourly Cost', compute='_compute_hourly_cost', store=True)
     monthly_total_cost = fields.Float(string='Monthly Total Cost', compute='_compute_monthly_total_cost', store=True)
 
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+    currency_id = fields.Many2one(
+        'res.currency',
+        string='Currency',
+        required=True,
+        default=lambda self: self.env.company.currency_id,
+        help='Currency for all cost calculations'
+    )
     active = fields.Boolean(default=True)
 
     # Last update tracking
@@ -137,6 +143,10 @@ class EmployeeCost(models.Model):
             # ДОБАВЛЕНО: автогенерация кода
             if not vals.get('code'):
                 vals['code'] = self._generate_code('cost.employee.code')
+
+            if not vals.get('currency_id'):
+                vals['currency_id'] = self.env.company.currency_id.id
+
         return super().create(vals_list)
 
     def action_update_from_contract(self):
@@ -183,6 +193,30 @@ class EmployeeCost(models.Model):
             emp.calculation_period = current_month
             # This will trigger recomputation of monthly_hours
             emp._compute_monthly_hours()
+
+    def write(self, vals):
+        original_currencies = {}
+        for record in self:
+            if 'currency_id' in vals:
+                # Если пользователь явно выбрал валюту - запомним её
+                original_currencies[record.id] = vals['currency_id']
+            elif record.currency_id:
+                # Если валюта уже установлена - тоже запомним
+                original_currencies[record.id] = record.currency_id.id
+
+        # Сохраняем изменения
+        result = super().write(vals)
+
+        # ВОССТАНАВЛИВАЕМ валюты после compute методов
+        if original_currencies:
+            for record in self:
+                if record.id in original_currencies:
+                    expected_currency = original_currencies[record.id]
+                    if record.currency_id.id != expected_currency:
+                        # Валюта была перезаписана - восстанавливаем
+                        super(EmployeeCost, record).write({'currency_id': expected_currency})
+
+        return result
 
     def get_working_days_for_period(self, start_date, end_date):
         """Get working days for specific period"""

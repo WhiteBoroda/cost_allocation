@@ -45,8 +45,14 @@ class CostDriver(models.Model):
     # Status
     active = fields.Boolean(string='Active', default=True)
 
-    # Currency
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+    # ИСПРАВЛЕНО: Currency с правильными параметрами
+    currency_id = fields.Many2one(
+        'res.currency',
+        string='Currency',
+        required=True,
+        default=lambda self: self.env.company.currency_id,
+        help='Currency for cost calculations'
+    )
 
     # Company
     company_id = fields.Many2one('res.company', string='Company', required=True,
@@ -67,10 +73,15 @@ class CostDriver(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """ИСПРАВЛЕНО: защищаем currency_id при создании"""
         for vals in vals_list:
             # Автогенерация кода
             if not vals.get('code'):
                 vals['code'] = self._generate_code('cost.driver.code')
+
+            # ИСПРАВЛЕНО: защита currency_id
+            if not vals.get('currency_id'):
+                vals['currency_id'] = self.env.company.currency_id.id
 
             # Если unit_id не задан, но есть unit_of_measure, попытаемся найти подходящую единицу
             if not vals.get('unit_id') and vals.get('unit_of_measure'):
@@ -95,6 +106,32 @@ class CostDriver(models.Model):
                         pass
 
         return super().create(vals_list)
+
+    def write(self, vals):
+        """ИСПРАВЛЕНО: защищаем currency_id при обновлении"""
+        # Запоминаем выбранные пользователем валюты ДО save
+        original_currencies = {}
+        for record in self:
+            if 'currency_id' in vals:
+                # Если пользователь явно выбрал валюту - запомним её
+                original_currencies[record.id] = vals['currency_id']
+            elif record.currency_id:
+                # Если валюта уже установлена - тоже запомним
+                original_currencies[record.id] = record.currency_id.id
+
+        # Сохраняем изменения
+        result = super().write(vals)
+
+        # ВОССТАНАВЛИВАЕМ валюты после compute методов
+        if original_currencies:
+            for record in self:
+                if record.id in original_currencies:
+                    expected_currency = original_currencies[record.id]
+                    if record.currency_id.id != expected_currency:
+                        # Валюта была перезаписана - восстанавливаем
+                        super(CostDriver, record).write({'currency_id': expected_currency})
+
+        return result
 
     @api.constrains('cost_per_unit')
     def _check_cost_per_unit(self):
