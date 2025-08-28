@@ -324,3 +324,17 @@ class EmployeeWorkload(models.Model):
             else:
                 # Force recompute
                 existing._compute_workload()
+
+    @api.model
+    def create_test_data(self):
+        """Создать тестовые данные"""
+        employees = self.env['hr.employee'].search([], limit=5)
+        today = fields.Date.today()
+
+        for emp in employees:
+            if not self.search([('employee_id', '=', emp.id), ('period_date', '=', today)]):
+                self.create({
+                    'employee_id': emp.id,
+                    'period_date': today,
+                    'target_workload': 100.0
+                })

@@ -15,7 +15,7 @@
                 <field name="total_amount" widget="monetary"/>
                 <field name="next_invoice_date"/>
                 <field name="state" widget="badge"/>
-                <field name="currency_id" column_invisible="1"/>
+                <field name="currency_id"/>
             </tree>
         </field>
     </record>
@@ -81,7 +81,7 @@
                                     <field name="quantity"/>
                                     <field name="unit_price" widget="monetary"/>
                                     <field name="total_price" widget="monetary" readonly="1"/>
-                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="currency_id"/>
                                 </tree>
                                 <form string="Service Line">
                                     <group>
@@ -174,7 +174,7 @@
                             <field name="quantity"/>
                             <field name="unit_price" widget="monetary"/>
                             <field name="total_price" widget="monetary"/>
-                            <field name="currency_id" column_invisible="1"/>
+                            <field name="currency_id"/>
                         </group>
                     </group>
                     <group>

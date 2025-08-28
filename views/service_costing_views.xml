@@ -15,7 +15,7 @@
                 <field name="admin_cost_per_unit" widget="monetary"/>
                 <field name="overhead_cost_per_unit" widget="monetary"/>
                 <field name="total_cost_per_unit" widget="monetary"/>
-                <field name="currency_id" column_invisible="1"/>
+                <field name="currency_id"/>
             </tree>
         </field>
     </record>

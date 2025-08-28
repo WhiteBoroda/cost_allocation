@@ -60,10 +60,8 @@
                             <field name="allocation_ids">
                                 <tree editable="bottom">
                                     <field name="employee_cost_id"/>
-                                    <!-- ИСПРАВЛЕНО: убран widget="percentage" чтобы показывать как обычное число -->
                                     <field name="percentage" string="Allocation %"
                                            decoration-bf="percentage == 100"/>
-                                    <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
                                     <field name="monthly_cost" widget="monetary" readonly="1"
                                            groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
@@ -71,13 +69,22 @@
                         </page>
 
                         <page string="Related Cost Driver">
-                            <field name="driver_id">
+                            <div class="alert alert-info" role="status">
+                                <h4><i class="fa fa-info-circle" title="Information"/> Драйвери витрат</h4>
+                                <p>Тут ви можете призначити драйвери витрат для цього пулу.</p>
+                                <p><strong>Увага:</strong> Вибір існуючого драйвера переназначить його на цей пул витрат.</p>
+                            </div>
+                            <field name="driver_id"
+                                   context="{'default_pool_id': active_id,
+                                            'search_default_all': 1,
+                                            'tree_view_ref': 'cost_allocation.view_cost_driver_selection_tree'}"
+                                   options="{'create_text': 'Створити новий драйвер', 'no_quick_create': True}">
                                 <tree>
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="driver_category_id"/>
+                                    <field name="unit_id"/>
                                     <field name="total_quantity"/>
-                                    <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
                                     <field name="cost_per_unit" widget="monetary"
                                            groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
@@ -86,6 +93,50 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="view_cost_driver_selection_tree" model="ir.ui.view">
+        <field name="name">cost.driver.selection.tree</field>
+        <field name="model">cost.driver</field>
+        <field name="arch" type="xml">
+            <tree string="Select Cost Driver">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="driver_category_id"/>
+                <field name="unit_id"/>
+                <field name="pool_id"/>
+                <field name="total_quantity"/>
+                <field name="cost_per_unit" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Добавить поиск для выбора драйверов -->
+    <record id="view_cost_driver_selection_search" model="ir.ui.view">
+        <field name="name">cost.driver.selection.search</field>
+        <field name="model">cost.driver</field>
+        <field name="arch" type="xml">
+            <search string="Available Drivers">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="driver_category_id"/>
+
+                <filter name="other_pools" string="From Other Pools"
+                        domain="[('pool_id', '!=', context.get('default_pool_id', False))]"/>
+                <filter name="all" string="All Drivers"
+                        domain="[('active', '=', True)]"/>
+                <filter name="same_category" string="Same Category"
+                        domain="[('driver_category_id', '!=', False)]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category"
+                            context="{'group_by': 'driver_category_id'}"/>
+                    <filter name="group_pool" string="Current Pool"
+                            context="{'group_by': 'pool_id'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

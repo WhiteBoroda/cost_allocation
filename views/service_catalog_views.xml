@@ -15,7 +15,7 @@
                 <field name="markup_percent"/>
                 <field name="sales_price" widget="monetary"/>
                 <field name="complexity_level"/>
-                <field name="currency_id" column_invisible="1"/>
+                <field name="currency_id"/>
             </tree>
         </field>
     </record>

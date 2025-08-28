@@ -19,7 +19,8 @@
                 <field name="total_cost" widget="monetary"/>
 <!--                       groups="cost_allocation.group_cost_allocation_financial"/> -->
                 <field name="state" widget="badge"/>
-                <field name="currency_id" column_invisible="1"/>
+                <field name="currency_id"
+                            groups="cost_allocation.group_cost_allocation_financial,base.group_multi_currency"/>
             </tree>
         </field>
     </record>
@@ -49,7 +50,7 @@
                             <field name="period_date"/>
                         </group>
                         <group>
-                            <field name="currency_id" column_invisible="1"/>
+                            <field name="currency_id"/>
                         </group>
                     </group>
 

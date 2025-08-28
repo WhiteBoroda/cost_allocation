@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Employee Workload Tree View -->
+    <record id="view_employee_workload_tree" model="ir.ui.view">
+        <field name="name">employee.workload.tree</field>
+        <field name="model">employee.workload</field>
+        <field name="arch" type="xml">
+            <tree string="Employee Workload" decoration-danger="is_overloaded==True">
+                <field name="employee_id"/>
+                <field name="period_date"/>
+                <field name="active_services_count"/>
+                <field name="total_workload_factor"/>
+                <field name="target_workload"/>
+                <field name="overload_percentage" widget="percentage"/>
+                <field name="is_overloaded" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Employee Workload Form View -->
+    <record id="view_employee_workload_form" model="ir.ui.view">
+        <field name="name">employee.workload.form</field>
+        <field name="model">employee.workload</field>
+        <field name="arch" type="xml">
+            <form string="Employee Workload">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="period_date"/>
+                        </group>
+                        <group>
+                            <field name="target_workload"/>
+                            <field name="is_overloaded" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group string="Workload Statistics">
+                        <group>
+                            <field name="active_services_count"/>
+                            <field name="total_workload_factor"/>
+                        </group>
+                        <group>
+                            <field name="overload_percentage" widget="percentage"/>
+                        </group>
+                    </group>
+
+                    <field name="workload_by_category" string="Category Breakdown"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

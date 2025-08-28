@@ -54,9 +54,6 @@ class EmployeeCost(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    # Last update tracking
-    last_payroll_period = fields.Date(string='Last Update', compute='_compute_payroll_data', store=True)
-
     @api.depends('use_dynamic_hours', 'manual_monthly_hours', 'calculation_period', 'resource_calendar_id')
     def _compute_monthly_hours(self):
         """Calculate monthly working hours dynamically or use manual value"""
@@ -84,13 +81,11 @@ class EmployeeCost(models.Model):
             if record.use_manual:
                 record.monthly_salary = record.manual_salary
                 record.monthly_benefits = record.manual_benefits
-                record.last_payroll_period = fields.Date.today()
             elif record.employee_id:
                 record._get_contract_data()
             else:
                 record.monthly_salary = 0
                 record.monthly_benefits = 0
-                record.last_payroll_period = False
 
     def _get_contract_data(self):
         """Get data from employee contract - salary should already include taxes"""

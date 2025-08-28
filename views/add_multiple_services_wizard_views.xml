@@ -35,7 +35,7 @@
                                     <field name="complexity_level" widget="badge"/>
                                     <field name="sales_price" widget="monetary"/>
                                     <field name="unit_of_measure"/>
-                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="currency_id"/>
                                 </tree>
                             </field>
                         </page>
@@ -48,7 +48,7 @@
                                     <field name="code"/>
                                     <field name="sales_price" widget="monetary"/>
                                     <field name="unit_of_measure"/>
-                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="currency_id"/>
                                 </tree>
                             </field>
                         </page>

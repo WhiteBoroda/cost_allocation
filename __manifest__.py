@@ -63,6 +63,7 @@
         'views/dashboard_views.xml',
         'views/sequence_config_views.xml',
         'views/cost_settings_views.xml',
+        'views/employee_workload_views.xml',
         'views/add_multiple_services_wizard_views.xml',
         'views/subscription_views.xml',
         'views/overhead_costs_views.xml',

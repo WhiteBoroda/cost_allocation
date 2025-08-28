@@ -17,9 +17,7 @@
                 <field name="monthly_total_cost" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="use_manual" widget="boolean_toggle"/>
-                <field name="last_payroll_period"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="currency_id" column_invisible="1"/>
+                <field name="currency_id"/>
             </tree>
         </field>
     </record>
@@ -45,10 +43,10 @@
                             <field name="active"/>
                         </group>
                         <group>
-                            <field name="last_payroll_period" readonly="1"/>
                             <field name="hourly_cost" widget="monetary" readonly="1"/>
                             <field name="monthly_total_cost" widget="monetary" readonly="1"/>
-                            <field name="currency_id" column_invisible="1"/>
+                            <field name="currency_id"
+                                   groups="cost_allocation.group_cost_allocation_financial,base.group_multi_currency"/>
                         </group>
                     </group>
                     <group string="Working Hours Configuration" name="working_hours">

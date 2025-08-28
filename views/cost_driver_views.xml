@@ -44,7 +44,8 @@
                             <!-- Только поле стоимости скрыто от менеджеров -->
                             <field name="cost_per_unit" widget="monetary"
                                    groups="cost_allocation.group_cost_allocation_financial"/>
-                            <field name="currency_id" column_invisible="1"/>
+                            <field name="currency_id"
+                                   groups="cost_allocation.group_cost_allocation_financial,base.group_multi_currency"/>
                         </group>
                     </group>
 

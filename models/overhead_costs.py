@@ -128,6 +128,48 @@ class CompanyOverheadCost(models.Model):
         if self.end_date and self.end_date < fields.Date.today():
             self.state = 'expired'
 
+    @api.onchange('active')
+    def _onchange_active(self):
+        """Sync active field with state"""
+        if self.active and self.state == 'draft':
+            self.state = 'active'
+            self._update_pool_allocation()
+        elif not self.active and self.state == 'active':
+            self.state = 'draft'
+            self._remove_pool_allocation()
+
+    def write(self, vals):
+        """Override write to handle active/state sync"""
+        result = super().write(vals)
+
+        # Sync active field changes with state
+        if 'active' in vals:
+            for record in self:
+                if vals['active'] and record.state == 'draft':
+                    record.state = 'active'
+                    record._update_pool_allocation()
+                elif not vals['active'] and record.state == 'active':
+                    record.state = 'draft'
+                    record._remove_pool_allocation()
+
+        # Handle state changes
+        if 'state' in vals:
+            for record in self:
+                if vals['state'] == 'active':
+                    record._update_pool_allocation()
+                else:
+                    record._remove_pool_allocation()
+
+        return result
+
+    def toggle_active(self):
+        """Quick toggle for active state"""
+        for record in self:
+            if record.active and record.state == 'draft':
+                record.action_activate()
+            elif not record.active and record.state == 'active':
+                record.state = 'draft'
+                record._remove_pool_allocation()
 
 class CostPoolOverheadAllocation(models.Model):
     _name = 'cost.pool.overhead.allocation'
