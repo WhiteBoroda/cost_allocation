@@ -7,15 +7,20 @@
         <field name="arch" type="xml">
             <tree string="Service Cost Calculations">
                 <field name="service_catalog_id"/>
+                <field name="client_id"/>
+                <field name="service_type_id"/>
                 <field name="calculation_date"/>
                 <field name="calculation_method"/>
-                <field name="estimated_hours_per_unit"/>
+                <field name="base_workload_factor"/>
+                <field name="effective_workload_factor" decoration-info="effective_workload_factor != base_workload_factor"/>
+                <field name="estimated_hours_per_unit" optional="hide"/>
+                <field name="actual_units_required" optional="hide"/>
                 <field name="direct_cost_per_unit" widget="monetary"/>
-                <field name="indirect_cost_per_unit" widget="monetary"/>
-                <field name="admin_cost_per_unit" widget="monetary"/>
-                <field name="overhead_cost_per_unit" widget="monetary"/>
+                <field name="indirect_cost_per_unit" widget="monetary" optional="hide"/>
+                <field name="admin_cost_per_unit" widget="monetary" optional="hide"/>
+                <field name="overhead_cost_per_unit" widget="monetary" optional="hide"/>
                 <field name="total_cost_per_unit" widget="monetary"/>
-                <field name="currency_id"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
@@ -26,8 +31,8 @@
         <field name="arch" type="xml">
             <form string="Service Cost Calculation">
                 <header>
-                    <button name="action_calculate_costs" type="object" string="Calculate Costs"
-                            class="btn-primary"/>
+                    <button name="action_calculate_costs" type="object" string="Recalculate Costs"
+                            class="btn-primary" icon="fa-calculator"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -40,19 +45,46 @@
                     </div>
 
                     <group>
-                        <group string="Calculation Parameters">
-                            <field name="calculation_method"/>
-                            <field name="estimated_hours_per_unit"
-                                   invisible="[('calculation_method', '!=', 'time_based')]"/>
-                            <field name="complexity_multiplier"
-                                   invisible="[('calculation_method', '!=', 'complexity_based')]"/>
-                            <field name="blended_hourly_rate" widget="monetary" readonly="1"
-                                   invisible="[('calculation_method', '==', 'unit_based')]"/>
+                        <group string="Service Information">
+                            <field name="client_id" required="1"/>
+                            <field name="service_type_id" options="{'no_create': True}"/>
+                            <field name="base_workload_factor" readonly="1"
+                                   help="Base workload factor from service type (complexity/resource requirement)"/>
+                            <field name="effective_workload_factor" readonly="1"
+                                   decoration-danger="effective_workload_factor > 4.0"
+                                   decoration-warning="effective_workload_factor > 2.5 and effective_workload_factor &lt;= 4.0"
+                                   decoration-info="effective_workload_factor > base_workload_factor"
+                                   decoration-success="effective_workload_factor &lt;= 1.5"
+                                   help="Effective workload factor adjusted by client support level. Formula: Base WF × Client Support Multiplier"/>
                         </group>
                         <group string="Total Cost">
                             <field name="total_cost_per_unit" widget="monetary" readonly="1"
                                    class="oe_subtotal_footer_separator"/>
                             <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Calculation Parameters">
+                            <field name="calculation_method"/>
+
+                            <!-- Time-based fields -->
+                            <field name="estimated_hours_per_unit"
+                                   invisible="calculation_method != 'time_based'"/>
+                            <field name="blended_hourly_rate" widget="monetary" readonly="1"
+                                   invisible="calculation_method == 'unit_based'"/>
+                        </group>
+                        <group>
+                            <!-- Unit-based fields -->
+                            <field name="base_units_requested"
+                                   invisible="calculation_method != 'unit_based'"/>
+                            <field name="actual_units_required" readonly="1"
+                                   invisible="calculation_method != 'unit_based'"
+                                   help="Effective units after applying workload factor. Formula: Base Units × Effective Workload Factor"/>
+
+                            <!-- Complexity-based fields -->
+                            <field name="complexity_multiplier"
+                                   invisible="calculation_method != 'complexity_based'"/>
                         </group>
                     </group>
 
@@ -68,40 +100,15 @@
                     </group>
 
                     <div class="alert alert-info mt-3" role="status">
-                        <h5><i class="fa fa-info-circle" title="Information"/> ABC Costing Methodology</h5>
-                        <p><strong>Direct Costs:</strong> Labor costs based on responsible team hourly rates</p>
+                        <h5><i class="fa fa-info-circle" title="Information"/> ABC Costing with Workload Factor</h5>
+                        <p><strong>Workload Factor:</strong> Multiplies base costs and resource requirements</p>
+                        <p><strong>Direct Costs:</strong> Labor costs × workload factor for complexity adjustment</p>
                         <p><strong>Indirect Costs:</strong> Shared resources allocated via cost drivers</p>
                         <p><strong>Admin Costs:</strong> Administrative overhead (typically 15% of direct+indirect)</p>
                         <p><strong>Overhead Costs:</strong> Company expenses (rent, utilities, software, etc.)</p>
                     </div>
                 </sheet>
             </form>
-        </field>
-    </record>
-
-    <!-- Extended Service Catalog Form -->
-    <record id="view_service_catalog_form_costing" model="ir.ui.view">
-        <field name="name">service.catalog.form.costing</field>
-        <field name="model">service.catalog</field>
-        <field name="inherit_id" ref="view_service_catalog_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//group[@name='pricing']" position="after">
-                <group string="Cost Calculation">
-                    <group>
-                        <field name="cost_calculation_method"/>
-                        <field name="last_calculation_date" readonly="1"/>
-                    </group>
-                    <group>
-                        <button name="action_calculate_cost" type="object"
-                                string="Calculate Cost" class="btn-primary"
-                                icon="fa-calculator"/>
-                        <button name="action_view_calculations" type="object"
-                                string="View History" class="btn-secondary"
-                                icon="fa-history"
-                                invisible="[('last_calculation_date', '=', False)]"/>
-                    </group>
-                </group>
-            </xpath>
         </field>
     </record>
 
@@ -112,6 +119,8 @@
         <field name="arch" type="xml">
             <search string="Search Cost Calculations">
                 <field name="service_catalog_id"/>
+                <field name="client_id"/>
+                <field name="service_type_id"/>
                 <field name="calculation_date"/>
 
                 <separator/>
@@ -120,8 +129,20 @@
                 <filter string="Time-based" name="time_based" domain="[('calculation_method', '=', 'time_based')]"/>
                 <filter string="Unit-based" name="unit_based" domain="[('calculation_method', '=', 'unit_based')]"/>
 
+                <separator/>
+                <filter string="Basic Support" name="basic_support" domain="[('client_id.support_level', '=', 'basic')]"/>
+                <filter string="Premium Support" name="premium_support" domain="[('client_id.support_level', '=', 'premium')]"/>
+                <filter string="Enterprise Support" name="enterprise_support" domain="[('client_id.support_level', '=', 'enterprise')]"/>
+
+                <separator/>
+                <filter string="High Base Workload (>2.0)" name="high_base_workload" domain="[('base_workload_factor', '>', 2.0)]"/>
+                <filter string="High Effective Workload (>3.0)" name="high_effective_workload" domain="[('effective_workload_factor', '>', 3.0)]"/>
+                <filter string="Non-Standard Support" name="workload_adjusted" domain="[('client_id.support_level', '!=', 'standard')]"/>
+
                 <group expand="1" string="Group By">
+                    <filter string="Client" name="group_client" context="{'group_by': 'client_id'}"/>
                     <filter string="Service" name="group_service" context="{'group_by': 'service_catalog_id'}"/>
+                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type_id'}"/>
                     <filter string="Method" name="group_method" context="{'group_by': 'calculation_method'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'calculation_date'}"/>
                 </group>
@@ -136,12 +157,12 @@
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Calculate service costs using ABC methodology!
+                Calculate service costs using ABC methodology with Workload Factors!
             </p>
             <p>
-                Use Activity-Based Costing to calculate accurate service costs
-                including direct labor, indirect costs, administrative overhead,
-                and company expenses.
+                Use Activity-Based Costing enhanced with workload factors to calculate
+                accurate service costs that account for service complexity and resource requirements.
+                The workload factor automatically adjusts costs and employee workload distribution.
             </p>
         </field>
     </record>

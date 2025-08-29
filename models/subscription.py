@@ -15,6 +15,9 @@ class ClientServiceSubscription(models.Model):
     client_id = fields.Many2one('res.partner', string='Client', required=True,
                                 domain=[('is_company', '=', True)], tracking=True)
 
+    company_id = fields.Many2one('res.company', string='Company', required=True,
+                                 default=lambda self: self.env.company)
+
     # Period
     start_date = fields.Date(string='Start Date', required=True, default=fields.Date.today, tracking=True)
     end_date = fields.Date(string='End Date', tracking=True)
@@ -230,6 +233,7 @@ class ClientServiceSubscriptionLine(models.Model):
     client_id = fields.Many2one(related='subscription_id.client_id', store=True)
     # ИСПРАВЛЕНО: добавлен related currency_id от subscription
     currency_id = fields.Many2one(related='subscription_id.currency_id', store=True)
+    company_id = fields.Many2one(related='subscription_id.company_id', store=True)
 
     sequence = fields.Integer(string='Sequence', default=10)
     service_id = fields.Many2one('service.catalog', string='Service', required=True)

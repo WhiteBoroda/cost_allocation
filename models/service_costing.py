@@ -1,4 +1,4 @@
-# models/service_costing.py - новый файл для расчета стоимости сервисов
+# models/service_costing.py
 
 from odoo import models, fields, api
 from datetime import datetime, timedelta
@@ -11,39 +11,123 @@ class ServiceCostCalculation(models.Model):
 
     # Basic info
     service_catalog_id = fields.Many2one('service.catalog', string='Service', required=True)
+    service_type_id = fields.Many2one('service.type', string='Service Type', readonly=False)
+    client_id = fields.Many2one('res.partner', string='Client', domain=[('is_company', '=', True)],
+                                help='Client for whom calculation is performed - affects support level')
     calculation_date = fields.Date(string='Calculation Date', default=fields.Date.today)
 
     # Cost breakdown
-    direct_cost_per_unit = fields.Float(string='Direct Cost per Unit')
+    direct_cost_per_unit = fields.Float(string='Direct Cost per Unit', compute='_compute_direct_cost_per_unit',
+                                        store=True)
     indirect_cost_per_unit = fields.Float(string='Indirect Cost per Unit')
     admin_cost_per_unit = fields.Float(string='Admin Cost per Unit')
     overhead_cost_per_unit = fields.Float(string='Overhead Cost per Unit')
 
-    total_cost_per_unit = fields.Float(string='Total Cost per Unit', compute='_compute_total_cost')
+    total_cost_per_unit = fields.Float(string='Total Cost per Unit', compute='_compute_total_cost', store=True)
 
     # Calculation method
     calculation_method = fields.Selection([
         ('time_based', 'Time-based (hours)'),
-        ('unit_based', 'Unit-based'),
+        ('unit_based', 'Unit-based with Workload Factor'),
         ('complexity_based', 'Complexity-based')
     ], string='Calculation Method', default='time_based')
 
     # For time-based calculation
     estimated_hours_per_unit = fields.Float(string='Estimated Hours per Unit', default=1.0)
-    blended_hourly_rate = fields.Float(string='Blended Hourly Rate', compute='_compute_blended_rate')
+    blended_hourly_rate = fields.Float(string='Blended Hourly Rate', compute='_compute_blended_rate', store=True)
+
+    # For unit-based with workload factor
+    base_units_requested = fields.Float(string='Base Units Requested', default=1.0)
+    actual_units_required = fields.Float(string='Actual Units Required', compute='_compute_actual_units', store=True)
+    base_workload_factor = fields.Float(string='Base Workload Factor', compute='_compute_base_workload_factor',
+                                        store=True, readonly=True)
+    effective_workload_factor = fields.Float(string='Effective Workload Factor', compute='_compute_effective_workload',
+                                             store=True,
+                                             help='Workload factor adjusted by client support level')
 
     # For complexity-based
     complexity_multiplier = fields.Float(string='Complexity Multiplier', default=1.0)
 
     # Display
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name')
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
 
-    @api.depends('service_catalog_id', 'calculation_date')
+    @api.depends('service_catalog_id')
+    def _compute_service_type(self):
+        """Get service type from related models if available"""
+        for calc in self:
+            # Пытаемся найти связанный ServiceType через категорию или другие связи
+            service_type = False
+            if calc.service_catalog_id and hasattr(calc.service_catalog_id, 'service_type_id'):
+                service_type = calc.service_catalog_id.service_type_id
+            elif calc.service_catalog_id and calc.service_catalog_id.category_id:
+                # Ищем ServiceType по категории и названию
+                service_type = self.env['service.type'].search([
+                    ('category_id', '=', calc.service_catalog_id.category_id.id),
+                    ('name', 'ilike', calc.service_catalog_id.name)
+                ], limit=1)
+            calc.service_type_id = service_type
+
+    @api.depends('base_units_requested', 'effective_workload_factor', 'calculation_method')
+    def _compute_actual_units(self):
+        """Calculate actual units based on effective workload factor"""
+        for calc in self:
+            if calc.calculation_method == 'unit_based':
+                calc.actual_units_required = calc.base_units_requested * (calc.effective_workload_factor or 1.0)
+            else:
+                calc.actual_units_required = calc.base_units_requested
+
+    @api.depends('service_type_id', 'service_type_id.workload_factor')
+    def _compute_base_workload_factor(self):
+        """Get base workload factor from service type"""
+        for calc in self:
+            calc.base_workload_factor = calc.service_type_id.workload_factor if calc.service_type_id else 1.0
+
+    @api.depends('base_workload_factor', 'client_id.support_level', 'client_id.workload_multiplier')
+    def _compute_effective_workload(self):
+        """Calculate effective workload factor including client support level"""
+        for calc in self:
+            if calc.client_id and calc.base_workload_factor:
+                calc.effective_workload_factor = calc.client_id.get_effective_workload_factor(calc.base_workload_factor)
+            else:
+                calc.effective_workload_factor = calc.base_workload_factor or 1.0
+
+    @api.depends('service_catalog_id', 'calculation_method', 'effective_workload_factor', 'actual_units_required',
+                 'blended_hourly_rate', 'complexity_multiplier')
+    def _compute_direct_cost_per_unit(self):
+        """Calculate direct cost per unit based on method and effective workload factor"""
+        for calc in self:
+            if calc.calculation_method == 'time_based':
+                # Время * ставка с учетом effective_workload_factor
+                hours_with_workload = calc.estimated_hours_per_unit * (calc.effective_workload_factor or 1.0)
+                calc.direct_cost_per_unit = hours_with_workload * calc.blended_hourly_rate
+
+            elif calc.calculation_method == 'unit_based':
+                # Базовая цена с учетом effective_workload_factor
+                base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id else 0
+                calc.direct_cost_per_unit = base_price * (calc.effective_workload_factor or 1.0)
+
+            elif calc.calculation_method == 'complexity_based':
+                # Базовая цена * сложность * effective_workload_factor
+                base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id else 0
+                calc.direct_cost_per_unit = base_price * calc.complexity_multiplier * (
+                            calc.effective_workload_factor or 1.0)
+
+            else:
+                calc.direct_cost_per_unit = 0
+
+    @api.depends('service_catalog_id', 'client_id.support_level', 'effective_workload_factor', 'calculation_date')
     def _compute_display_name(self):
         for calc in self:
             if calc.service_catalog_id:
-                calc.display_name = f"{calc.service_catalog_id.name} - {calc.calculation_date}"
+                parts = [calc.service_catalog_id.name]
+                if calc.client_id:
+                    parts.append(
+                        f"({calc.client_id.support_level.title() if calc.client_id.support_level else 'Standard'})")
+                if calc.effective_workload_factor != 1.0:
+                    parts.append(f"WF: {calc.effective_workload_factor}")
+                parts.append(str(calc.calculation_date))
+                calc.display_name = " - ".join(parts)
             else:
                 calc.display_name = "New Calculation"
 
@@ -55,254 +139,49 @@ class ServiceCostCalculation(models.Model):
                                         calc.admin_cost_per_unit +
                                         calc.overhead_cost_per_unit)
 
-    @api.depends('service_catalog_id')
+    @api.depends('service_type_id', 'service_type_id.default_responsible_ids')
     def _compute_blended_rate(self):
-        """Calculate blended hourly rate from responsible team"""
+        """Calculate blended hourly rate based on service type and team"""
         for calc in self:
-            if calc.service_catalog_id and calc.service_catalog_id.category_id:
-                # Get service types for this category
-                service_types = self.env['service.type'].search([
-                    ('category_id', '=', calc.service_catalog_id.category_id.id)
-                ])
+            if calc.service_type_id and calc.service_type_id.default_responsible_ids:
+                # Берем среднюю ставку команды поддержки
+                employees = calc.service_type_id.default_responsible_ids
+                if employees:
+                    # Здесь можно добавить логику расчета средней ставки
+                    # Пока используем базовую ставку из настроек компании
+                    calc.blended_hourly_rate = 50.0  # или из настроек
+                else:
+                    calc.blended_hourly_rate = 40.0  # дефолтная ставка
+            else:
+                calc.blended_hourly_rate = 40.0
 
-                total_rate = 0
-                team_count = 0
-
-                for service_type in service_types:
-                    if service_type.default_responsible_ids:
-                        for employee in service_type.default_responsible_ids:
-                            employee_cost = self.env['cost.employee'].search([
-                                ('employee_id', '=', employee.id)
-                            ], limit=1)
-                            if employee_cost:
-                                total_rate += employee_cost.hourly_cost
-                                team_count += 1
-
-                calc.blended_hourly_rate = total_rate / team_count if team_count > 0 else 0
+    def get_effective_workload_units(self):
+        """Get total effective workload units for reporting (includes client support level)"""
+        self.ensure_one()
+        if self.calculation_method == 'unit_based':
+            return self.actual_units_required
+        elif self.calculation_method == 'time_based':
+            return self.estimated_hours_per_unit * (self.effective_workload_factor or 1.0)
+        else:
+            return self.effective_workload_factor or 1.0
 
     def action_calculate_costs(self):
-        """Calculate all cost components"""
-        self.ensure_one()
+        """Manual recalculation of costs"""
+        for record in self:
+            # Force recompute of all cost fields
+            record._compute_base_workload_factor()
+            record._compute_effective_workload()
+            record._compute_actual_units()
+            record._compute_direct_cost_per_unit()
+            record._compute_blended_rate()
+            record._compute_total_cost()
 
-        # 1. Calculate direct costs
-        self._calculate_direct_costs()
-
-        # 2. Calculate indirect costs
-        self._calculate_indirect_costs()
-
-        # 3. Calculate admin costs
-        self._calculate_admin_costs()
-
-        # 4. Calculate overhead costs
-        self._calculate_overhead_costs()
-
-        # 5. Update service catalog with calculated cost
-        self.service_catalog_id.base_cost = self.total_cost_per_unit
-
-    def _calculate_direct_costs(self):
-        """Calculate direct labor costs"""
-        if self.calculation_method == 'time_based':
-            self.direct_cost_per_unit = self.blended_hourly_rate * self.estimated_hours_per_unit
-        elif self.calculation_method == 'complexity_based':
-            base_rate = self.blended_hourly_rate * self.estimated_hours_per_unit
-            self.direct_cost_per_unit = base_rate * self.complexity_multiplier
-        else:  # unit_based
-            # Use service type base price as starting point
-            if self.service_catalog_id.category_id:
-                service_types = self.env['service.type'].search([
-                    ('category_id', '=', self.service_catalog_id.category_id.id)
-                ], limit=1)
-                if service_types:
-                    self.direct_cost_per_unit = service_types[0].base_price * 0.6  # 60% for direct costs
-
-    def _calculate_indirect_costs(self):
-        """Calculate indirect costs based on cost drivers"""
-        # Get all indirect cost pools
-        indirect_pools = self.env['cost.pool'].search([
-            ('pool_type', '=', 'indirect'),
-            ('active', '=', True)
-        ])
-
-        total_indirect_cost = sum(indirect_pools.mapped('total_monthly_cost'))
-
-        # Get total hours/units for allocation base
-        total_allocation_base = self._get_total_allocation_base()
-
-        if total_allocation_base > 0:
-            cost_per_base_unit = total_indirect_cost / total_allocation_base
-
-            if self.calculation_method == 'time_based':
-                self.indirect_cost_per_unit = cost_per_base_unit * self.estimated_hours_per_unit
-            else:
-                self.indirect_cost_per_unit = cost_per_base_unit
-
-    def _calculate_admin_costs(self):
-        """Calculate administrative costs"""
-        admin_pools = self.env['cost.pool'].search([
-            ('pool_type', '=', 'admin'),
-            ('active', '=', True)
-        ])
-
-        total_admin_cost = sum(admin_pools.mapped('total_monthly_cost'))
-
-        # Allocate admin costs proportionally to direct + indirect
-        base_cost = self.direct_cost_per_unit + self.indirect_cost_per_unit
-
-        if base_cost > 0:
-            # Get admin percentage from configuration (default 15%)
-            admin_percentage = float(self.env['ir.config_parameter'].sudo().get_param(
-                'cost_allocation.admin_cost_percentage', '15.0'
-            )) / 100.0
-
-            self.admin_cost_per_unit = base_cost * admin_percentage
-        else:
-            # If no base cost, distribute admin costs proportionally
-            if total_admin_cost > 0:
-                total_allocation_base = self._get_total_allocation_base()
-                if total_allocation_base > 0:
-                    admin_per_base_unit = total_admin_cost / total_allocation_base
-                    if self.calculation_method == 'time_based':
-                        self.admin_cost_per_unit = admin_per_base_unit * self.estimated_hours_per_unit
-                    else:
-                        self.admin_cost_per_unit = admin_per_base_unit
-
-    def _calculate_overhead_costs(self):
-        """Calculate overhead costs allocation"""
-        # Get overhead costs from all pools
-        overhead_allocations = self.env['cost.pool.overhead.allocation'].search([])
-        total_overhead = sum(overhead_allocations.mapped('monthly_cost'))
-
-        # Similar to indirect costs allocation
-        total_allocation_base = self._get_total_allocation_base()
-
-        if total_allocation_base > 0:
-            overhead_per_base_unit = total_overhead / total_allocation_base
-
-            if self.calculation_method == 'time_based':
-                self.overhead_cost_per_unit = overhead_per_base_unit * self.estimated_hours_per_unit
-            else:
-                self.overhead_cost_per_unit = overhead_per_base_unit
-
-    def _get_total_allocation_base(self):
-        """Get total allocation base (hours, units, etc.) - УЛУЧШЕНО: динамический расчет"""
-        # This should be calculated based on historical data or estimates
-
-
-        # Get total estimated monthly capacity using dynamic working hours
-        total_employees = self.env['cost.employee'].search_count([('active', '=', True)])
-
-        if total_employees == 0:
-            return 1.0  # Avoid division by zero
-
-        # Calculate average working hours from employee cost configurations
-        employee_costs = self.env['cost.employee'].search([('active', '=', True)])
-
-        if employee_costs:
-            # Use actual calculated working hours from employee configurations
-            total_working_hours = sum(employee_costs.mapped('monthly_hours'))
-            average_working_hours = total_working_hours / len(employee_costs)
-        else:
-            # Fallback to dynamic calculation for current month
-            working_util = self.env['working.days.util']
-            average_working_hours = working_util.get_current_month_working_hours()
-
-        utilization_rate = float(self.env['ir.config_parameter'].sudo().get_param(
-            'cost_allocation.utilization_rate', '75.0'
-        )) / 100.0
-
-        return total_employees * average_working_hours * utilization_rate
-
-    def _calculate_allocation_base_for_period(self, period_date):
-        """Calculate allocation base for specific period"""
-        # Get total estimated capacity for specific month
-        total_employees = self.env['cost.employee'].search_count([('active', '=', True)])
-
-        if total_employees == 0:
-            return 1.0
-
-        # Get working hours for specific period
-        working_util = self.env['working.days.util']
-        working_hours_in_period = working_util.get_working_hours_in_month(
-            period_date.year,
-            period_date.month
-        )
-
-        # Get utilization rate from settings (default 75%)
-        utilization_rate = float(self.env['ir.config_parameter'].sudo().get_param(
-            'cost_allocation.utilization_rate', '75.0'
-        )) / 100.0
-
-        return total_employees * working_hours_in_period * utilization_rate
-
-    def _get_employee_capacity_for_month(self, employee_id, year, month):
-        """Get specific employee capacity for given month"""
-        employee_cost = self.env['cost.employee'].search([
-            ('employee_id', '=', employee_id),
-            ('active', '=', True)
-        ], limit=1)
-
-        if employee_cost and employee_cost.use_dynamic_hours:
-            # Use employee's specific calendar if set
-            working_util = self.env['working.days.util']
-            calendar_id = employee_cost.resource_calendar_id.id if employee_cost.resource_calendar_id else None
-
-            return working_util.get_working_hours_in_month(year, month, calendar_id)
-        elif employee_cost:
-            return employee_cost.monthly_hours
-        else:
-            # Fallback to company default
-            working_util = self.env['working.days.util']
-            return working_util.get_working_hours_in_month(year, month)
-
-
-# Extend Service Catalog model
-class ServiceCatalogExtended(models.Model):
-    _inherit = 'service.catalog'
-
-    # Cost calculation
-    cost_calculation_ids = fields.One2many('service.cost.calculation', 'service_catalog_id',
-                                           string='Cost Calculations')
-    last_calculation_date = fields.Date(string='Last Calculation Date',
-                                        compute='_compute_last_calculation')
-    cost_calculation_method = fields.Selection([
-        ('manual', 'Manual'),
-        ('calculated', 'ABC Calculated'),
-        ('hybrid', 'Hybrid (Manual + Calculated)')
-    ], string='Costing Method', default='manual')
-
-    # Override base_cost to show it can be calculated
-    base_cost = fields.Float(string='Base Cost',
-                             help="Base cost per unit - can be manually set or calculated using ABC costing")
-
-    @api.depends('cost_calculation_ids.calculation_date')
-    def _compute_last_calculation(self):
-        for service in self:
-            if service.cost_calculation_ids:
-                service.last_calculation_date = max(service.cost_calculation_ids.mapped('calculation_date'))
-            else:
-                service.last_calculation_date = False
-
-    def action_calculate_cost(self):
-        """Create new cost calculation"""
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Calculate Service Cost',
-            'res_model': 'service.cost.calculation',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_service_catalog_id': self.id,
-                'default_calculation_method': 'time_based'
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Costs recalculated successfully!',
+                'type': 'success',
+                'sticky': False,
             }
-        }
-
-    def action_view_calculations(self):
-        """View cost calculations history"""
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Cost Calculations',
-            'res_model': 'service.cost.calculation',
-            'view_mode': 'tree,form',
-            'domain': [('service_catalog_id', '=', self.id)],
-            'context': {'default_service_catalog_id': self.id}
         }

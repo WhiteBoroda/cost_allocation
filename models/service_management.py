@@ -28,17 +28,14 @@ class ServiceType(models.Model):
 
     base_price = fields.Float(string='Base Price per Unit')
 
-    # Technical details
-    support_level = fields.Selection([
-        ('basic', 'Basic Support'),
-        ('standard', 'Standard Support'),
-        ('premium', 'Premium Support'),
-        ('enterprise', 'Enterprise Support')
-    ], string='Support Level', default='standard')
+    # REMOVED: support_level - moved to res.partner (client-specific)
+    # support_level = fields.Selection([...], ...)  -- УДАЛЕНО
 
-    # SLA
-    response_time = fields.Float(string='Response Time (hours)', default=24.0)
-    resolution_time = fields.Float(string='Resolution Time (hours)', default=72.0)
+    # Base SLA (will be adjusted per client support level)
+    response_time = fields.Float(string='Base Response Time (hours)', default=24.0,
+                                 help='Base response time - actual SLA determined by client support level')
+    resolution_time = fields.Float(string='Base Resolution Time (hours)', default=72.0,
+                                   help='Base resolution time - actual SLA determined by client support level')
     availability_sla = fields.Float(string='Availability SLA (%)', default=99.0)
 
     # Responsible employees
@@ -51,7 +48,7 @@ class ServiceType(models.Model):
     # Auto-assignment rules
     auto_assign_responsible = fields.Boolean(string='Auto Assign to New Services', default=True)
     workload_factor = fields.Float(string='Workload Factor', default=1.0,
-                                   help='Relative complexity/time factor for this service type')
+                                   help='Base complexity/time factor - will be adjusted by client support level')
 
     # Skills required
     required_skill_ids = fields.Many2many('hr.skill', string='Required Skills',
@@ -70,43 +67,51 @@ class ServiceType(models.Model):
     @api.depends('name')  # зависимость нужно будет проверить в полном файле
     def _compute_service_count(self):
         for service_type in self:
-            service_type.active_services_count = len(self.env['client.service'].search([
+            # Подсчитываем активные сервисы этого типа
+            service_type.active_services_count = self.env['client.service'].search_count([
                 ('service_type_id', '=', service_type.id),
                 ('status', '=', 'active')
-            ]))
+            ])
 
-    @api.onchange('category_id')
-    def _onchange_category_id(self):
-        if self.category_id:
-            # Inherit responsible team from category
-            if self.category_id.default_responsible_ids:
-                self.default_responsible_ids = self.category_id.default_responsible_ids
-            if self.category_id.primary_responsible_id:
-                self.primary_responsible_id = self.category_id.primary_responsible_id
+    def get_effective_workload_factor(self, client_support_level='standard'):
+        """Get workload factor adjusted by client support level"""
+        self.ensure_one()
+
+        support_multiplier = {
+            'basic': 0.8,  # Меньше внимания
+            'standard': 1.0,  # Базовый уровень
+            'premium': 1.3,  # Больше внимания
+            'enterprise': 1.6,  # Максимальное внимание
+        }
+
+        multiplier = support_multiplier.get(client_support_level, 1.0)
+        return self.workload_factor * multiplier
+
+    def get_sla_for_client(self, client):
+        """Get SLA adjusted for specific client support level"""
+        self.ensure_one()
+        if not client:
+            return {
+                'response_time': self.response_time,
+                'resolution_time': self.resolution_time,
+                'availability_sla': self.availability_sla
+            }
+
+        # Client SLA определяется support_level клиента
+        client_sla = client.get_sla_for_service_type(self)
+
+        return {
+            'response_time': client_sla['response_time'],
+            'resolution_time': client_sla['resolution_time'],
+            'availability_sla': self.availability_sla  # Availability остается базовой
+        }
 
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            # Автогенерация кода
             if not vals.get('code'):
                 vals['code'] = self._generate_code('service.type.code')
-
-            # Если unit_id не задан, устанавливаем Unit по умолчанию
-            if not vals.get('unit_id'):
-                try:
-                    default_unit = self.env.ref('cost_allocation.unit_unit')
-                    vals['unit_id'] = default_unit.id
-                except:
-                    # Если не найдем unit по умолчанию, попробуем первую доступную
-                    unit = self.env['unit.of.measure'].search([], limit=1)
-                    if unit:
-                        vals['unit_id'] = unit.id
-
         return super().create(vals_list)
-
-    _sql_constraints = [
-        ('unique_code', 'unique(code)', 'Service Type code must be unique!')
-    ]
 
 
 class ClientService(models.Model):
@@ -123,6 +128,14 @@ class ClientService(models.Model):
 
     category_id = fields.Many2one('service.category', string='Category',
                                   related='service_type_id.category_id', store=True, readonly=True)
+
+    # SLA computed from client support level and service type
+    effective_response_time = fields.Float(string='Response Time (hours)',
+                                           compute='_compute_effective_sla', store=True)
+    effective_resolution_time = fields.Float(string='Resolution Time (hours)',
+                                             compute='_compute_effective_sla', store=True)
+    effective_workload_factor = fields.Float(string='Effective Workload Factor',
+                                             compute='_compute_effective_workload', store=True)
 
     # Equipment/Service details
     name = fields.Char(string='Equipment/Service Name')
@@ -183,6 +196,28 @@ class ClientService(models.Model):
     company_id = fields.Many2one('res.company', string='Company', required=True,
                                  default=lambda self: self.env.company)
 
+    @api.depends('client_id.support_level', 'service_type_id.response_time', 'service_type_id.resolution_time')
+    def _compute_effective_sla(self):
+        """Compute effective SLA based on client support level"""
+        for service in self:
+            if service.client_id and service.service_type_id:
+                sla = service.service_type_id.get_sla_for_client(service.client_id)
+                service.effective_response_time = sla['response_time']
+                service.effective_resolution_time = sla['resolution_time']
+            else:
+                service.effective_response_time = service.service_type_id.response_time if service.service_type_id else 24.0
+                service.effective_resolution_time = service.service_type_id.resolution_time if service.service_type_id else 72.0
+
+    @api.depends('client_id.support_level', 'service_type_id.workload_factor')
+    def _compute_effective_workload(self):
+        """Compute effective workload factor including client support level"""
+        for service in self:
+            if service.client_id and service.service_type_id:
+                service.effective_workload_factor = service.client_id.get_effective_workload_factor(
+                    service.service_type_id.workload_factor)
+            else:
+                service.effective_workload_factor = service.service_type_id.workload_factor if service.service_type_id else 1.0
+
     @api.depends('name', 'service_type_id', 'client_id', 'location')
     def _compute_display_name(self):
         for service in self:
@@ -195,47 +230,18 @@ class ClientService(models.Model):
             if service.location:
                 name_parts.append(f"({service.location})")
 
-            if service.client_id:
-                name_parts.append(f"- {service.client_id.name}")
-
-            service.display_name = ' '.join(name_parts) or 'New Service'
+            service.display_name = ' '.join(name_parts) if name_parts else 'New Service'
 
     @api.depends('monthly_cost', 'quantity')
     def _compute_total_monthly_cost(self):
         for service in self:
             service.total_monthly_cost = service.monthly_cost * service.quantity
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            # ДОБАВЛЕНО: автогенерация кода
-            if not vals.get('code'):
-                vals['code'] = self._generate_code('client.service.code')
-
-            # Auto-assign responsible team if enabled
-            if vals.get('service_type_id'):
-                service_type = self.env['service.type'].browse(vals['service_type_id'])
-                if service_type.auto_assign_responsible:
-                    if service_type.primary_responsible_id and not vals.get('responsible_employee_id'):
-                        vals['responsible_employee_id'] = service_type.primary_responsible_id.id
-                    if service_type.default_responsible_ids and not vals.get('support_team_ids'):
-                        vals['support_team_ids'] = [(6, 0, service_type.default_responsible_ids.ids)]
-                    vals['auto_assigned'] = True
-
-            # Set default name if not provided
-            if not vals.get('name') and vals.get('service_type_id'):
-                service_type = self.env['service.type'].browse(vals['service_type_id'])
-                vals['name'] = service_type.name
-
-        return super().create(vals_list)
-
     @api.onchange('service_type_id')
-    def _onchange_service_type_id(self):
+    def _onchange_service_type(self):
+        """Auto-assign team when service type changes"""
         if self.service_type_id:
-            # Inherit pricing from service type
-            self.monthly_cost = self.service_type_id.base_price
-
-            # Inherit responsible team if auto-assign is enabled
+            # Auto-assign if design is enabled
             if self.service_type_id.auto_assign_responsible:
                 if self.service_type_id.primary_responsible_id:
                     self.responsible_employee_id = self.service_type_id.primary_responsible_id
@@ -245,6 +251,13 @@ class ClientService(models.Model):
             # Set default name if empty
             if not self.name:
                 self.name = self.service_type_id.name
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('code'):
+                vals['code'] = self._generate_code('client.service.code')
+        return super().create(vals_list)
 
 
 class EmployeeWorkload(models.Model):
@@ -256,7 +269,8 @@ class EmployeeWorkload(models.Model):
 
     # Services assigned
     active_services_count = fields.Integer(string='Active Services', compute='_compute_workload')
-    total_workload_factor = fields.Float(string='Total Workload Factor', compute='_compute_workload')
+    total_workload_factor = fields.Float(string='Total Workload Factor', compute='_compute_workload',
+                                         help='Sum of effective workload factors (includes client support levels)')
 
     # Categories breakdown
     workload_by_category = fields.Text(string='Workload by Category', compute='_compute_workload')
@@ -281,8 +295,8 @@ class EmployeeWorkload(models.Model):
 
             workload.active_services_count = len(services)
 
-            # Calculate total workload factor
-            total_factor = sum(services.mapped('service_type_id.workload_factor'))
+            # Calculate total workload factor using EFFECTIVE workload (includes client support level)
+            total_factor = sum(services.mapped('effective_workload_factor'))
             workload.total_workload_factor = total_factor
 
             # Calculate overload
@@ -293,11 +307,11 @@ class EmployeeWorkload(models.Model):
                 workload.overload_percentage = 0
                 workload.is_overloaded = False
 
-            # Workload by category
+            # Workload by category (using effective factors)
             category_workload = {}
             for service in services:
                 category = service.category_id.name if service.category_id else 'Uncategorized'
-                factor = service.service_type_id.workload_factor
+                factor = service.effective_workload_factor
                 category_workload[category] = category_workload.get(category, 0) + factor
 
             workload_text = '\n'.join([f"{cat}: {factor}" for cat, factor in category_workload.items()])
@@ -324,17 +338,3 @@ class EmployeeWorkload(models.Model):
             else:
                 # Force recompute
                 existing._compute_workload()
-
-    @api.model
-    def create_test_data(self):
-        """Создать тестовые данные"""
-        employees = self.env['hr.employee'].search([], limit=5)
-        today = fields.Date.today()
-
-        for emp in employees:
-            if not self.search([('employee_id', '=', emp.id), ('period_date', '=', today)]):
-                self.create({
-                    'employee_id': emp.id,
-                    'period_date': today,
-                    'target_workload': 100.0
-                })

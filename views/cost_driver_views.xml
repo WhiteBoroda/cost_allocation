@@ -69,7 +69,7 @@
                             </field>
                         </page>
 
-                        <!-- Legacy/Deprecated Tab for compatibility -->
+                        <!-- Legacy/Deprecated Tab for compatibility
                         <page string="Legacy Settings" groups="base.group_no_one">
                             <div class="alert alert-warning" role="status">
                                 <strong>Deprecated Fields</strong>
@@ -79,7 +79,7 @@
                                 <field name="unit_of_measure" readonly="1"/>
                                 <field name="unit_name" readonly="1"/>
                             </group>
-                        </page>
+                        </page>  -->
                     </notebook>
                 </sheet>
             </form>

@@ -8,6 +8,28 @@ class ResPartner(models.Model):
     service_count = fields.Integer(string='Active Services', compute='_compute_service_stats', store=True)
     subscription_count = fields.Integer(string='Active Subscriptions', compute='_compute_service_stats', store=True)
 
+    # Support Level - moved from ServiceType to Client
+    support_level = fields.Selection([
+        ('basic', 'Basic Support'),
+        ('standard', 'Standard Support'),
+        ('premium', 'Premium Support'),
+        ('enterprise', 'Enterprise Support')
+    ], string='Support Level', default='standard',
+        help='Support level determines SLA requirements and affects service costs')
+
+    # SLA computed from support level
+    sla_response_time = fields.Float(string='SLA Response Time (hours)',
+                                     compute='_compute_sla_times', store=True,
+                                     help='Maximum response time based on support level')
+    sla_resolution_time = fields.Float(string='SLA Resolution Time (hours)',
+                                       compute='_compute_sla_times', store=True,
+                                       help='Maximum resolution time based on support level')
+
+    # Support level impact on workload
+    workload_multiplier = fields.Float(string='Workload Multiplier',
+                                       compute='_compute_workload_multiplier', store=True,
+                                       help='Multiplier for workload factor based on support level')
+
     # Cost driver quantities
     workstation_count = fields.Integer(string='Workstations', default=0)
     user_count = fields.Integer(string='User Count', default=0)
@@ -30,6 +52,57 @@ class ResPartner(models.Model):
         ('stable', 'Stable'),
         ('new', 'New Client')
     ], string='Cost Trend', compute='_compute_cost_trend', store=True)
+
+    @api.depends('support_level')
+    def _compute_sla_times(self):
+        """Calculate SLA times based on support level"""
+        sla_mapping = {
+            'basic': {'response': 48.0, 'resolution': 120.0},  # 2 days / 5 days
+            'standard': {'response': 24.0, 'resolution': 72.0},  # 1 day / 3 days
+            'premium': {'response': 8.0, 'resolution': 24.0},  # 8 hours / 1 day
+            'enterprise': {'response': 2.0, 'resolution': 8.0},  # 2 hours / 8 hours
+        }
+
+        for partner in self:
+            level = partner.support_level or 'standard'
+            sla = sla_mapping.get(level, sla_mapping['standard'])
+            partner.sla_response_time = sla['response']
+            partner.sla_resolution_time = sla['resolution']
+
+    @api.depends('support_level')
+    def _compute_workload_multiplier(self):
+        """Calculate workload multiplier based on support level"""
+        multiplier_mapping = {
+            'basic': 0.8,  # Меньше внимания
+            'standard': 1.0,  # Базовый уровень
+            'premium': 1.3,  # Больше внимания
+            'enterprise': 1.6,  # Максимальное внимание
+        }
+
+        for partner in self:
+            level = partner.support_level or 'standard'
+            partner.workload_multiplier = multiplier_mapping.get(level, 1.0)
+
+    def get_effective_workload_factor(self, base_workload_factor):
+        """Get effective workload factor including support level multiplier"""
+        self.ensure_one()
+        return base_workload_factor * self.workload_multiplier
+
+    def get_sla_for_service_type(self, service_type):
+        """Get actual SLA for specific service type considering support level"""
+        self.ensure_one()
+        if not service_type:
+            return {
+                'response_time': self.sla_response_time,
+                'resolution_time': self.sla_resolution_time
+            }
+
+        # Берем минимум между клиентским SLA и базовым SLA сервиса
+        # (более строгое требование)
+        return {
+            'response_time': min(self.sla_response_time, service_type.response_time),
+            'resolution_time': min(self.sla_resolution_time, service_type.resolution_time)
+        }
 
     # ИСПРАВЛЕНО: поле client.service называется 'status', а не 'active'
     @api.depends('client_service_ids.status', 'subscription_ids.state')
@@ -121,75 +194,17 @@ class ResPartner(models.Model):
         for partner in self:
             # Автоматически обновляем драйверы на основе услуг клиента
 
-            # Получаем все драйверы
-            drivers = self.env['cost.driver'].search([])
+            # Получаем все драйверы для этого клиента
+            service_counts = {}
 
-            for driver in drivers:
-                # Определяем количество на основе названия драйвера
-                quantity = 0
+            for service in partner.client_service_ids.filtered(lambda s: s.status == 'active'):
+                service_type = service.service_type_id.service_type
+                if service_type not in service_counts:
+                    service_counts[service_type] = 0
+                service_counts[service_type] += service.quantity
 
-                if 'workstation' in driver.name.lower() or 'компьютер' in driver.name.lower():
-                    # Считаем рабочие станции
-                    workstations = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['workstation', 'desktop', 'laptop', 'компьютер', 'ноутбук'])
-                    )
-                    quantity = sum(workstations.mapped('quantity'))
-                    partner.workstation_count = quantity
-
-                elif 'user' in driver.name.lower() or 'пользователь' in driver.name.lower():
-                    # Считаем пользователей
-                    user_services = partner.client_service_ids.filtered(
-                        lambda s: 'user' in s.service_type_id.name.lower() or 'пользователь' in s.service_type_id.name.lower()
-                    )
-                    quantity = sum(user_services.mapped('quantity'))
-                    partner.user_count = quantity
-
-                elif 'server' in driver.name.lower() or 'сервер' in driver.name.lower():
-                    # Считаем серверы
-                    servers = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['server', 'сервер', 'srv'])
-                    )
-                    quantity = sum(servers.mapped('quantity'))
-                    partner.server_count = quantity
-
-                elif 'phone' in driver.name.lower() or 'телефон' in driver.name.lower():
-                    # Считаем IP телефоны
-                    phones = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['phone', 'ip phone', 'voip', 'телефон'])
-                    )
-                    quantity = sum(phones.mapped('quantity'))
-                    partner.phone_count = quantity
-
-                elif 'printer' in driver.name.lower() or 'принтер' in driver.name.lower():
-                    # Считаем принтеры
-                    printers = partner.client_service_ids.filtered(
-                        lambda s: any(word in s.service_type_id.name.lower()
-                                      for word in ['printer', 'print', 'mfp', 'принтер'])
-                    )
-                    quantity = sum(printers.mapped('quantity'))
-                    partner.printer_count = quantity
-
-                # Обновляем или создаем запись драйвера для клиента
-                if quantity > 0:
-                    client_driver = self.env['client.cost.driver'].search([
-                        ('driver_id', '=', driver.id),
-                        ('client_id', '=', partner.id)
-                    ])
-
-                    if client_driver:
-                        client_driver.quantity = quantity
-                    else:
-                        self.env['client.cost.driver'].create({
-                            'driver_id': driver.id,
-                            'client_id': partner.id,
-                            'quantity': quantity
-                        })
-
-    @api.model
-    def cron_update_all_cost_drivers(self):
-        """Cron job to update cost drivers for all clients"""
-        clients = self.search([('is_company', '=', True)])
-        clients.update_cost_drivers()
+            # Обновляем поля
+            partner.workstation_count = service_counts.get('workstation', 0)
+            partner.server_count = service_counts.get('server', 0)
+            partner.printer_count = service_counts.get('printer', 0)
+            # Можно добавить другие типы по мере необходимости

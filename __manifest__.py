@@ -1,6 +1,6 @@
 {
     'name': 'Розподіл витрат / Service Cost Allocation',
-    'version': '17.0.1.4.4',
+    'version': '17.0.1.4.5',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """

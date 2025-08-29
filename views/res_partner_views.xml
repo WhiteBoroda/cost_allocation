@@ -1,59 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Partner Form Extension -->
-    <record id="view_partner_form_cost_allocation" model="ir.ui.view">
-        <field name="name">res.partner.form.cost_allocation</field>
+    <!-- Partner form view extension for support level -->
+    <record id="view_partner_form_support_level" model="ir.ui.view">
+        <field name="name">res.partner.form.support.level</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <div name="button_box" position="inside">
-                <button name="%(action_client_service)d" type="action"
-                        class="oe_stat_button" icon="fa-gear"
-                        context="{'default_client_id': context.get('active_id'), 'search_default_client_id': context.get('active_id')}"
-                        invisible="not is_company">
-                    <field name="service_count" widget="statinfo" string="Services"/>
-                </button>
-                <button name="%(action_client_service_subscription)d" type="action"
-                        class="oe_stat_button" icon="fa-refresh"
-                        context="{'default_client_id': context.get('active_id'), 'search_default_client_id': context.get('active_id')}"
-                        invisible="not is_company">
-                    <field name="subscription_count" widget="statinfo" string="Subscriptions"/>
-                </button>
-                <button name="%(action_client_allocation)d" type="action"
-                        class="oe_stat_button" icon="fa-calculator"
-                        context="{'default_client_id': context.get('active_id'), 'search_default_client_id': context.get('active_id')}"
-                        invisible="not is_company">
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_value">
-                            <field name="last_monthly_cost" widget="monetary"/>
-                        </span>
-                        <span class="o_stat_text">Monthly Cost</span>
-                    </div>
-                </button>
-            </div>
-
-            <xpath expr="//page[@name='accounting']" position="after">
-                <page string="Service Costing" invisible="not is_company">
+            <xpath expr="//page[@name='accounting']" position="before">
+                <page string="Service Support" invisible="not is_company">
                     <group>
-                        <group string="Cost Drivers">
+                        <group string="Support Level &amp; SLA">
+                            <field name="support_level" widget="badge"
+                                   decoration-danger="support_level == 'enterprise'"
+                                   decoration-warning="support_level == 'premium'"
+                                   decoration-info="support_level == 'standard'"
+                                   decoration-muted="support_level == 'basic'"/>
+                            <field name="workload_multiplier" readonly="1"/>
+                        </group>
+                        <group string="SLA Times">
+                            <field name="sla_response_time" widget="float_time" readonly="1"/>
+                            <field name="sla_resolution_time" widget="float_time" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info mt-3" role="status">
+                        <h5><i class="fa fa-info-circle" title="Information"/> Support Level Impact</h5>
+                        <p><strong>Basic:</strong> Longer SLA times, reduced workload priority (0.8x)</p>
+                        <p><strong>Standard:</strong> Standard SLA times, normal workload (1.0x)</p>
+                        <p><strong>Premium:</strong> Faster SLA times, increased attention (1.3x)</p>
+                        <p><strong>Enterprise:</strong> Fastest SLA times, maximum priority (1.6x)</p>
+                    </div>
+
+                    <group string="Cost Drivers">
+                        <group>
                             <field name="workstation_count"/>
                             <field name="user_count"/>
                             <field name="server_count"/>
+                        </group>
+                        <group>
                             <field name="phone_count"/>
                             <field name="printer_count"/>
                         </group>
-                        <group string="Cost Analysis">
+                    </group>
+
+                    <group string="Cost Analysis">
+                        <group>
                             <field name="last_monthly_cost" widget="monetary"/>
                             <field name="last_cost_date"/>
-                            <field name="cost_trend" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="cost_trend" widget="badge"
+                                   decoration-danger="cost_trend == 'up'"
+                                   decoration-success="cost_trend == 'down'"
+                                   decoration-info="cost_trend == 'stable'"
+                                   decoration-muted="cost_trend == 'new'"/>
                         </group>
                     </group>
+
                     <notebook>
                         <page string="Services">
                             <field name="client_service_ids">
                                 <tree>
                                     <field name="name"/>
                                     <field name="service_type_id"/>
+                                    <field name="effective_response_time" widget="float_time"/>
+                                    <field name="effective_resolution_time" widget="float_time"/>
+                                    <field name="effective_workload_factor"/>
                                     <field name="brand"/>
                                     <field name="model"/>
                                     <field name="quantity"/>
@@ -77,78 +89,45 @@
                                     <field name="period_date"/>
                                     <field name="direct_cost" widget="monetary"/>
                                     <field name="indirect_cost" widget="monetary"/>
+                                    <field name="admin_cost" widget="monetary"/>
                                     <field name="total_cost" widget="monetary"/>
-                                    <field name="state" widget="badge"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
-
-                    <div class="oe_clear">
-                        <button name="update_cost_drivers" type="object"
-                                string="Update Cost Drivers" class="btn-secondary"/>
-                    </div>
                 </page>
             </xpath>
         </field>
     </record>
 
-    <!-- Partner Tree View Extension -->
-    <record id="view_partner_tree_cost_allocation" model="ir.ui.view">
-        <field name="name">res.partner.tree.cost_allocation</field>
+    <!-- Partner tree view - add support level column -->
+    <record id="view_partner_tree_support_level" model="ir.ui.view">
+        <field name="name">res.partner.tree.support.level</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='phone']" position="after">
+            <field name="phone" position="after">
+                <field name="support_level" optional="hide" widget="badge"/>
                 <field name="service_count" optional="hide"/>
-                <field name="last_monthly_cost" widget="monetary" optional="hide"/>
-                <field name="cost_trend" widget="badge" optional="hide"/>
-            </xpath>
+            </field>
         </field>
     </record>
 
-    <!-- Partner Kanban View Extension -->
-    <record id="view_partner_kanban_cost_allocation" model="ir.ui.view">
-        <field name="name">res.partner.kanban.cost_allocation</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('oe_kanban_partner_categories')]" position="after">
-                <div class="mt-1" invisible="not is_company or service_count == 0">
-                    <span class="badge badge-pill badge-info">
-                        <i class="fa fa-cogs" title="Services"/> Services: <field name="service_count"/>
-                    </span>
-                    <span class="badge badge-pill badge-success" invisible="last_monthly_cost == 0">
-                        <i class="fa fa-money" title="Monthly Cost"/> <field name="last_monthly_cost" widget="monetary"/>
-                    </span>
-                </div>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Search View Extension -->
-    <record id="view_partner_search_cost_allocation" model="ir.ui.view">
-        <field name="name">res.partner.search.cost_allocation</field>
+    <!-- Partner search view - add support level filters -->
+    <record id="view_res_partner_filter_support_level" model="ir.ui.view">
+        <field name="name">res.partner.select.support.level</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='supplier']" position="after">
+            <filter name="customer" position="after">
                 <separator/>
-                <filter string="Has Services" name="has_services"
-                        domain="[('service_count', '>', 0)]"/>
-                <filter string="Active Subscriptions" name="has_subscriptions"
-                        domain="[('subscription_count', '>', 0)]"/>
-                <filter string="High Cost Clients" name="high_cost"
-                        domain="[('last_monthly_cost', '>', 5000)]"/>
-                <separator/>
-                <filter string="Cost Increasing" name="cost_up"
-                        domain="[('cost_trend', '=', 'up')]"/>
-                <filter string="Cost Decreasing" name="cost_down"
-                        domain="[('cost_trend', '=', 'down')]"/>
-            </xpath>
-            <xpath expr="//group" position="inside">
-                <filter string="Cost Trend" name="group_cost_trend"
-                        context="{'group_by': 'cost_trend'}"/>
+                <filter string="Basic Support" name="basic_support" domain="[('support_level', '=', 'basic')]"/>
+                <filter string="Standard Support" name="standard_support" domain="[('support_level', '=', 'standard')]"/>
+                <filter string="Premium Support" name="premium_support" domain="[('support_level', '=', 'premium')]"/>
+                <filter string="Enterprise Support" name="enterprise_support" domain="[('support_level', '=', 'enterprise')]"/>
+            </filter>
+            <xpath expr="//group[@expand='0']" position="inside">
+                <filter string="Support Level" name="group_support_level" context="{'group_by': 'support_level'}"/>
             </xpath>
         </field>
     </record>
