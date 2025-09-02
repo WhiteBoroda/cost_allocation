@@ -23,8 +23,6 @@ class ServiceType(models.Model):
 
     # ИЗМЕНЕНО: заменил unit_name на Many2one поле
     unit_id = fields.Many2one('unit.of.measure', string='Unit of Measure', required=True)
-    # Оставляю для обратной совместимости
-    unit_name = fields.Char(string='Unit Name', related='unit_id.name', store=False, readonly=True)
 
     base_price = fields.Float(string='Base Price per Unit')
 

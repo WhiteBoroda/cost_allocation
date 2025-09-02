@@ -11,9 +11,19 @@
                 <field name="driver_category_id"/>
                 <field name="unit_id"/>
                 <field name="pool_id"/>
-                <field name="total_quantity"/>
-                <!-- ИСПРАВЛЕНО: добавлена группа доступа -->
-                <field name="cost_per_unit" widget="monetary"
+                <field name="license_type" string="Type"/>
+                <field name="total_purchased_quantity" string="Purchased"
+                       invisible="license_type == 'unlimited'"/>
+                <field name="total_allocated_quantity" string="Allocated"/>
+                <field name="purchase_cost" widget="monetary" options="{'currency_field': 'purchase_currency_id'}"/>
+                <field name="purchase_currency_id" column_invisible="1"/>
+                <field name="cost_per_unit" widget="monetary" string="Cost/Unit"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="sales_price_per_unit" widget="monetary" string="Sales/Unit"
+                       decoration-success="profit_per_unit > 0"/>
+                <field name="profit_per_unit" widget="monetary" string="Profit/Unit"
+                       decoration-success="profit_per_unit > 0"
+                       decoration-danger="profit_per_unit &lt; 0"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="active" widget="boolean_toggle"/>
             </tree>
@@ -32,7 +42,50 @@
                         </h1>
                     </div>
 
-                    <group>
+                    <!-- Purchase Information -->
+                    <group string="Purchase Information">
+                        <group>
+                            <field name="license_type" widget="radio"/>
+                            <field name="total_purchased_quantity"
+                                   invisible="license_type == 'unlimited'"
+                                   help="Total quantity purchased (e.g., 500 Google WorkSpace licenses)"/>
+                            <field name="purchase_cost" widget="monetary"
+                                   options="{'currency_field': 'purchase_currency_id'}"/>
+                            <field name="purchase_currency_id"/>
+                            <field name="purchase_period"/>
+                        </group>
+                        <group>
+                            <field name="purchase_cost_converted" widget="monetary" readonly="1"
+                                   options="{'currency_field': 'company_currency_id'}"/>
+                            <field name="monthly_cost" widget="monetary" readonly="1"
+                                   options="{'currency_field': 'company_currency_id'}"/>
+                            <field name="company_currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Sales Information -->
+                    <group string="Sales Information">
+                        <group>
+                            <field name="markup_percent" widget="percentage"/>
+                            <field name="cost_per_unit" widget="monetary" readonly="1"
+                                   groups="cost_allocation.group_cost_allocation_financial"
+                                   help="Internal cost per unit"/>
+                            <field name="sales_price_per_unit" widget="monetary" readonly="1"
+                                   help="Price charged to clients (includes markup)"/>
+                        </group>
+                        <group>
+                            <field name="profit_per_unit" widget="monetary" readonly="1"
+                                   decoration-success="profit_per_unit > 0"
+                                   decoration-danger="profit_per_unit &lt; 0"
+                                   groups="cost_allocation.group_cost_allocation_financial"/>
+                            <field name="total_monthly_profit" widget="monetary" readonly="1"
+                                   decoration-success="total_monthly_profit > 0"
+                                   groups="cost_allocation.group_cost_allocation_financial"/>
+                        </group>
+                    </group>
+
+                    <!-- Driver Information -->
+                    <group string="Driver Information">
                         <group>
                             <field name="code"/>
                             <field name="driver_category_id"/>
@@ -40,46 +93,180 @@
                         </group>
                         <group>
                             <field name="pool_id"/>
-                            <field name="total_quantity"/>
-                            <!-- Только поле стоимости скрыто от менеджеров -->
-                            <field name="cost_per_unit" widget="monetary"
-                                   groups="cost_allocation.group_cost_allocation_financial"/>
-                            <field name="currency_id"
-                                   groups="cost_allocation.group_cost_allocation_financial,base.group_multi_currency"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Allocation Summary -->
+                    <group string="Allocation Summary">
+                        <group>
+                            <field name="total_allocated_quantity" string="Allocated to Clients" readonly="1"/>
+                            <div class="o_row" name="unallocated_info"
+                                 invisible="license_type == 'unlimited'">
+                                <span>Unallocated: </span>
+                                <span class="badge badge-warning"
+                                      invisible="total_purchased_quantity - total_allocated_quantity &lt;= 0">
+                                    <field name="total_purchased_quantity"/>
+                                    <span> - </span>
+                                    <field name="total_allocated_quantity"/>
+                                </span>
+                            </div>
+                            <div class="o_row" name="unlimited_info"
+                                 invisible="license_type != 'unlimited'">
+                                <span class="badge badge-success">Unlimited License - No allocation limit</span>
+                            </div>
+                        </group>
+                        <group>
+                            <div class="o_row" name="allocation_percentage"
+                                 invisible="total_purchased_quantity &lt;= 0 or license_type == 'unlimited'">
+                                <span>Allocation: </span>
+                                <div class="progress" style="height: 20px; width: 200px;">
+                                    <div class="progress-bar bg-info" role="progressbar">
+                                        Progress info
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_row" name="efficiency_info"
+                                 invisible="license_type != 'unlimited' or total_allocated_quantity &lt;= 0">
+                                <span>Cost per user: </span>
+                                <span style="font-weight: bold;">
+                                    <field name="cost_per_unit" widget="monetary" readonly="1"/>
+                                    <span> (</span>
+                                    <field name="total_allocated_quantity" readonly="1"/>
+                                    <span> users)</span>
+                                </span>
+                            </div>
                         </group>
                     </group>
 
                     <field name="description" placeholder="Describe this cost driver..."/>
 
                     <notebook>
-                        <!-- ИСПРАВЛЕНО: убрана группа доступа с page, менеджеры теперь могут добавлять предприятия -->
-                        <page string="Client Values">
+                        <page string="Client Allocations">
                             <div class="alert alert-info" role="status">
-                                <h4><i class="fa fa-info-circle" title="Information"/> Cost Driver Values</h4>
-                                <p>Set the quantity for each client to determine cost allocation.</p>
-                                <p><strong>Example:</strong> For "Workstations" driver, set number of workstations per client</p>
+                                <h4><i class="fa fa-info-circle" title="Information"/> Cost Driver Allocation</h4>
+                                <p><strong>Quantity-based:</strong> Allocate specific purchased quantities to clients</p>
+                                <p><strong>Unlimited:</strong> Fixed cost distributed among all users/clients</p>
+                                <p>Sales price includes your markup over cost price.</p>
+                                <p class="text-muted">
+                                    <strong>Example Quantity-based:</strong> €5,000 for 500 licenses = €10 cost, sell for €12 = €2 profit/license
+                                    <br/>
+                                    <strong>Example Unlimited:</strong> €10,000 FortiNet for 100 users = €100 cost/user, sell for €120 = €20 profit/user
+                                </p>
                             </div>
                             <field name="client_driver_ids">
                                 <tree editable="bottom">
                                     <field name="client_id"/>
                                     <field name="quantity"/>
-                                    <!-- Распределенную стоимость менеджеры МОГУТ видеть -->
-                                    <field name="allocated_cost" widget="monetary" readonly="1"/>
+                                    <field name="unit_cost" widget="monetary" readonly="1" optional="hide"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                    <field name="unit_price" widget="monetary" readonly="1" string="Sales Price"/>
+                                    <field name="allocated_cost" widget="monetary" readonly="1" string="Total"/>
+                                    <field name="allocated_profit" widget="monetary" readonly="1"
+                                           decoration-success="allocated_profit > 0"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
                             </field>
                         </page>
 
-                        <!-- Legacy/Deprecated Tab for compatibility
-                        <page string="Legacy Settings" groups="base.group_no_one">
-                            <div class="alert alert-warning" role="status">
-                                <strong>Deprecated Fields</strong>
-                                <p>These fields are kept for data migration purposes only.</p>
-                            </div>
+                        <page string="Purchase Details">
                             <group>
-                                <field name="unit_of_measure" readonly="1"/>
-                                <field name="unit_name" readonly="1"/>
+                                <group string="Cost Breakdown">
+                                    <field name="purchase_cost" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'purchase_currency_id'}"/>
+                                    <field name="purchase_currency_id" readonly="1"/>
+                                    <field name="purchase_cost_converted" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'company_currency_id'}"/>
+                                </group>
+                                <group string="Unit Costs">
+                                    <div class="o_row">
+                                        <span>Cost per unit (purchase currency): </span>
+                                        <field name="cost_per_unit" widget="monetary" readonly="1"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <span>Monthly cost per unit: </span>
+                                        <field name="cost_per_unit" widget="monetary" readonly="1"/>
+                                    </div>
+                                </group>
                             </group>
-                        </page>  -->
+
+                            <div class="alert alert-warning mt-3" role="status"
+                                 invisible="total_allocated_quantity &lt;= total_purchased_quantity">
+                                <strong>Warning!</strong> You have allocated more licenses than purchased.
+                            </div>
+
+                            <div class="alert alert-info mt-3" role="status"
+                                 invisible="total_purchased_quantity - total_allocated_quantity &lt;= 0">
+                                <strong>Available for allocation</strong>
+                            </div>
+                        </page>
+
+                        <page string="Profitability Analysis">
+                            <group>
+                                <group string="Cost Analysis">
+                                    <field name="purchase_cost" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'purchase_currency_id'}"/>
+                                    <field name="purchase_currency_id" readonly="1"/>
+                                    <field name="monthly_cost" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'company_currency_id'}"/>
+                                    <field name="cost_per_unit" widget="monetary" readonly="1"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                </group>
+                                <group string="Sales Analysis">
+                                    <field name="markup_percent" widget="percentage" readonly="1"/>
+                                    <field name="sales_price_per_unit" widget="monetary" readonly="1"/>
+                                    <field name="profit_per_unit" widget="monetary" readonly="1"
+                                           decoration-success="profit_per_unit > 0"
+                                           decoration-danger="profit_per_unit &lt; 0"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                </group>
+                            </group>
+
+                            <group string="Monthly Business Metrics">
+                                <group>
+                                    <div class="o_row">
+                                        <span>Monthly Revenue: </span>
+                                        <span style="font-weight: bold; color: green;">
+                                            <field name="total_monthly_profit" widget="monetary" readonly="1"/>
+                                        </span>
+                                    </div>
+                                    <div class="o_row">
+                                        <span>Monthly Cost: </span>
+                                        <span style="font-weight: bold;">
+                                            <field name="monthly_cost" widget="monetary" readonly="1"/>
+                                        </span>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div class="o_row">
+                                        <span>Monthly Profit: </span>
+                                        <span style="font-weight: bold; color: green;"
+                                              groups="cost_allocation.group_cost_allocation_financial">
+                                            <field name="total_monthly_profit" widget="monetary" readonly="1"/>
+                                        </span>
+                                    </div>
+                                    <div class="o_row">
+                                        <span>Profit Margin: </span>
+                                        <span style="font-weight: bold;">Good margin</span>
+                                    </div>
+                                </group>
+                            </group>
+
+                            <div class="alert alert-success mt-3" role="status"
+                                 invisible="license_type != 'quantity_based'">
+                                <strong>Quantity-based License Strategy</strong>
+                                <p>You purchased licenses in bulk with markup for resale.</p>
+                                <p class="text-muted">Unallocated licenses represent future profit potential.</p>
+                            </div>
+
+                            <div class="alert alert-info mt-3" role="status"
+                                 invisible="license_type != 'unlimited'">
+                                <strong>Unlimited License Strategy</strong>
+                                <p>You pay monthly for unlimited usage.</p>
+                                <p>The more users you allocate, the lower your cost per user becomes, increasing profitability.</p>
+                                <p>Current efficiency: cost per user across allocated users.</p>
+                            </div>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -97,14 +284,29 @@
                 <field name="driver_category_id"/>
                 <field name="pool_id"/>
                 <field name="unit_id"/>
+                <field name="purchase_currency_id"/>
 
                 <filter name="active" string="Active" domain="[('active','=',True)]"/>
                 <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
 
+                <separator/>
+                <filter name="quantity_based" string="Quantity-based" domain="[('license_type', '=', 'quantity_based')]"/>
+                <filter name="unlimited" string="Unlimited Licenses" domain="[('license_type', '=', 'unlimited')]"/>
+                <filter name="has_unallocated" string="Has Unallocated"
+                        domain="[('license_type', '=', 'quantity_based'), ('total_purchased_quantity', '>', 'total_allocated_quantity')]"/>
+                <filter name="fully_allocated" string="Fully Allocated"
+                        domain="[('license_type', '=', 'quantity_based'), ('total_purchased_quantity', '=', 'total_allocated_quantity')]"/>
+                <filter name="annual_costs" string="Annual Costs" domain="[('purchase_period', '=', 'annual')]"/>
+                <filter name="profitable" string="Profitable" domain="[('profit_per_unit', '>', 0)]"/>
+                <filter name="high_markup" string="High Markup (>30%)" domain="[('markup_percent', '>', 30)]"/>
+
                 <group expand="0" string="Group By">
+                    <filter name="group_license_type" string="License Type" domain="[]" context="{'group_by':'license_type'}"/>
                     <filter name="group_category" string="Category" domain="[]" context="{'group_by':'driver_category_id'}"/>
                     <filter name="group_pool" string="Cost Pool" domain="[]" context="{'group_by':'pool_id'}"/>
                     <filter name="group_unit" string="Unit of Measure" domain="[]" context="{'group_by':'unit_id'}"/>
+                    <filter name="group_currency" string="Purchase Currency" domain="[]" context="{'group_by':'purchase_currency_id'}"/>
+                    <filter name="group_period" string="Purchase Period" domain="[]" context="{'group_by':'purchase_period'}"/>
                 </group>
             </search>
         </field>
@@ -119,7 +321,6 @@
                 <field name="driver_id"/>
                 <field name="client_id"/>
                 <field name="quantity"/>
-                <!-- ИСПРАВЛЕНО: groups только на полях, не на tree -->
                 <field name="allocated_cost" widget="monetary" readonly="1"
                        groups="cost_allocation.group_cost_allocation_financial"/>
             </tree>

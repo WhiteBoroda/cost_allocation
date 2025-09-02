@@ -88,17 +88,6 @@
                                 <field name="active_services_count" readonly="1"/>
                             </group>
                         </page>
-
-                        <!-- Legacy/Deprecated Tab for compatibility -->
-                        <page string="Legacy Settings" groups="base.group_no_one">
-                            <div class="alert alert-warning" role="status">
-                                <strong>Deprecated Fields</strong>
-                                <p>These fields are kept for data migration purposes only.</p>
-                            </div>
-                            <group>
-                                <field name="unit_name" readonly="1"/>
-                            </group>
-                        </page>
                     </notebook>
                 </sheet>
             </form>

@@ -5,31 +5,33 @@
         <field name="name">company.overhead.cost.tree</field>
         <field name="model">company.overhead.cost</field>
         <field name="arch" type="xml">
-            <tree string="Company Overhead Costs"
-                  decoration-info="state=='draft'"
-                  decoration-success="state=='active'"
-                  decoration-muted="state=='expired'">
-                <field name="sequence" widget="handle"/>
-                <field name="code"/>
+            <tree string="Company Overhead Costs">
                 <field name="name"/>
+                <field name="code"/>
                 <field name="cost_type"/>
-                <field name="monthly_amount" widget="monetary"/>
+                <!-- НОВОЕ: показываем период и исходную стоимость -->
+                <field name="cost_period" string="Period"/>
+                <field name="cost_amount" widget="monetary" options="{'currency_field': 'cost_currency_id'}"
+                       optional="show"/>
+                <field name="cost_currency_id" string="Currency" optional="show"/>
+                <field name="monthly_amount" widget="monetary" string="Monthly"/>
                 <field name="pool_id"/>
-                <field name="allocation_amount" widget="monetary"/>
-                <field name="state" widget="badge"
-                       decoration-info="state=='draft'"
-                       decoration-success="state=='active'"
-                       decoration-danger="state=='expired'"/>
-                <field name="currency_id"/>
+                <field name="allocation_amount" widget="monetary" string="Allocated"/>
+                <field name="active" widget="boolean_toggle"/>
+                <!-- Скрытые поля для расчетов -->
+                <field name="cost_currency_id" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
             </tree>
         </field>
     </record>
 
+    <!-- Обновляем form view -->
     <record id="view_company_overhead_cost_form" model="ir.ui.view">
         <field name="name">company.overhead.cost.form</field>
         <field name="model">company.overhead.cost</field>
         <field name="arch" type="xml">
             <form string="Company Overhead Cost">
+                <!-- ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЙ HEADER -->
                 <header>
                     <button name="action_activate" type="object" string="Активувати"
                             class="btn-primary" invisible="state != 'draft'"/>
@@ -37,7 +39,9 @@
                             class="btn-secondary" invisible="state != 'active'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,expired"/>
                 </header>
+
                 <sheet>
+                    <!-- ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЙ BUTTON_BOX -->
                     <div class="oe_button_box" name="button_box">
                         <button name="toggle_active" type="object"
                                 class="oe_stat_button" icon="fa-check-circle">
@@ -54,12 +58,33 @@
                         </h1>
                     </div>
 
-                    <group>
+                    <!-- НОВАЯ СЕКЦИЯ: Original Cost Information -->
+                    <group string="Cost Information">
+                        <group>
+                            <field name="cost_amount" widget="monetary"
+                                   options="{'currency_field': 'cost_currency_id'}"
+                                   placeholder="Enter original cost amount"/>
+                            <field name="cost_currency_id"/>
+                            <field name="cost_period"/>
+                        </group>
+                        <group>
+                            <field name="monthly_amount" widget="monetary" readonly="1"
+                                   help="Computed monthly amount in company currency"/>
+                            <field name="currency_id" invisible="1"/>
+                            <div class="alert alert-info" invisible="cost_period == 'monthly'">
+                                <strong>Automatic calculation:</strong>
+                                <span invisible="cost_period != 'annual'">Annual cost ÷ 12 = monthly amount</span>
+                                <span invisible="cost_period != 'quarterly'">Quarterly cost ÷ 3 = monthly amount</span>
+                                <span invisible="cost_period != 'one_time'">One-time cost ÷ 12 = monthly amount (amortized)</span>
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- СУЩЕСТВУЮЩИЕ ПОЛЯ -->
+                    <group string="Cost Details">
                         <group>
                             <field name="code"/>
                             <field name="cost_type"/>
-                            <field name="monthly_amount" widget="monetary"/>
-                            <field name="currency_id" invisible="1"/>
                         </group>
                         <group>
                             <field name="start_date"/>
@@ -67,6 +92,8 @@
                             <field name="sequence"/>
                         </group>
                     </group>
+
+                    <field name="description" placeholder="Опис витрати (наприклад: FortiNet firewall license for unlimited users)"/>
 
                     <notebook>
                         <page string="Розподіл витрат">
@@ -81,16 +108,79 @@
                                     <field name="allocation_amount" widget="monetary" readonly="1"/>
                                 </group>
                             </group>
+
+                            <!-- Показываем расчеты -->
+                            <group string="Allocation Calculation"
+                                   invisible="allocation_method != 'percentage'">
+                                <div class="o_row">
+                                    <span>Monthly Amount: </span>
+                                    <field name="monthly_amount" widget="monetary" readonly="1"/>
+                                </div>
+                                <div class="o_row">
+                                    <span>Allocation %: </span>
+                                    <field name="allocation_percentage" readonly="1"/>%
+                                </div>
+                                <div class="o_row">
+                                    <span>= Allocated Amount: </span>
+                                    <field name="allocation_amount" widget="monetary" readonly="1"/>
+                                </div>
+                            </group>
+                        </page>
+
+                        <!-- НОВАЯ ВКЛАДКА: Cost Analysis -->
+                        <page string="Cost Analysis">
+                            <group>
+                                <group string="Original Purchase">
+                                    <field name="cost_amount" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'cost_currency_id'}"/>
+                                    <field name="cost_currency_id" readonly="1"/>
+                                    <field name="cost_period" readonly="1"/>
+                                </group>
+                                <group string="Company Currency">
+                                    <field name="monthly_amount" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <!-- Cost Breakdown -->
+                            <group string="Annual Overview">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="alert alert-success" role="status">
+                                            <strong>Monthly Allocation:</strong><br/>
+                                            <field name="allocation_amount" widget="monetary" readonly="1"
+                                                   style="font-size: 18px; font-weight: bold;"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-warning" role="status">
+                                            <strong>Cost Type:</strong><br/>
+                                            <field name="cost_type" readonly="1"
+                                                   style="font-size: 14px; font-weight: bold;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </group>
+
+                            <!-- Examples for different periods -->
+                            <div class="alert alert-info mt-3" role="status"
+                                 invisible="cost_period != 'annual'">
+                                <strong>Annual Cost Example:</strong>
+                                <p>FortiNet license: €12,000/year automatically becomes €1,000/month for cost allocation</p>
+                            </div>
+
+                            <div class="alert alert-success mt-3" role="status"
+                                 invisible="cost_period != 'quarterly'">
+                                <strong>Quarterly Cost Example:</strong>
+                                <p>Insurance payment: €3,000/quarter automatically becomes €1,000/month for cost allocation</p>
+                            </div>
                         </page>
 
                         <page string="Додаткова інформація">
                             <group>
-                                <group>
-                                    <field name="supplier_id"/>
-                                    <field name="contract_reference"/>
-                                </group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
                             </group>
-                            <field name="description" placeholder="Додаткові деталі щодо цієї витрати..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -98,31 +188,33 @@
         </field>
     </record>
 
+    <!-- Search view -->
     <record id="view_company_overhead_cost_search" model="ir.ui.view">
         <field name="name">company.overhead.cost.search</field>
         <field name="model">company.overhead.cost</field>
         <field name="arch" type="xml">
-            <search string="Search Overhead Costs">
+            <search string="Company Overhead Costs">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="cost_type"/>
-                <field name="supplier_id"/>
+                <field name="cost_currency_id"/>
 
+                <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+
+                <!-- НОВЫЕ ФИЛЬТРЫ -->
                 <separator/>
-                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="monthly" string="Monthly" domain="[('cost_period', '=', 'monthly')]"/>
+                <filter name="annual" string="Annual" domain="[('cost_period', '=', 'annual')]"/>
+                <filter name="quarterly" string="Quarterly" domain="[('cost_period', '=', 'quarterly')]"/>
+                <filter name="licenses" string="Licenses" domain="[('cost_type', '=', 'licenses')]"/>
+                <filter name="software" string="Software" domain="[('cost_type', '=', 'software')]"/>
 
-                <separator/>
-                <filter string="Rent" name="rent" domain="[('cost_type', '=', 'rent')]"/>
-                <filter string="Software" name="software" domain="[('cost_type', '=', 'software')]"/>
-                <filter string="Transport" name="transport" domain="[('cost_type', '=', 'transport')]"/>
-
-                <group expand="1" string="Group By">
-                    <filter string="Cost Type" name="group_cost_type" context="{'group_by': 'cost_type'}"/>
-                    <filter string="Cost Pool" name="group_pool" context="{'group_by': 'pool_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_cost_type" string="Cost Type" context="{'group_by': 'cost_type'}"/>
+                    <filter name="group_period" string="Period" context="{'group_by': 'cost_period'}"/>
+                    <filter name="group_currency" string="Currency" context="{'group_by': 'cost_currency_id'}"/>
+                    <filter name="group_pool" string="Pool" context="{'group_by': 'pool_id'}"/>
                 </group>
             </search>
         </field>

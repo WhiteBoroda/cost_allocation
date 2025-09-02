@@ -31,24 +31,26 @@
         <field name="arch" type="xml">
             <form string="Service Cost Calculation">
                 <header>
-                    <!-- ИСПРАВЛЕНО: добавлены атрибуты для обхода валидации -->
                     <button name="action_calculate_costs" type="object" string="Recalculate Costs"
                             class="btn-primary" icon="fa-calculator"
                             save="false" close="false"/>
                 </header>
                 <sheet>
+                    <!-- ИСПРАВЛЕНО: убран service_catalog_id из заголовка, перенесен в основные поля -->
                     <div class="oe_title">
                         <h1>
-                            <field name="service_catalog_id" readonly="1"/>
+                            <span>Service Cost Calculation</span>
                         </h1>
                         <div class="o_row">
-                            <field name="calculation_date"/>
+                            <field name="calculation_date" string="Дата розрахунку"/>
                         </div>
                     </div>
 
                     <group>
                         <group string="Service Information">
-                            <!-- ИСПРАВЛЕНО: убрал required="1" -->
+                            <!-- ИСПРАВЛЕНО: сделал поле service_catalog_id видимым и редактируемым -->
+                            <field name="service_catalog_id" options="{'no_create': True}"
+                                   placeholder="Выберите сервис из каталога"/>
                             <field name="client_id"/>
                             <field name="service_type_id" options="{'no_create': True}"/>
                             <field name="base_workload_factor" readonly="1"
@@ -83,7 +85,8 @@
                                    invisible="calculation_method != 'unit_based'"/>
                             <field name="actual_units_required" readonly="1"
                                    invisible="calculation_method != 'unit_based'"
-                                   help="Effective units after applying workload factor. Formula: Base Units × Effective Workload Factor"/>
+                                   help="Effective units after applying workload factor.
+Formula: Base Units × Effective Workload Factor"/>
 
                             <!-- Complexity-based fields -->
                             <field name="complexity_multiplier"
@@ -101,15 +104,16 @@
                             <field name="overhead_cost_per_unit" widget="monetary" readonly="1"/>
                         </group>
                     </group>
-<!--
+
                     <div class="alert alert-info mt-3" role="status">
                         <h5><i class="fa fa-info-circle" title="Information"/> ABC Costing with Workload Factor</h5>
+                        <p><strong>Service Catalog:</strong> Выберите конкретный сервис из каталога для расчета стоимости</p>
                         <p><strong>Workload Factor:</strong> Multiplies base costs and resource requirements</p>
                         <p><strong>Direct Costs:</strong> Labor costs × workload factor for complexity adjustment</p>
                         <p><strong>Indirect Costs:</strong> Shared resources allocated via cost drivers</p>
                         <p><strong>Admin Costs:</strong> Administrative overhead (typically 15% of direct+indirect)</p>
                         <p><strong>Overhead Costs:</strong> Company expenses (rent, utilities, software, etc.)</p>
-                    </div> -->
+                    </div>
                 </sheet>
             </form>
         </field>
