@@ -142,23 +142,12 @@
                             </group>
 
                             <!-- Cost Breakdown -->
-                            <group string="Annual Overview">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="alert alert-success" role="status">
-                                            <strong>Monthly Allocation:</strong><br/>
-                                            <field name="allocation_amount" widget="monetary" readonly="1"
-                                                   style="font-size: 18px; font-weight: bold;"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="alert alert-warning" role="status">
-                                            <strong>Cost Type:</strong><br/>
-                                            <field name="cost_type" readonly="1"
-                                                   style="font-size: 14px; font-weight: bold;"/>
-                                        </div>
-                                    </div>
-                                </div>
+                            <group string="Cost Summary">
+                                <group>
+                                    <field name="allocation_amount" widget="monetary" readonly="1"
+                                           string="Monthly Allocation"/>
+                                    <field name="cost_type" readonly="1"/>
+                                </group>
                             </group>
 
                             <!-- Examples for different periods -->

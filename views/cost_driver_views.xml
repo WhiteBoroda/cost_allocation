@@ -11,19 +11,20 @@
                 <field name="driver_category_id"/>
                 <field name="unit_id"/>
                 <field name="pool_id"/>
-                <field name="license_type" string="Type"/>
+                <field name="is_license_unit" column_invisible="1"/>  <!-- Скрытое поле для условий -->
+                <field name="license_type" string="Lic.Type"
+                       optional="hide" invisible="not is_license_unit"/>
                 <field name="total_purchased_quantity" string="Purchased"
-                       invisible="license_type == 'unlimited'"/>
+                       optional="hide"
+                       invisible="not is_license_unit or license_type == 'unlimited'"/>
                 <field name="total_allocated_quantity" string="Allocated"/>
-                <field name="purchase_cost" widget="monetary" options="{'currency_field': 'purchase_currency_id'}"/>
+                <field name="purchase_cost" widget="monetary"
+                       options="{'currency_field': 'purchase_currency_id'}"/>
                 <field name="purchase_currency_id" column_invisible="1"/>
                 <field name="cost_per_unit" widget="monetary" string="Cost/Unit"
                        groups="cost_allocation.group_cost_allocation_financial"/>
-                <field name="sales_price_per_unit" widget="monetary" string="Sales/Unit"
-                       decoration-success="profit_per_unit > 0"/>
+                <field name="sales_price_per_unit" widget="monetary" string="Sales/Unit"/>
                 <field name="profit_per_unit" widget="monetary" string="Profit/Unit"
-                       decoration-success="profit_per_unit > 0"
-                       decoration-danger="profit_per_unit &lt; 0"
                        groups="cost_allocation.group_cost_allocation_financial"/>
                 <field name="active" widget="boolean_toggle"/>
             </tree>
@@ -45,9 +46,12 @@
                     <!-- Purchase Information -->
                     <group string="Purchase Information">
                         <group>
-                            <field name="license_type" widget="radio"/>
+                            <field name="is_license_unit" invisible="1"/>  <!-- Скрытое поле -->
+                            <field name="license_type" widget="radio"
+                                   invisible="not is_license_unit"
+                                   help="Available only for License units"/>
                             <field name="total_purchased_quantity"
-                                   invisible="license_type == 'unlimited'"
+                                   invisible="not is_license_unit or license_type == 'unlimited'"
                                    help="Total quantity purchased (e.g., 500 Google WorkSpace licenses)"/>
                             <field name="purchase_cost" widget="monetary"
                                    options="{'currency_field': 'purchase_currency_id'}"/>
@@ -66,7 +70,7 @@
                     <!-- Sales Information -->
                     <group string="Sales Information">
                         <group>
-                            <field name="markup_percent" widget="percentage"/>
+                            <field name="markup_percent"/>
                             <field name="cost_per_unit" widget="monetary" readonly="1"
                                    groups="cost_allocation.group_cost_allocation_financial"
                                    help="Internal cost per unit"/>
@@ -102,7 +106,7 @@
                         <group>
                             <field name="total_allocated_quantity" string="Allocated to Clients" readonly="1"/>
                             <div class="o_row" name="unallocated_info"
-                                 invisible="license_type == 'unlimited'">
+                                 invisible="not is_license_unit or license_type == 'unlimited'">
                                 <span>Unallocated: </span>
                                 <span class="badge badge-warning"
                                       invisible="total_purchased_quantity - total_allocated_quantity &lt;= 0">
@@ -112,13 +116,13 @@
                                 </span>
                             </div>
                             <div class="o_row" name="unlimited_info"
-                                 invisible="license_type != 'unlimited'">
+                                 invisible="not is_license_unit or license_type != 'unlimited'">
                                 <span class="badge badge-success">Unlimited License - No allocation limit</span>
                             </div>
                         </group>
                         <group>
                             <div class="o_row" name="allocation_percentage"
-                                 invisible="total_purchased_quantity &lt;= 0 or license_type == 'unlimited'">
+                                 invisible="not is_license_unit or total_purchased_quantity &lt;= 0 or license_type == 'unlimited'">
                                 <span>Allocation: </span>
                                 <div class="progress" style="height: 20px; width: 200px;">
                                     <div class="progress-bar bg-info" role="progressbar">
@@ -213,7 +217,7 @@
                                            groups="cost_allocation.group_cost_allocation_financial"/>
                                 </group>
                                 <group string="Sales Analysis">
-                                    <field name="markup_percent" widget="percentage" readonly="1"/>
+                                    <field name="markup_percent" readonly="1"/>
                                     <field name="sales_price_per_unit" widget="monetary" readonly="1"/>
                                     <field name="profit_per_unit" widget="monetary" readonly="1"
                                            decoration-success="profit_per_unit > 0"

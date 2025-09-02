@@ -280,33 +280,55 @@ class ClientService(models.Model):
             service.status = 'maintenance'
 
 
-
 class EmployeeWorkload(models.Model):
     _name = 'employee.workload'
-    _description = 'Employee Workload Tracking'
+    _description = 'Employee Workload Analysis'
+    _rec_name = 'display_name'
 
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True)
     period_date = fields.Date(string='Period', required=True, default=fields.Date.today)
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
 
-    # Services assigned
-    active_services_count = fields.Integer(string='Active Services', compute='_compute_workload')
-    total_workload_factor = fields.Float(string='Total Workload Factor', compute='_compute_workload',
-                                         help='Sum of effective workload factors (includes client support levels)')
+    # НОВЫЕ ПОЛЯ: из пулов затрат
+    pool_allocation_ids = fields.One2many('employee.pool.workload', 'workload_id',
+                                          string='Pool Allocations')
+    total_pool_percentage = fields.Float(string='Total Pool %',
+                                         compute='_compute_pool_totals', store=True)
 
-    # Categories breakdown
-    workload_by_category = fields.Text(string='Workload by Category', compute='_compute_workload')
+    # СУЩЕСТВУЮЩИЕ ПОЛЯ: из сервисов клиентов
+    active_services_count = fields.Integer(string='Active Services',
+                                           compute='_compute_workload')
+    total_workload_factor = fields.Float(string='Total Workload Factor',
+                                         compute='_compute_workload')
+    workload_by_category = fields.Text(string='Workload by Category',
+                                       compute='_compute_workload')
+
+    # Target workload
+    target_workload = fields.Float(string='Target Workload', default=100.0,
+                                   help='Target workload factor for this employee')
 
     # Status
     is_overloaded = fields.Boolean(string='Overloaded', compute='_compute_workload',
                                    help='Employee has more than optimal workload')
     overload_percentage = fields.Float(string='Overload %', compute='_compute_workload')
 
-    # Target workload (configurable per employee)
-    target_workload = fields.Float(string='Target Workload', default=100.0,
-                                   help='Target workload factor for this employee')
+    @api.depends('employee_id', 'period_date')
+    def _compute_display_name(self):
+        for record in self:
+            if record.employee_id and record.period_date:
+                record.display_name = f"{record.employee_id.name} - {record.period_date.strftime('%Y-%m')}"
+            else:
+                record.display_name = "New Workload"
+
+    @api.depends('pool_allocation_ids.percentage')
+    def _compute_pool_totals(self):
+        """Подсчитать общий процент из пулов"""
+        for record in self:
+            record.total_pool_percentage = sum(record.pool_allocation_ids.mapped('percentage'))
 
     @api.depends('employee_id', 'period_date')
     def _compute_workload(self):
+        """СУЩЕСТВУЮЩИЙ метод - оставляем для совместимости"""
         for workload in self:
             # Get active services for this employee
             services = self.env['client.service'].search([
@@ -316,7 +338,7 @@ class EmployeeWorkload(models.Model):
 
             workload.active_services_count = len(services)
 
-            # Calculate total workload factor using EFFECTIVE workload (includes client support level)
+            # Calculate total workload factor
             total_factor = sum(services.mapped('effective_workload_factor'))
             workload.total_workload_factor = total_factor
 
@@ -328,7 +350,7 @@ class EmployeeWorkload(models.Model):
                 workload.overload_percentage = 0
                 workload.is_overloaded = False
 
-            # Workload by category (using effective factors)
+            # Workload by category
             category_workload = {}
             for service in services:
                 category = service.category_id.name if service.category_id else 'Uncategorized'
@@ -339,23 +361,152 @@ class EmployeeWorkload(models.Model):
             workload.workload_by_category = workload_text
 
     @api.model
-    def update_all_workloads(self):
-        """Update workload for all employees - called by cron"""
-        employees = self.env['hr.employee'].search([])
+    def update_workload_from_pools(self):
+        """НОВЫЙ МЕТОД: собрать данные из пулов затрат"""
+        # Получаем все активные распределения сотрудников по пулам
+        pool_allocations = self.env['cost.pool.allocation'].search([])
+
+        # Группируем по сотрудникам
+        employees_data = {}
+        for allocation in pool_allocations:
+            emp_id = allocation.employee_cost_id.employee_id.id
+            if emp_id not in employees_data:
+                employees_data[emp_id] = []
+            employees_data[emp_id].append(allocation)
+
+        # Создаем/обновляем записи Employee Workload
         today = fields.Date.today()
-
-        for employee in employees:
-            # Check if workload record exists for this month
-            existing = self.search([
-                ('employee_id', '=', employee.id),
+        for emp_id, allocations in employees_data.items():
+            # Найти или создать workload для этого сотрудника
+            workload = self.search([
+                ('employee_id', '=', emp_id),
                 ('period_date', '=', today)
-            ])
+            ], limit=1)
 
-            if not existing:
-                self.create({
-                    'employee_id': employee.id,
+            if not workload:
+                workload = self.create({
+                    'employee_id': emp_id,
                     'period_date': today
                 })
-            else:
-                # Force recompute
-                existing._compute_workload()
+
+            # Удалить старые pool allocations
+            workload.pool_allocation_ids.unlink()
+
+            # Создать новые pool allocations
+            for allocation in allocations:
+                self.env['employee.pool.workload'].create({
+                    'workload_id': workload.id,
+                    'pool_id': allocation.pool_id.id,
+                    'percentage': allocation.percentage,
+                    'monthly_cost': allocation.monthly_cost
+                })
+
+    @api.model
+    def create(self, vals):
+        """При создании записи - автоматически заполнить из пулов"""
+        result = super().create(vals)
+        if result.employee_id:
+            result._sync_pool_allocations()
+        return result
+
+    def _sync_pool_allocations(self):
+        """Синхронизировать распределения из пулов затрат"""
+        self.ensure_one()
+
+        # Найти все распределения этого сотрудника по пулам
+        pool_allocations = self.env['cost.pool.allocation'].search([
+            ('employee_cost_id.employee_id', '=', self.employee_id.id)
+        ])
+
+        # Удалить старые
+        self.pool_allocation_ids.unlink()
+
+        # Создать новые
+        for allocation in pool_allocations:
+            self.env['employee.pool.workload'].create({
+                'workload_id': self.id,
+                'pool_id': allocation.pool_id.id,
+                'percentage': allocation.percentage,
+                'monthly_cost': allocation.monthly_cost
+            })
+
+    def action_update_from_pools(self):
+        """Кнопка для ручного обновления из пулов"""
+        self.ensure_one()
+        self._sync_pool_allocations()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Updated!',
+                'message': f'Workload data updated for {self.employee_id.name}',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+# НОВАЯ МОДЕЛЬ: для хранения распределений по пулам в Employee Workload
+class EmployeePoolWorkload(models.Model):
+    _name = 'employee.pool.workload'
+    _description = 'Employee Pool Workload Detail'
+
+    workload_id = fields.Many2one('employee.workload', string='Workload',
+                                  required=True, ondelete='cascade')
+    pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True)
+    percentage = fields.Float(string='Allocation %', required=True)
+    monthly_cost = fields.Float(string='Monthly Cost')
+
+    # Computed поля для отображения
+    pool_type = fields.Selection(related='pool_id.pool_type', store=True)
+    pool_name = fields.Char(related='pool_id.name', store=True)
+
+
+# ДОБАВИТЬ в models/cost_pool.py - триггер для обновления Workload при изменении распределений
+class CostPoolAllocation(models.Model):
+    _inherit = 'cost.pool.allocation'
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """При создании - обновить Employee Workload"""
+        result = super().create(vals_list)
+        self._update_employee_workload()
+        return result
+
+    def write(self, vals):
+        """При изменении - обновить Employee Workload"""
+        result = super().write(vals)
+        if any(key in vals for key in ['employee_cost_id', 'percentage', 'monthly_cost']):
+            self._update_employee_workload()
+        return result
+
+    def unlink(self):
+        """При удалении - обновить Employee Workload"""
+        employees = self.mapped('employee_cost_id.employee_id')
+        result = super().unlink()
+        # Обновить workload для затронутых сотрудников
+        for emp in employees:
+            workload = self.env['employee.workload'].search([
+                ('employee_id', '=', emp.id),
+                ('period_date', '=', fields.Date.today())
+            ], limit=1)
+            if workload:
+                workload._sync_pool_allocations()
+        return result
+
+    def _update_employee_workload(self):
+        """Обновить Employee Workload для затронутых сотрудников"""
+        employees = self.mapped('employee_cost_id.employee_id')
+        for emp in employees:
+            # Найти или создать workload
+            workload = self.env['employee.workload'].search([
+                ('employee_id', '=', emp.id),
+                ('period_date', '=', fields.Date.today())
+            ], limit=1)
+
+            if not workload:
+                workload = self.env['employee.workload'].create({
+                    'employee_id': emp.id,
+                    'period_date': fields.Date.today()
+                })
+
+            workload._sync_pool_allocations()

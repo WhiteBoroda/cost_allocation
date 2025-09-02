@@ -84,7 +84,10 @@
                                     <field name="code"/>
                                     <field name="driver_category_id"/>
                                     <field name="unit_id"/>
-                                    <field name="total_quantity"/>
+                                    <field name="license_type" string="Type"/>
+                                    <field name="total_purchased_quantity" string="Purchased"
+                                           invisible="license_type == 'unlimited'"/>
+                                    <field name="total_allocated_quantity" string="Allocated"/>
                                     <field name="cost_per_unit" widget="monetary"
                                            groups="cost_allocation.group_cost_allocation_financial"/>
                                 </tree>
@@ -106,7 +109,10 @@
                 <field name="driver_category_id"/>
                 <field name="unit_id"/>
                 <field name="pool_id"/>
-                <field name="total_quantity"/>
+                <field name="license_type" string="Type"/>
+                <field name="total_purchased_quantity" string="Purchased"
+                       invisible="license_type == 'unlimited'"/>
+                <field name="total_allocated_quantity" string="Allocated"/>
                 <field name="cost_per_unit" widget="monetary"
                        groups="cost_allocation.group_cost_allocation_financial"/>
             </tree>

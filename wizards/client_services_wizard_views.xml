@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Client Services Wizard Form View -->
+    <record id="view_client_services_wizard_form" model="ir.ui.view">
+        <field name="name">client.services.wizard.form</field>
+        <field name="model">client.services.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Client Services Summary">
+                <header>
+                    <button name="action_load_services" string="Load Services"
+                            type="object" class="btn-primary"
+                            help="Load all services for selected client"/>
+                    <button name="action_create_subscription" string="Create Subscription"
+                            type="object" class="btn-secondary"
+                            invisible="not service_line_ids"
+                            help="Create service subscription based on loaded services"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Client Services Summary</h1>
+                    </div>
+
+                    <!-- Parameters -->
+                    <group string="Parameters">
+                        <group>
+                            <field name="client_id" options="{'no_create': True}"/>
+                            <field name="period_date"/>
+                            <field name="include_inactive"/>
+                        </group>
+                        <group>
+                            <field name="pool_ids" widget="many2many_tags"
+                                   placeholder="All pools"/>
+                            <field name="service_category_ids" widget="many2many_tags"
+                                   placeholder="All categories"/>
+                        </group>
+                    </group>
+
+                    <!-- Results Summary -->
+                    <group string="Summary" invisible="not service_line_ids">
+                        <group>
+                            <field name="total_quantity" readonly="1"/>
+                            <field name="total_cost" widget="monetary" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_revenue" widget="monetary" readonly="1"/>
+                            <field name="total_profit" widget="monetary" readonly="1"
+                                   decoration-success="total_profit > 0"
+                                   decoration-danger="total_profit &lt; 0"/>
+                        </group>
+                    </group>
+
+                    <!-- Services List -->
+                    <notebook invisible="not service_line_ids">
+                        <page string="Services Detail">
+                            <field name="service_line_ids">
+                                <tree>
+                                    <field name="driver_name"/>
+                                    <field name="category_name"/>
+                                    <field name="pool_name"/>
+                                    <field name="unit_name"/>
+                                    <field name="quantity" sum="Total Qty"/>
+                                    <field name="unit_cost" widget="monetary"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="total_cost" widget="monetary" sum="Total Cost"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                    <field name="total_revenue" widget="monetary" sum="Total Revenue"/>
+                                    <field name="profit" widget="monetary" sum="Total Profit"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                    <field name="is_license" invisible="1"/>
+                                    <field name="license_type" string="Lic.Type"
+                                           invisible="not is_license"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Services by Category">
+                            <field name="service_line_ids">
+                                <tree>
+                                    <field name="category_name"/>
+                                    <field name="driver_name"/>
+                                    <field name="quantity" sum="Total"/>
+                                    <field name="total_revenue" widget="monetary" sum="Revenue"/>
+                                    <field name="profit" widget="monetary" sum="Profit"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="License Services">
+                            <field name="service_line_ids" domain="[('is_license', '=', True)]">
+                                <tree>
+                                    <field name="driver_name"/>
+                                    <field name="license_type"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="total_revenue" widget="monetary"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <!-- Instructions -->
+                    <div class="alert alert-info" invisible="service_line_ids">
+                        <h4><i class="fa fa-info-circle"/> How to use</h4>
+                        <ol>
+                            <li>Select a <strong>Client</strong></li>
+                            <li>Choose <strong>Period</strong> and optional filters</li>
+                            <li>Click <strong>Load Services</strong> to collect all services from cost drivers</li>
+                            <li>Review the complete services list</li>
+                            <li>Optionally create a <strong>Subscription</strong> based on these services</li>
+                        </ol>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for the wizard -->
+    <record id="action_client_services_wizard" model="ir.actions.act_window">
+        <field name="name">Client Services Summary</field>
+        <field name="res_model">client.services.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Add to menu -->
+    <menuitem id="menu_client_services_wizard"
+              name="Client Services Summary"
+              parent="menu_cost_allocation_operations"
+              action="action_client_services_wizard"
+              sequence="15"
+              groups="cost_allocation.group_cost_allocation_manager"/>
+
+    <!-- Shortcut from partner form -->
+    <record id="action_client_services_from_partner" model="ir.actions.act_window">
+        <field name="name">Services Summary</field>
+        <field name="res_model">client.services.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_client_id': active_id}</field>
+    </record>
+
+    <!-- Add button to partner form -->
+    <record id="view_partner_form_inherit_services_button" model="ir.ui.view">
+        <field name="name">res.partner.form.services.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(action_client_services_from_partner)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-list-alt"
+                        invisible="not is_company"
+                        groups="cost_allocation.group_cost_allocation_user">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Services</span>
+                        <span class="o_stat_text">Summary</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

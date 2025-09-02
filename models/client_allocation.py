@@ -17,10 +17,13 @@ class ClientCostAllocation(models.Model):
     period_date = fields.Date(string='Period', required=True, default=fields.Date.today, tracking=True)
 
     # Cost breakdown
-    direct_cost = fields.Float(string='Direct Costs', tracking=True)
-    indirect_cost = fields.Float(string='Indirect Costs', compute='_compute_indirect_costs', store=True)
-    admin_cost = fields.Float(string='Administrative Costs', compute='_compute_admin_costs', store=True)
-    total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost', store=True)
+    direct_cost = fields.Monetary(string='Direct Costs', tracking=True, currency_field='currency_id')
+    indirect_cost = fields.Monetary(string='Indirect Costs', compute='_compute_indirect_costs', store=True,
+                                    currency_field='currency_id')
+    admin_cost = fields.Monetary(string='Administrative Costs', compute='_compute_admin_costs', store=True,
+                                 currency_field='currency_id')
+    total_cost = fields.Monetary(string='Total Cost', compute='_compute_total_cost', store=True,
+                                 currency_field='currency_id')
 
     # Status
     state = fields.Selection([
@@ -185,12 +188,13 @@ class ClientIndirectCost(models.Model):
     allocation_id = fields.Many2one('client.cost.allocation', string='Allocation',
                                     required=True, ondelete='cascade')
     client_id = fields.Many2one(related='allocation_id.client_id', store=True)
+    currency_id = fields.Many2one('res.currency', related='allocation_id.currency_id', store=True)
 
     driver_id = fields.Many2one('cost.driver', string='Cost Driver', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
-    cost_per_unit = fields.Float(string='Cost per Unit')
-    allocated_cost = fields.Float(string='Allocated Cost', compute='_compute_allocated_cost', store=True)
-
+    cost_per_unit = fields.Monetary(string='Cost per Unit', currency_field='currency_id')
+    allocated_cost = fields.Monetary(string='Allocated Cost', compute='_compute_allocated_cost', store=True,
+                                     currency_field='currency_id')
     @api.depends('quantity', 'cost_per_unit')
     def _compute_allocated_cost(self):
         for record in self:

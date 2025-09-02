@@ -232,5 +232,15 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="action_update_all_workloads" model="ir.actions.server">
+        <field name="name">Update All Employee Workloads</field>
+        <field name="model_id" ref="model_employee_workload"/>
+        <field name="state">code</field>
+        <field name="code">
+model.update_workload_from_pools()
+env.user.notify_info(message="Employee workloads updated from cost pools!")
+        </field>
+</record>
+
 
 </odoo>

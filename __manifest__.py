@@ -1,6 +1,6 @@
 {
     'name': 'Розподіл витрат / Service Cost Allocation',
-    'version': '17.0.1.4.5',
+    'version': '17.0.1.5.1',
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -71,6 +71,7 @@
         'wizards/setup_wizard_views.xml',
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
+        'wizards/client_services_wizard_views.xml',
         'views/cost_driver_category_views.xml',
         'views/service_views.xml',
         'views/holding_structure_views.xml',

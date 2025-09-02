@@ -22,15 +22,20 @@ class CostDriver(models.Model):
     pool_id = fields.Many2one('cost.pool', string='Cost Pool', required=True)
 
     # ==================== НОВЫЕ ПОЛЯ ПОКУПКИ ====================
+    is_license_unit = fields.Boolean(
+        string='Is License Unit',
+        compute='_compute_is_license_unit',
+        store=True
+    )
 
     # Тип лицензирования
     license_type = fields.Selection([
         ('quantity_based', 'Quantity Based'),
         ('unlimited', 'Unlimited License')
-    ], string='License Type', default='quantity_based', required=True,
+    ], string='License Type', default='quantity_based',
         help='Quantity Based: specific number purchased; Unlimited: fixed cost for unlimited usage')
 
-    # Покупка
+    # Покупка - ТОЛЬКО для лицензий
     total_purchased_quantity = fields.Float(
         string='Total Purchased Quantity',
         default=0.0,
@@ -117,9 +122,8 @@ class CostDriver(models.Model):
         help='Total profit from allocated units'
     )
 
-    # ==================== СУЩЕСТВУЮЩИЕ ПОЛЯ ====================
 
-    # DEPRECATED: оставляю для совместимости
+
     unit_of_measure = fields.Selection([
         ('user', 'Users'),
         ('workstation', 'Workstations'),
@@ -132,7 +136,13 @@ class CostDriver(models.Model):
     ], string='Legacy Unit of Measure', help='Deprecated: Use Unit of Measure field instead')
 
     # Cost calculation - ИСПРАВЛЕНО
-    cost_per_unit = fields.Float(string='Cost per Unit', compute='_compute_cost_per_unit', store=True)
+    cost_per_unit = fields.Monetary(
+        string='Cost per Unit',
+        compute='_compute_cost_per_unit',
+        store=True,
+        currency_field='currency_id',
+        help='Internal cost per unit'
+    )
     total_allocated_quantity = fields.Float(string='Allocated Quantity', compute='_compute_totals', store=True,
                                             help='Total quantity allocated to clients')
 
@@ -156,6 +166,59 @@ class CostDriver(models.Model):
                                  default=lambda self: self.env.company)
 
     # ==================== COMPUTED METHODS ====================
+    @api.depends('unit_id')
+    def _compute_is_license_unit(self):
+        """Определяем является ли единица измерения лицензией"""
+        for driver in self:
+            # Ищем единицу измерения "Лицензия"
+            license_unit = self.env.ref('cost_allocation.unit_license', raise_if_not_found=False)
+            driver.is_license_unit = license_unit and driver.unit_id == license_unit
+
+    @api.depends('monthly_cost', 'total_purchased_quantity', 'is_license_unit', 'license_type',
+                 'total_allocated_quantity')
+    def _compute_cost_per_unit(self):
+        """Универсальный расчет стоимости за единицу"""
+        for driver in self:
+            if driver.is_license_unit:
+                # Логика для лицензий
+                if driver.license_type == 'unlimited':
+                    if driver.total_allocated_quantity > 0:
+                        driver.cost_per_unit = driver.monthly_cost / driver.total_allocated_quantity
+                    else:
+                        driver.cost_per_unit = 0.0
+                else:  # quantity_based
+                    if driver.total_purchased_quantity > 0:
+                        driver.cost_per_unit = driver.monthly_cost / driver.total_purchased_quantity
+                    else:
+                        driver.cost_per_unit = 0.0
+            else:
+                # Логика для обычных единиц (час, пользователь, сервер и т.д.)
+                if driver.total_allocated_quantity > 0:
+                    driver.cost_per_unit = driver.monthly_cost / driver.total_allocated_quantity
+                else:
+                    driver.cost_per_unit = 0.0
+
+    @api.constrains('total_purchased_quantity', 'total_allocated_quantity', 'license_type', 'is_license_unit')
+    def _check_quantities(self):
+        """Проверки только для лицензий"""
+        for driver in self:
+            if driver.is_license_unit and driver.license_type == 'quantity_based':
+                if (driver.total_purchased_quantity > 0 and
+                        driver.total_allocated_quantity > driver.total_purchased_quantity):
+                    raise ValidationError(
+                        f'Allocated quantity ({driver.total_allocated_quantity}) cannot exceed '
+                        f'purchased quantity ({driver.total_purchased_quantity}) for quantity-based licenses'
+                    )
+
+    @api.constrains('total_purchased_quantity', 'license_type', 'is_license_unit')
+    def _check_unlimited_license(self):
+        """Для unlimited лицензий purchased_quantity должно быть 0"""
+        for driver in self:
+            if (driver.is_license_unit and driver.license_type == 'unlimited' and
+                    driver.total_purchased_quantity > 0):
+                raise ValidationError(
+                    'For unlimited licenses, Total Purchased Quantity should be 0 or empty'
+                )
 
     @api.depends('purchase_cost', 'purchase_currency_id', 'company_currency_id')
     def _compute_purchase_cost_converted(self):

@@ -8,11 +8,29 @@
             <tree string="Employee Workload" decoration-danger="is_overloaded==True">
                 <field name="employee_id"/>
                 <field name="period_date"/>
+                <!-- НОВЫЕ ПОЛЯ из пулов -->
+                <field name="total_pool_percentage" string="Pool %" widget="float"/>
+                <!-- СУЩЕСТВУЮЩИЕ ПОЛЯ из сервисов -->
                 <field name="active_services_count"/>
                 <field name="total_workload_factor"/>
                 <field name="target_workload"/>
-                <field name="overload_percentage" widget="percentage"/>
+                <field name="overload_percentage"/>
                 <field name="is_overloaded" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_employee_pool_workload_tree" model="ir.ui.view">
+        <field name="name">employee.pool.workload.tree</field>
+        <field name="model">employee.pool.workload</field>
+        <field name="arch" type="xml">
+            <tree string="Employee Pool Workload">
+                <field name="workload_id"/>
+                <field name="pool_name"/>
+                <field name="pool_type" widget="badge"/>
+                <field name="percentage" string="%" widget="float"/>
+                <field name="monthly_cost" widget="monetary"
+                       groups="cost_allocation.group_cost_allocation_financial"/>
             </tree>
         </field>
     </record>
@@ -23,6 +41,13 @@
         <field name="model">employee.workload</field>
         <field name="arch" type="xml">
             <form string="Employee Workload">
+                <header>
+                    <!-- КНОПКА для ручной синхронизации -->
+                    <button name="action_update_from_pools" type="object"
+                            string="Sync from Cost Pools"
+                            class="btn-primary"
+                            help="Update workload data from cost pool allocations"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -35,17 +60,45 @@
                         </group>
                     </group>
 
-                    <group string="Workload Statistics">
-                        <group>
-                            <field name="active_services_count"/>
-                            <field name="total_workload_factor"/>
-                        </group>
-                        <group>
-                            <field name="overload_percentage" widget="percentage"/>
-                        </group>
-                    </group>
+                    <!-- НОВАЯ ВКЛАДКА: Cost Pool Allocations -->
+                    <notebook>
+                        <page string="Cost Pool Allocations">
+                            <div class="alert alert-info" role="status">
+                                <h4><i class="fa fa-info-circle"/> Cost Pool Distribution</h4>
+                                <p>This data is automatically synchronized from Cost Pool employee allocations.</p>
+                            </div>
 
-                    <field name="workload_by_category" string="Category Breakdown"/>
+                            <group>
+                                <field name="total_pool_percentage" widget="float"
+                                       string="Total Pool Allocation %" readonly="1"/>
+                            </group>
+
+                            <field name="pool_allocation_ids" readonly="1">
+                                <tree>
+                                    <field name="pool_name"/>
+                                    <field name="pool_type" widget="badge"/>
+                                    <field name="percentage" string="%" widget="float"/>
+                                    <field name="monthly_cost" widget="monetary"
+                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <!-- СУЩЕСТВУЮЩИЕ ВКЛАДКИ -->
+                        <page string="Service Workload">
+                            <group string="Service-based Workload (Legacy)">
+                                <group>
+                                    <field name="active_services_count"/>
+                                    <field name="total_workload_factor"/>
+                                </group>
+                                <group>
+                                    <field name="overload_percentage"/>
+                                </group>
+                            </group>
+
+                            <field name="workload_by_category" string="Category Breakdown" readonly="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
