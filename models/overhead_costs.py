@@ -137,7 +137,6 @@ class CompanyOverheadCost(models.Model):
 
     @api.depends('monthly_amount', 'allocation_method', 'allocation_percentage')
     def _compute_allocation_amount(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: без изменений"""
         for cost in self:
             if cost.allocation_method == 'full':
                 cost.allocation_amount = cost.monthly_amount
@@ -146,15 +145,13 @@ class CompanyOverheadCost(models.Model):
             else:  # fixed
                 cost.allocation_amount = cost.allocation_amount
 
-    # ==================== СУЩЕСТВУЮЩИЕ МЕТОДЫ ====================
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get('code'):
                 vals['code'] = self._generate_code('company.overhead.cost.code')
 
-            # НОВОЕ: устанавливаем defaults для новых полей
+            # устанавливаем defaults для новых полей
             if not vals.get('cost_currency_id'):
                 vals['cost_currency_id'] = self.env.company.currency_id.id
             if not vals.get('cost_period'):
@@ -166,19 +163,17 @@ class CompanyOverheadCost(models.Model):
         return super().create(vals_list)
 
     def action_activate(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Activate overhead cost"""
+        """Activate overhead cost"""
         self.state = 'active'
         # Update pool allocation
         self._update_pool_allocation()
 
     def action_expire(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Mark as expired"""
         self.state = 'expired'
         # Remove from pool allocation
         self._remove_pool_allocation()
 
     def _update_pool_allocation(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Update cost pool with this overhead cost"""
         if self.pool_id and self.state == 'active':
             # Find or create pool allocation for overhead
             allocation = self.env['cost.pool.overhead.allocation'].search([
@@ -197,14 +192,12 @@ class CompanyOverheadCost(models.Model):
                 })
 
     def _remove_pool_allocation(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Remove pool allocation"""
         allocations = self.env['cost.pool.overhead.allocation'].search([
             ('overhead_cost_id', '=', self.id)
         ])
         allocations.unlink()
 
     def write(self, vals):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Override write to update pool allocations"""
         result = super().write(vals)
 
         # Update allocations if amount or pool changed
@@ -218,7 +211,6 @@ class CompanyOverheadCost(models.Model):
         return result
 
     def toggle_active(self):
-        """СУЩЕСТВУЮЩИЙ МЕТОД: Quick toggle for active state"""
         for record in self:
             if record.active and record.state == 'draft':
                 record.action_activate()
@@ -262,7 +254,6 @@ class CompanyOverheadCost(models.Model):
 
 
 class CostPoolOverheadAllocation(models.Model):
-    """СУЩЕСТВУЮЩАЯ МОДЕЛЬ: без изменений"""
     _name = 'cost.pool.overhead.allocation'
     _description = 'Cost Pool Overhead Allocation'
 
@@ -274,7 +265,7 @@ class CostPoolOverheadAllocation(models.Model):
 
 
 class CostPoolExtended(models.Model):
-    """СУЩЕСТВУЮЩАЯ МОДЕЛЬ: без изменений"""
+
     _inherit = 'cost.pool'
 
     # Add overhead allocations
@@ -289,9 +280,10 @@ class CostPoolExtended(models.Model):
             pool.total_overhead_cost = sum(pool.overhead_allocation_ids.mapped('monthly_cost'))
 
     # Override total cost calculation to include overhead
-    @api.depends('allocation_ids.monthly_cost', 'overhead_allocation_ids.monthly_cost')
+    @api.depends('allocation_ids.monthly_cost', 'overhead_allocation_ids.monthly_cost', 'driver_id.monthly_cost')
     def _compute_total_cost(self):
         for pool in self:
             employee_cost = sum(pool.allocation_ids.mapped('monthly_cost'))
             overhead_cost = sum(pool.overhead_allocation_ids.mapped('monthly_cost'))
-            pool.total_monthly_cost = employee_cost + overhead_cost
+            drivers_cost = sum(pool.driver_id.mapped('monthly_cost'))  # ДОБАВИТЬ ЭТО
+            pool.total_monthly_cost = employee_cost + overhead_cost + drivers_cost

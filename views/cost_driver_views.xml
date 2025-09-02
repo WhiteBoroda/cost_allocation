@@ -104,21 +104,11 @@
                     <!-- Allocation Summary -->
                     <group string="Allocation Summary">
                         <group>
+                            <field name="total_purchased_quantity" string="Total Purchased" readonly="1"
+                                   invisible="not is_license_unit or license_type == 'unlimited'"/>
                             <field name="total_allocated_quantity" string="Allocated to Clients" readonly="1"/>
-                            <div class="o_row" name="unallocated_info"
-                                 invisible="not is_license_unit or license_type == 'unlimited'">
-                                <span>Unallocated: </span>
-                                <span class="badge badge-warning"
-                                      invisible="total_purchased_quantity - total_allocated_quantity &lt;= 0">
-                                    <field name="total_purchased_quantity"/>
-                                    <span> - </span>
-                                    <field name="total_allocated_quantity"/>
-                                </span>
-                            </div>
-                            <div class="o_row" name="unlimited_info"
-                                 invisible="not is_license_unit or license_type != 'unlimited'">
-                                <span class="badge badge-success">Unlimited License - No allocation limit</span>
-                            </div>
+                            <field name="unallocated_quantity" string="Unallocated" readonly="1"
+                                   invisible="not is_license_unit or license_type == 'unlimited'"/>
                         </group>
                         <group>
                             <div class="o_row" name="allocation_percentage"

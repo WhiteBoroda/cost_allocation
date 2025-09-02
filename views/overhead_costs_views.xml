@@ -62,23 +62,22 @@
                     <group string="Cost Information">
                         <group>
                             <field name="cost_amount" widget="monetary"
-                                   options="{'currency_field': 'cost_currency_id'}"
-                                   placeholder="Enter original cost amount"/>
+                                   options="{'currency_field': 'cost_currency_id'}"/>
                             <field name="cost_currency_id"/>
                             <field name="cost_period"/>
                         </group>
                         <group>
-                            <field name="monthly_amount" widget="monetary" readonly="1"
-                                   help="Computed monthly amount in company currency"/>
+                            <field name="monthly_amount" widget="monetary" readonly="1"/>
                             <field name="currency_id" invisible="1"/>
-                            <div class="alert alert-info" invisible="cost_period == 'monthly'">
-                                <strong>Automatic calculation:</strong>
-                                <span invisible="cost_period != 'annual'">Annual cost ÷ 12 = monthly amount</span>
-                                <span invisible="cost_period != 'quarterly'">Quarterly cost ÷ 3 = monthly amount</span>
-                                <span invisible="cost_period != 'one_time'">One-time cost ÷ 12 = monthly amount (amortized)</span>
-                            </div>
                         </group>
                     </group>
+
+                    <div class="alert alert-info mt-3" invisible="cost_period == 'monthly'">
+                        <strong>Automatic calculation:</strong>
+                        <span invisible="cost_period != 'annual'">Annual cost ÷ 12 = monthly amount</span>
+                        <span invisible="cost_period != 'quarterly'">Quarterly cost ÷ 3 = monthly amount</span>
+                        <span invisible="cost_period != 'one_time'">One-time cost ÷ 12 = monthly amount</span>
+                    </div>
 
                     <!-- СУЩЕСТВУЮЩИЕ ПОЛЯ -->
                     <group string="Cost Details">

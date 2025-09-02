@@ -26,16 +26,27 @@ class CostPool(models.Model):
     total_monthly_cost = fields.Float(string='Total Monthly Cost', compute='_compute_total_cost', store=True)
 
     # Related driver
-    driver_id = fields.One2many('cost.driver', 'pool_id', string='Cost Driver')
+    driver_id = fields.One2many('cost.driver', 'pool_id', string='Cost Drivers')
+    available_driver_ids = fields.Many2many('cost.driver',
+                                            compute='_compute_available_drivers',
+                                            string='Available Drivers')
 
     # ДОБАВЛЕНО: поле company_id для multi-company
     company_id = fields.Many2one('res.company', string='Company', required=True,
                                  default=lambda self: self.env.company)
 
+    @api.depends()
+    def _compute_available_drivers(self):
+        for pool in self:
+            # Показать драйверы без пула
+            available = self.env['cost.driver'].search([('pool_id', '=', False)])
+            pool.available_driver_ids = available
+
     @api.depends('allocation_ids.monthly_cost')
     def _compute_total_cost(self):
         for pool in self:
-            pool.total_monthly_cost = sum(pool.allocation_ids.mapped('monthly_cost'))
+            employee_cost = sum(pool.allocation_ids.mapped('monthly_cost'))
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -44,6 +55,30 @@ class CostPool(models.Model):
             if not vals.get('code'):
                 vals['code'] = self._generate_code('cost.pool.code')
         return super().create(vals_list)
+
+    def action_reassign_drivers(self):
+        """Открыть список всех драйверов для перепривязки"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Reassign Cost Drivers',
+            'res_model': 'cost.driver',
+            'view_mode': 'tree,form',
+            'target': 'new',
+            'context': {
+                'default_pool_id': self.id,
+                'reassign_mode': True
+            },
+            'domain': []  # Показать все драйверы
+        }
+
+    def action_create_driver(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'cost.driver',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_pool_id': self.id}
+        }
 
 
 class CostPoolAllocation(models.Model):

@@ -146,6 +146,13 @@ class CostDriver(models.Model):
     total_allocated_quantity = fields.Float(string='Allocated Quantity', compute='_compute_totals', store=True,
                                             help='Total quantity allocated to clients')
 
+    unallocated_quantity = fields.Float(
+        string='Unallocated Quantity',
+        compute='_compute_unallocated_quantity',
+        store=True
+    )
+
+
     # Client allocations
     client_driver_ids = fields.One2many('client.cost.driver', 'driver_id', string='Client Allocations')
 
@@ -299,18 +306,6 @@ class CostDriver(models.Model):
 
     # ==================== VALIDATION ====================
 
-    @api.constrains('total_purchased_quantity', 'total_allocated_quantity', 'license_type')
-    def _check_quantities(self):
-        """Проверяем что не распределили больше чем купили (только для quantity-based)"""
-        for driver in self:
-            if (driver.license_type == 'quantity_based' and
-                    driver.total_purchased_quantity > 0 and
-                    driver.total_allocated_quantity > driver.total_purchased_quantity):
-                raise ValidationError(
-                    f'Allocated quantity ({driver.total_allocated_quantity}) cannot exceed '
-                    f'purchased quantity ({driver.total_purchased_quantity}) for quantity-based licenses'
-                )
-
     @api.constrains('total_purchased_quantity', 'license_type')
     def _check_unlimited_license(self):
         """Для unlimited лицензий purchased_quantity должно быть 0"""
@@ -336,12 +331,21 @@ class CostDriver(models.Model):
 
     # ==================== UTILITY METHODS ====================
 
+    @api.depends('total_purchased_quantity', 'total_allocated_quantity', 'is_license_unit', 'license_type')
+    def _compute_unallocated_quantity(self):
+        for driver in self:
+            if driver.is_license_unit and driver.license_type == 'quantity_based':
+                unallocated = driver.total_purchased_quantity - driver.total_allocated_quantity
+                driver.unallocated_quantity = unallocated
+            else:
+                driver.unallocated_quantity = 0.0
+
     def get_unallocated_quantity(self):
         """Получить нераспределенное количество (только для quantity-based)"""
         self.ensure_one()
-        if self.license_type == 'unlimited':
-            return float('inf')  # Неограниченно
-        return self.total_purchased_quantity - self.total_allocated_quantity
+        if self.is_license_unit and self.license_type == 'quantity_based':
+            return self.total_purchased_quantity - self.total_allocated_quantity
+        return 0.0
 
     def get_allocation_percentage(self):
         """Получить процент распределения (только для quantity-based)"""
