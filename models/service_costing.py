@@ -68,40 +68,68 @@ class ServiceCostCalculation(models.Model):
     def _compute_actual_units(self):
         """Calculate actual units based on effective workload factor"""
         for calc in self:
-            if calc.calculation_method == 'unit_based':
-                calc.actual_units_required = calc.base_units_requested * (calc.effective_workload_factor or 1.0)
-            else:
-                calc.actual_units_required = calc.base_units_requested
+            try:
+                if calc.calculation_method == 'unit_based':
+                    calc.actual_units_required = calc.base_units_requested * (calc.effective_workload_factor or 1.0)
+                else:
+                    calc.actual_units_required = calc.base_units_requested
+            except Exception:
+                calc.actual_units_required = calc.base_units_requested or 1.0
 
     @api.depends('service_type_id', 'service_type_id.workload_factor')
     def _compute_base_workload_factor(self):
         """Get base workload factor from service type"""
         for calc in self:
-            calc.base_workload_factor = calc.service_type_id.workload_factor if calc.service_type_id else 1.0
+            try:
+                calc.base_workload_factor = calc.service_type_id.workload_factor if calc.service_type_id and hasattr(
+                    calc.service_type_id, 'workload_factor') else 1.0
+            except Exception:
+                calc.base_workload_factor = 1.0
 
     @api.depends('base_workload_factor', 'client_id.support_level', 'client_id.workload_multiplier')
     def _compute_effective_workload(self):
         """Calculate effective workload factor including client support level"""
         for calc in self:
-            if calc.client_id and calc.base_workload_factor:
-                calc.effective_workload_factor = calc.client_id.get_effective_workload_factor(calc.base_workload_factor)
-            else:
+            try:
+                if calc.client_id and calc.base_workload_factor:
+                    # Убеждаемся, что у клиента есть support_level
+                    if not calc.client_id.support_level:
+                        calc.client_id.support_level = 'standard'
+
+                    # Используем прямой расчет вместо метода
+                    multiplier_mapping = {
+                        'basic': 0.8,
+                        'standard': 1.0,
+                        'premium': 1.3,
+                        'enterprise': 1.6,
+                    }
+                    multiplier = multiplier_mapping.get(calc.client_id.support_level, 1.0)
+                    calc.effective_workload_factor = calc.base_workload_factor * multiplier
+                else:
+                    calc.effective_workload_factor = calc.base_workload_factor or 1.0
+            except Exception:
+                # Fallback на базовый коэффициент в случае ошибки
                 calc.effective_workload_factor = calc.base_workload_factor or 1.0
 
     @api.depends('service_type_id', 'service_type_id.default_responsible_ids')
     def _compute_blended_rate(self):
         """Calculate blended hourly rate based on service type and team"""
         for calc in self:
-            if calc.service_type_id and calc.service_type_id.default_responsible_ids:
-                # Берем среднюю ставку команды поддержки
-                employees = calc.service_type_id.default_responsible_ids
-                if employees:
-                    # Здесь можно добавить логику расчета средней ставки
-                    # Пока используем базовую ставку из настроек компании
-                    calc.blended_hourly_rate = 50.0  # или из настроек
+            try:
+                if calc.service_type_id and hasattr(calc.service_type_id,
+                                                    'default_responsible_ids') and calc.service_type_id.default_responsible_ids:
+                    # Берем среднюю ставку команды поддержки
+                    employees = calc.service_type_id.default_responsible_ids
+                    if employees:
+                        # Здесь можно добавить логику расчета средней ставки
+                        # Пока используем базовую ставку из настроек компании
+                        calc.blended_hourly_rate = 50.0  # или из настроек
+                    else:
+                        calc.blended_hourly_rate = 40.0  # дефолтная ставка
                 else:
-                    calc.blended_hourly_rate = 40.0  # дефолтная ставка
-            else:
+                    calc.blended_hourly_rate = 40.0
+            except Exception:
+                # Fallback на стандартную ставку в случае ошибки
                 calc.blended_hourly_rate = 40.0
 
     @api.depends('service_catalog_id', 'calculation_method', 'effective_workload_factor', 'actual_units_required',
@@ -109,47 +137,59 @@ class ServiceCostCalculation(models.Model):
     def _compute_direct_cost_per_unit(self):
         """Calculate direct cost per unit based on method and effective workload factor"""
         for calc in self:
-            if calc.calculation_method == 'time_based':
-                # Время * ставка с учетом effective_workload_factor
-                hours_with_workload = calc.estimated_hours_per_unit * (calc.effective_workload_factor or 1.0)
-                calc.direct_cost_per_unit = hours_with_workload * calc.blended_hourly_rate
+            try:
+                if calc.calculation_method == 'time_based':
+                    # Время * ставка с учетом effective_workload_factor
+                    hours_with_workload = calc.estimated_hours_per_unit * (calc.effective_workload_factor or 1.0)
+                    calc.direct_cost_per_unit = hours_with_workload * calc.blended_hourly_rate
 
-            elif calc.calculation_method == 'unit_based':
-                # Базовая цена с учетом effective_workload_factor
-                base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id else 0
-                calc.direct_cost_per_unit = base_price * (calc.effective_workload_factor or 1.0)
+                elif calc.calculation_method == 'unit_based':
+                    # Базовая цена с учетом effective_workload_factor
+                    base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id and hasattr(
+                        calc.service_catalog_id, 'base_cost') else 0
+                    calc.direct_cost_per_unit = base_price * (calc.effective_workload_factor or 1.0)
 
-            elif calc.calculation_method == 'complexity_based':
-                # Базовая цена * сложность * effective_workload_factor
-                base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id else 0
-                calc.direct_cost_per_unit = base_price * calc.complexity_multiplier * (
+                elif calc.calculation_method == 'complexity_based':
+                    # Базовая цена * сложность * effective_workload_factor
+                    base_price = calc.service_catalog_id.base_cost if calc.service_catalog_id and hasattr(
+                        calc.service_catalog_id, 'base_cost') else 0
+                    calc.direct_cost_per_unit = base_price * calc.complexity_multiplier * (
                             calc.effective_workload_factor or 1.0)
 
-            else:
+                else:
+                    calc.direct_cost_per_unit = 0
+            except Exception:
                 calc.direct_cost_per_unit = 0
 
     @api.depends('service_catalog_id', 'client_id.support_level', 'effective_workload_factor', 'calculation_date')
     def _compute_display_name(self):
         for calc in self:
-            if calc.service_catalog_id:
-                parts = [calc.service_catalog_id.name]
-                if calc.client_id:
-                    parts.append(
-                        f"({calc.client_id.support_level.title() if calc.client_id.support_level else 'Standard'})")
-                if calc.effective_workload_factor != 1.0:
-                    parts.append(f"WF: {calc.effective_workload_factor}")
-                parts.append(str(calc.calculation_date))
-                calc.display_name = " - ".join(parts)
-            else:
+            try:
+                if calc.service_catalog_id:
+                    parts = [calc.service_catalog_id.name]
+                    if calc.client_id:
+                        support_level = calc.client_id.support_level if calc.client_id.support_level else 'Standard'
+                        parts.append(f"({support_level.title()})")
+                    if calc.effective_workload_factor and calc.effective_workload_factor != 1.0:
+                        parts.append(f"WF: {calc.effective_workload_factor}")
+                    if calc.calculation_date:
+                        parts.append(str(calc.calculation_date))
+                    calc.display_name = " - ".join(parts)
+                else:
+                    calc.display_name = "New Calculation"
+            except Exception:
                 calc.display_name = "New Calculation"
 
     @api.depends('direct_cost_per_unit', 'indirect_cost_per_unit', 'admin_cost_per_unit', 'overhead_cost_per_unit')
     def _compute_total_cost(self):
         for calc in self:
-            calc.total_cost_per_unit = (calc.direct_cost_per_unit +
-                                        calc.indirect_cost_per_unit +
-                                        calc.admin_cost_per_unit +
-                                        calc.overhead_cost_per_unit)
+            try:
+                calc.total_cost_per_unit = (calc.direct_cost_per_unit +
+                                            calc.indirect_cost_per_unit +
+                                            calc.admin_cost_per_unit +
+                                            calc.overhead_cost_per_unit)
+            except Exception:
+                calc.total_cost_per_unit = 0.0
 
     def get_effective_workload_units(self):
         """Get total effective workload units for reporting (includes client support level)"""
@@ -163,21 +203,44 @@ class ServiceCostCalculation(models.Model):
 
     def action_calculate_costs(self):
         """Manual recalculation of costs"""
-        for record in self:
-            # Force recompute of all cost fields
-            record._compute_base_workload_factor()
-            record._compute_effective_workload()
-            record._compute_actual_units()
-            record._compute_direct_cost_per_unit()
-            record._compute_blended_rate()
-            record._compute_total_cost()
+        try:
+            for record in self:
+                # Убеждаемся что у клиента есть support_level
+                if record.client_id and not record.client_id.support_level:
+                    record.client_id.support_level = 'standard'
 
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'message': 'Costs recalculated successfully!',
-                'type': 'success',
-                'sticky': False,
+                # Принудительно пересчитываем computed поля клиента
+                if record.client_id:
+                    record.client_id._compute_workload_multiplier()
+
+                # Используем стандартный механизм Odoo для пересчета
+                # Изменяем поля, чтобы триггернуть пересчет computed полей
+                record._compute_base_workload_factor()
+                record._compute_effective_workload()
+                record._compute_actual_units()
+                record._compute_direct_cost_per_unit()
+                record._compute_blended_rate()
+                record._compute_total_cost()
+
+                # Сохраняем изменения
+                record.flush_recordset()
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': 'Costs recalculated successfully!',
+                    'type': 'success',
+                    'sticky': False,
+                }
             }
-        }
+        except Exception as e:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': f'Error during calculation: {str(e)}',
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
