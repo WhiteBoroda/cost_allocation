@@ -8,7 +8,7 @@ class ClientCostAllocation(models.Model):
     _description = 'Client Cost Allocation'
     _order = 'period_date desc, client_id'
     _rec_name = 'display_name'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'sequence.helper']  # ДОБАВЛЕНО: sequence.helper
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'sequence.helper']
 
     # ДОБАВЛЕНО: поле кода
     code = fields.Char(string='Allocation Code', readonly=True, copy=False)
@@ -59,16 +59,25 @@ class ClientCostAllocation(models.Model):
         total_admin_cost = sum(admin_pools.mapped('total_monthly_cost'))
 
         if total_admin_cost > 0:
-            # Get total non-admin costs for all clients in this period
-            all_allocations = self.search([('period_date', '=', self.period_date)])
-            total_non_admin = sum(all_allocations.mapped('direct_cost')) + sum(all_allocations.mapped('indirect_cost'))
+            # Group records by period to calculate proportional allocation
+            periods = self.mapped('period_date')
 
-            for record in self:
-                if total_non_admin > 0:
-                    client_non_admin = record.direct_cost + record.indirect_cost
-                    record.admin_cost = total_admin_cost * (client_non_admin / total_non_admin)
-                else:
-                    record.admin_cost = 0
+            for period in periods:
+                # Get all allocations for this period
+                period_records = self.filtered(lambda r: r.period_date == period)
+                all_allocations = self.search([('period_date', '=', period)])
+
+                # Calculate total non-admin costs for this period
+                total_non_admin = sum(all_allocations.mapped('direct_cost')) + sum(
+                    all_allocations.mapped('indirect_cost'))
+
+                # Allocate admin costs proportionally
+                for record in period_records:
+                    if total_non_admin > 0:
+                        client_non_admin = record.direct_cost + record.indirect_cost
+                        record.admin_cost = total_admin_cost * (client_non_admin / total_non_admin)
+                    else:
+                        record.admin_cost = 0
         else:
             for record in self:
                 record.admin_cost = 0
@@ -166,8 +175,7 @@ class ClientCostAllocation(models.Model):
 
     _sql_constraints = [
         ('unique_client_period', 'unique(client_id, period_date)',
-         'Only one allocation per client per period is allowed!')
-    ]
+         'Only one allocation per client per period is allowed!')]
 
 
 class ClientIndirectCost(models.Model):
@@ -176,8 +184,14 @@ class ClientIndirectCost(models.Model):
 
     allocation_id = fields.Many2one('client.cost.allocation', string='Allocation',
                                     required=True, ondelete='cascade')
-    driver_id = fields.Many2one('cost.driver', string='Cost Driver', required=True)
+    client_id = fields.Many2one(related='allocation_id.client_id', store=True)
 
-    quantity = fields.Float(string='Quantity')
+    driver_id = fields.Many2one('cost.driver', string='Cost Driver', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
     cost_per_unit = fields.Float(string='Cost per Unit')
-    allocated_cost = fields.Float(string='Allocated Cost')
+    allocated_cost = fields.Float(string='Allocated Cost', compute='_compute_allocated_cost', store=True)
+
+    @api.depends('quantity', 'cost_per_unit')
+    def _compute_allocated_cost(self):
+        for record in self:
+            record.allocated_cost = record.quantity * record.cost_per_unit

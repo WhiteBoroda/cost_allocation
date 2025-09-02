@@ -196,6 +196,11 @@ class ClientService(models.Model):
     company_id = fields.Many2one('res.company', string='Company', required=True,
                                  default=lambda self: self.env.company)
 
+    # Cost Driver связи
+    related_driver_values = fields.One2many('client.cost.driver', 'client_id',
+                                            string='Related Cost Driver Values',
+                                            domain="[('client_id', '=', client_id)]")
+
     @api.depends('client_id.support_level', 'service_type_id.response_time', 'service_type_id.resolution_time')
     def _compute_effective_sla(self):
         """Compute effective SLA based on client support level"""
@@ -258,6 +263,24 @@ class ClientService(models.Model):
             if not vals.get('code'):
                 vals['code'] = self._generate_code('client.service.code')
         return super().create(vals_list)
+
+    def action_activate(self):
+        """Activate service"""
+        for service in self:
+            service.status = 'active'
+
+
+    def action_set_inactive(self):
+        """Set service inactive"""
+        for service in self:
+            service.status = 'inactive'
+
+
+    def action_set_maintenance(self):
+        """Set service under maintenance"""
+        for service in self:
+            service.status = 'maintenance'
+
 
 
 class EmployeeWorkload(models.Model):

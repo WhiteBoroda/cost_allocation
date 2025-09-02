@@ -10,11 +10,7 @@
                 <page string="Service Support" invisible="not is_company">
                     <group>
                         <group string="Support Level &amp; SLA">
-                            <field name="support_level" widget="badge"
-                                   decoration-danger="support_level == 'enterprise'"
-                                   decoration-warning="support_level == 'premium'"
-                                   decoration-info="support_level == 'standard'"
-                                   decoration-muted="support_level == 'basic'"/>
+                            <field name="support_level"/>
                             <field name="workload_multiplier" readonly="1"/>
                         </group>
                         <group string="SLA Times">

@@ -5,6 +5,11 @@
               name="Service Costing"
               sequence="20"/>
 
+    <menuitem id="menu_service_costing"
+              name="Послуги"
+              sequence="85"
+              parent="menu_cost_allocation_config"/>
+
     <!-- Service Catalog Menu -->
     <menuitem id="menu_service_catalog"
               name="Service Catalog"
@@ -13,19 +18,19 @@
 
     <menuitem id="menu_service_categories"
               name="Service Categories"
-              parent="menu_service_catalog"
+              parent="menu_service_costing"
               action="action_service_category"
               sequence="10"/>
 
     <menuitem id="menu_service_types"
               name="Service Types"
-              parent="menu_service_catalog"
+              parent="menu_service_costing"
               action="action_service_type"
               sequence="15"/>
 
     <menuitem id="menu_service_catalog_items"
               name="Service Catalog"
-              parent="menu_service_catalog"
+              parent="menu_service_costing"
               action="action_service_catalog"
               sequence="20"/>
 
@@ -48,7 +53,7 @@
               sequence="35"/>
 
     <menuitem id="menu_holding_companies"
-              name="Holding Companies"
+              name="Компанії - Клієнти"
               parent="menu_service_catalog"
               action="action_holding_companies"
               sequence="40"/>
