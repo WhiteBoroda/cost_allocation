@@ -1,4 +1,4 @@
-# models/service_costing.py
+# models/service_costing.py - ИСПРАВЛЕННАЯ ВЕРСИЯ
 
 from odoo import models, fields, api
 from datetime import datetime, timedelta
@@ -11,7 +11,7 @@ class ServiceCostCalculation(models.Model):
 
     # Basic info
     service_catalog_id = fields.Many2one('service.catalog', string='Service', required=True)
-    service_type_id = fields.Many2one('service.type', string='Service Type', readonly=False)
+    service_type_id = fields.Many2one('service.type', string='Service Type')
     client_id = fields.Many2one('res.partner', string='Client', domain=[('is_company', '=', True)],
                                 help='Client for whom calculation is performed - affects support level')
     calculation_date = fields.Date(string='Calculation Date', default=fields.Date.today)
@@ -38,6 +38,7 @@ class ServiceCostCalculation(models.Model):
 
     # For unit-based with workload factor
     base_units_requested = fields.Float(string='Base Units Requested', default=1.0)
+
     actual_units_required = fields.Float(string='Actual Units Required', compute='_compute_actual_units', store=True)
     base_workload_factor = fields.Float(string='Base Workload Factor', compute='_compute_base_workload_factor',
                                         store=True, readonly=True)
@@ -52,21 +53,16 @@ class ServiceCostCalculation(models.Model):
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
 
-    @api.depends('service_catalog_id')
-    def _compute_service_type(self):
-        """Get service type from related models if available"""
-        for calc in self:
-            # Пытаемся найти связанный ServiceType через категорию или другие связи
-            service_type = False
-            if calc.service_catalog_id and hasattr(calc.service_catalog_id, 'service_type_id'):
-                service_type = calc.service_catalog_id.service_type_id
-            elif calc.service_catalog_id and calc.service_catalog_id.category_id:
-                # Ищем ServiceType по категории и названию
-                service_type = self.env['service.type'].search([
-                    ('category_id', '=', calc.service_catalog_id.category_id.id),
-                    ('name', 'ilike', calc.service_catalog_id.name)
-                ], limit=1)
-            calc.service_type_id = service_type
+    @api.onchange('service_catalog_id')
+    def _onchange_service_catalog(self):
+        """Auto-fill service type when service catalog is selected"""
+        if self.service_catalog_id and self.service_catalog_id.category_id:
+            # Найти соответствующий service.type по категории
+            service_type = self.env['service.type'].search([
+                ('category_id', '=', self.service_catalog_id.category_id.id)
+            ], limit=1)
+            if service_type:
+                self.service_type_id = service_type
 
     @api.depends('base_units_requested', 'effective_workload_factor', 'calculation_method')
     def _compute_actual_units(self):
@@ -91,6 +87,22 @@ class ServiceCostCalculation(models.Model):
                 calc.effective_workload_factor = calc.client_id.get_effective_workload_factor(calc.base_workload_factor)
             else:
                 calc.effective_workload_factor = calc.base_workload_factor or 1.0
+
+    @api.depends('service_type_id', 'service_type_id.default_responsible_ids')
+    def _compute_blended_rate(self):
+        """Calculate blended hourly rate based on service type and team"""
+        for calc in self:
+            if calc.service_type_id and calc.service_type_id.default_responsible_ids:
+                # Берем среднюю ставку команды поддержки
+                employees = calc.service_type_id.default_responsible_ids
+                if employees:
+                    # Здесь можно добавить логику расчета средней ставки
+                    # Пока используем базовую ставку из настроек компании
+                    calc.blended_hourly_rate = 50.0  # или из настроек
+                else:
+                    calc.blended_hourly_rate = 40.0  # дефолтная ставка
+            else:
+                calc.blended_hourly_rate = 40.0
 
     @api.depends('service_catalog_id', 'calculation_method', 'effective_workload_factor', 'actual_units_required',
                  'blended_hourly_rate', 'complexity_multiplier')
@@ -138,22 +150,6 @@ class ServiceCostCalculation(models.Model):
                                         calc.indirect_cost_per_unit +
                                         calc.admin_cost_per_unit +
                                         calc.overhead_cost_per_unit)
-
-    @api.depends('service_type_id', 'service_type_id.default_responsible_ids')
-    def _compute_blended_rate(self):
-        """Calculate blended hourly rate based on service type and team"""
-        for calc in self:
-            if calc.service_type_id and calc.service_type_id.default_responsible_ids:
-                # Берем среднюю ставку команды поддержки
-                employees = calc.service_type_id.default_responsible_ids
-                if employees:
-                    # Здесь можно добавить логику расчета средней ставки
-                    # Пока используем базовую ставку из настроек компании
-                    calc.blended_hourly_rate = 50.0  # или из настроек
-                else:
-                    calc.blended_hourly_rate = 40.0  # дефолтная ставка
-            else:
-                calc.blended_hourly_rate = 40.0
 
     def get_effective_workload_units(self):
         """Get total effective workload units for reporting (includes client support level)"""
