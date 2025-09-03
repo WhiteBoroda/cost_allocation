@@ -27,7 +27,7 @@ class AddMultipleServicesWizard(models.TransientModel):
         for service in self.service_ids:
             # Check if service already exists in subscription
             existing_line = self.subscription_id.service_line_ids.filtered(
-                lambda l: l.service_catalog_id.id == service.id  # ИСПРАВЛЕНО: правильное поле
+                lambda l: l.service_id.id == service.id  # ИСПРАВЛЕНО: правильное поле
             )
 
             if existing_line:
@@ -40,7 +40,7 @@ class AddMultipleServicesWizard(models.TransientModel):
 
                 vals = {
                     'subscription_id': self.subscription_id.id,
-                    'service_catalog_id': service.id,  # ИСПРАВЛЕНО: правильное поле
+                    'service_id': service.id,  # ИСПРАВЛЕНО: правильное поле
                     'name': service.name,
                     'quantity': self.default_quantity,
                     'unit_price': unit_price,

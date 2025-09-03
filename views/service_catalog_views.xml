@@ -1,92 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- views/service_catalog_views.xml -->
 <odoo>
-    <!-- Service Catalog Tree View -->
-    <record id="view_service_catalog_tree" model="ir.ui.view">
-        <field name="name">service.catalog.tree</field>
-        <field name="model">service.catalog</field>
-        <field name="arch" type="xml">
-            <tree string="Service Catalog" decoration-muted="not active">
-                <field name="sequence" widget="handle"/>
-                <field name="code"/>
-                <field name="name"/>
-                <field name="service_type_id"/>
-                <field name="complexity_level"/>
-                <field name="vendor"/>
-                <field name="base_cost"/>
-                <field name="client_count"/>
-                <field name="total_quantity"/>
-                <field name="active"/>
-            </tree>
-        </field>
-    </record>
-
     <!-- Service Catalog Form View -->
     <record id="view_service_catalog_form" model="ir.ui.view">
         <field name="name">service.catalog.form</field>
         <field name="model">service.catalog</field>
         <field name="arch" type="xml">
             <form string="Service Catalog">
+                <header>
+                    <button name="action_view_cost_breakdown" string="Cost Breakdown"
+                            type="object" class="btn-primary" icon="fa-calculator"/>
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_toggle"/>
-                        </button>
-                        <button name="action_view_clients" type="object" class="oe_stat_button" icon="fa-users">
-                            <field name="client_count" widget="statinfo" string="Clients"/>
+                        <button class="oe_stat_button" type="object" name="action_view_clients" icon="fa-users">
+                            <field string="Clients" name="client_count" widget="statinfo"/>
                         </button>
                     </div>
 
                     <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1><field name="name" required="1" placeholder="Service Name"/></h1>
+                        <h1>
+                            <field name="name" placeholder="Service Name..."/>
+                        </h1>
+                        <h2>
+                            <field name="code" readonly="1"/>
+                        </h2>
                     </div>
 
                     <group>
-                        <group>
-                            <field name="code" readonly="1"/>
-                            <field name="service_type_id"/>
+                        <group string="Service Classification">
+                            <field name="service_type_id" options="{'no_create': True}"/>
                             <field name="category_id" readonly="1"/>
-                            <field name="sequence"/>
-                        </group>
-                        <group>
                             <field name="complexity_level"/>
-                            <field name="base_cost"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="total_quantity"/>
+                            <field name="active"/>
                         </group>
+                        <group string="ABC Costing">
+                            <field name="support_hours_per_unit"
+                                   decoration-warning="support_hours_per_unit == 0"/>
+                            <field name="base_cost" widget="monetary" readonly="1"
+                                   decoration-danger="base_cost == 0"
+                                   decoration-success="base_cost > 0"/>
+                            <field name="markup_percentage"/>
+                            <field name="sales_price" widget="monetary" readonly="1"
+                                   class="oe_subtotal_footer_separator"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+
+                    <group string="Manual Cost Override"
+                           invisible="not use_manual_cost">
+                        <field name="use_manual_cost"/>
+                        <field name="manual_base_cost" widget="monetary"
+                               invisible="not use_manual_cost"/>
                     </group>
 
                     <notebook>
                         <page string="Description">
-                            <field name="description" nolabel="1"/>
+                            <group>
+                                <field name="description" nolabel="1" placeholder="Service description..."/>
+                            </group>
+                            <group string="Technical Specifications">
+                                <field name="specifications" nolabel="1" placeholder="Technical specifications..."/>
+                            </group>
                         </page>
 
-<!--                        <page string="Technical Details">
+                        <page string="Product Details">
                             <group>
-                                <group string="Product Information">
+                                <group string="Vendor Information">
                                     <field name="vendor"/>
                                     <field name="model_version"/>
-                                    <field name="category"/>
+                                    <field name="product_category"/>
                                 </group>
-                                <group string="Specifications">
-                                    <field name="specifications"/>
+                                <group string="Additional Info">
+                                    <field name="sequence"/>
                                     <field name="additional_info"/>
                                 </group>
                             </group>
-                        </page> -->
+                        </page>
 
-                        <page string="Cost Analysis">
-                            <group>
-                                <group string="Base Costs">
-                                    <field name="base_cost"/>
-                                    <field name="currency_id"/>
-                                </group>
-                                <group string="Client Statistics">
-                                    <field name="client_count" readonly="1"/>
-                                    <field name="total_quantity" readonly="1"/>
-                                    <field name="average_quantity_per_client" readonly="1"/>
-                                </group>
+                        <page string="Cost Analysis" groups="cost_allocation.group_cost_allocation_financial">
+                            <div class="alert alert-info" role="status">
+                                <h5>ABC Costing Breakdown</h5>
+                                <p><strong>Base Cost Calculation:</strong> Average hourly cost of responsible team × Support hours per unit</p>
+                                <p><strong>Responsible Team:</strong> Defined in Service Type configuration</p>
+                                <p><strong>Employee Costs:</strong> Taken from Employee Cost records</p>
+                            </div>
+
+                            <group string="Cost Components">
+                                <field name="base_cost" widget="monetary" readonly="1"/>
+                                <field name="markup_percentage"/>
+                                <field name="sales_price" widget="monetary" readonly="1"/>
+                            </group>
+
+                            <group string="Usage Statistics">
+                                <field name="client_count" readonly="1"/>
+                                <field name="total_quantity" readonly="1"/>
+                                <field name="average_quantity_per_client" readonly="1"/>
                             </group>
                         </page>
                     </notebook>
@@ -95,36 +103,74 @@
         </field>
     </record>
 
-    <!-- Service Catalog Search View -->
+    <!-- Service Catalog Tree View -->
+    <record id="view_service_catalog_tree" model="ir.ui.view">
+        <field name="name">service.catalog.tree</field>
+        <field name="model">service.catalog</field>
+        <field name="arch" type="xml">
+            <tree string="Service Catalog"
+                  decoration-success="base_cost > 0 and active"
+                  decoration-warning="base_cost == 0"
+                  decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="service_type_id"/>
+                <field name="category_id" optional="hide"/>
+                <field name="complexity_level" widget="badge"/>
+                <field name="support_hours_per_unit"
+                       decoration-warning="support_hours_per_unit == 0"
+                       sum="Total Hours"/>
+                <field name="base_cost" widget="monetary"
+                       decoration-danger="base_cost == 0"
+                       decoration-success="base_cost > 0"
+                       sum="Total Base Cost"/>
+                <field name="markup_percentage" optional="hide"/>
+                <field name="sales_price" widget="monetary" sum="Total Sales Price"/>
+                <field name="client_count" string="Clients" sum="Total Clients"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Service Catalog Search -->
     <record id="view_service_catalog_search" model="ir.ui.view">
         <field name="name">service.catalog.search</field>
         <field name="model">service.catalog</field>
         <field name="arch" type="xml">
-            <search string="Service Catalog">
+            <search string="Search Service Catalog">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="service_type_id"/>
+                <field name="category_id"/>
                 <field name="vendor"/>
 
                 <separator/>
-                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
-                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
-
-                <searchpanel>
-                    <field name="service_type_id" string="Service Type" select="multi" groupby="service_type"/>
-                </searchpanel>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter name="has_clients" string="Has Clients" domain="[('client_count', '>', 0)]"/>
-                <filter name="no_clients" string="No Clients" domain="[('client_count', '=', 0)]"/>
+                <filter string="No Base Cost" name="no_cost" domain="[('base_cost', '=', 0)]"/>
+                <filter string="Manual Cost Override" name="manual_cost" domain="[('use_manual_cost', '=', True)]"/>
 
-                <group expand="0" string="Group By">
-                    <filter name="group_service_type" string="Service Type" domain="[]" context="{'group_by':'service_type_id'}"/>
-                    <filter name="group_vendor" string="Vendor" domain="[]" context="{'group_by':'vendor'}"/>
-                    <filter name="group_complexity" string="Complexity" domain="[]" context="{'group_by':'complexity_level'}"/>
+                <separator/>
+                <filter string="Low Complexity" name="low_complexity" domain="[('complexity_level', '=', 'low')]"/>
+                <filter string="Medium Complexity" name="medium_complexity" domain="[('complexity_level', '=', 'medium')]"/>
+                <filter string="High Complexity" name="high_complexity" domain="[('complexity_level', '=', 'high')]"/>
+                <filter string="Critical" name="critical" domain="[('complexity_level', '=', 'critical')]"/>
+
+                <separator/>
+                <filter string="Has Clients" name="has_clients" domain="[('client_count', '>', 0)]"/>
+                <filter string="High Usage" name="high_usage" domain="[('total_quantity', '>', 10)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Complexity" name="group_complexity" context="{'group_by': 'complexity_level'}"/>
+                    <filter string="Vendor" name="group_vendor" context="{'group_by': 'vendor'}"/>
                 </group>
             </search>
         </field>
     </record>
-
 </odoo>

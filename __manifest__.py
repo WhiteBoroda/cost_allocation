@@ -45,7 +45,7 @@
         'data/config_data.xml',
         'data/working_hours_cron.xml',
         'data/unit_measure_data.xml',
-        'data/service_classification_data.xml',  # ДОБАВЛЕНО: должно быть ДО service_data.xml
+        'data/service_classification_data.xml',
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
@@ -64,7 +64,7 @@
         'views/client_allocation_views.xml',
 
         # Service catalog views (ПРАВИЛЬНЫЙ ПОРЯДОК!)
-        'views/service_classification_views.xml', # ДОБАВЛЕНО: справочник классификаций (первым)
+        'views/service_classification_views.xml',  # справочник классификаций (первым)
         'views/service_category_views.xml',        # ServiceCategory
         'views/service_type_views.xml',            # ServiceType
         'views/service_catalog_views.xml',         # ServiceCatalog
@@ -94,6 +94,7 @@
         'wizards/wizard_views.xml',
         'wizards/bulk_services_wizard_views.xml',
         'wizards/client_services_wizard_views.xml',
+        'wizards/service_cost_breakdown_wizard_views.xml',
 
         # Holding structure (inherit views - должно быть после базовых)
         'views/holding_structure_views.xml',
