@@ -180,4 +180,11 @@
               action="action_cost_driver_category"
               sequence="45"/>
 
+        <menuitem id="menu_service_classification"
+              name="Service Classifications"
+              parent="menu_cost_allocation_config"
+              action="action_service_classification"
+              sequence="15"
+              groups="cost_allocation.group_cost_allocation_manager"/>
+
 </odoo>

@@ -4,6 +4,7 @@
     <record id="category_example_network" model="service.category">
         <field name="name">Network Equipment (Example)</field>
         <field name="code">NETWORK_EX</field>
+        <field name="service_type">network</field>
         <field name="sequence">10</field>
         <field name="description">Example category - you can modify or delete this</field>
     </record>
@@ -11,6 +12,7 @@
     <record id="category_example_workstation" model="service.category">
         <field name="name">Workstations (Example)</field>
         <field name="code">WORKSTATION_EX</field>
+        <field name="service_type">workstation</field>
         <field name="sequence">20</field>
         <field name="description">Example category - you can modify or delete this</field>
     </record>
@@ -20,10 +22,9 @@
         <field name="name">Network Switch (Example)</field>
         <field name="code">SWITCH_EX</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">Switch</field>
+        <field name="service_type">network</field>
+        <field name="unit_id" ref="unit_piece"/>
         <field name="base_price">150.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">4</field>
         <field name="resolution_time">24</field>
         <field name="description">Example service type - you can modify or delete this</field>
@@ -33,10 +34,9 @@
         <field name="name">Desktop Computer (Example)</field>
         <field name="code">DESKTOP_EX</field>
         <field name="category_id" ref="category_example_workstation"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">PC</field>
+        <field name="service_type">workstation</field>
+        <field name="unit_id" ref="unit_workstation"/>
         <field name="base_price">100.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">4</field>
         <field name="resolution_time">24</field>
         <field name="description">Example service type - you can modify or delete this</field>

@@ -79,9 +79,13 @@
                             <group>
                                 <field name="primary_responsible_id"/>
                             </group>
-                            <group>
-                                <field name="default_responsible_ids" nolabel="1"/>
-                            </group>
+                            <separator string="Default Team"/>
+                            <field name="default_responsible_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="work_email"/>
+                                </tree>
+                            </field>
                         </page>
 
                         <page string="Statistics">

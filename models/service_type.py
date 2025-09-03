@@ -15,19 +15,14 @@ class ServiceType(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
 
-    # ОСНОВНЫЕ поля pricing и billing - здесь определяется тип услуги
-    service_type = fields.Selection([
-        ('workstation', 'Workstation'),
-        ('server', 'Server'),
-        ('printer', 'Printer'),
-        ('network', 'Network Equipment'),
-        ('software', 'Software License'),
-        ('user', 'User Support'),
-        ('project', 'Project Work'),
-        ('consulting', 'Consulting'),
-        ('other', 'Other')
-    ], string='Service Classification', required=True, default='other',
-       help='Classification for cost driver mapping')
+    # ИСПРАВЛЕНО: используем справочник вместо захардкоженных значений
+    service_type = fields.Selection(
+        selection='_get_service_classifications',
+        string='Service Classification',
+        required=True,
+        default='other',
+        help='Classification for cost driver mapping'
+    )
 
     # Unit of measure - связь со справочником
     unit_id = fields.Many2one('unit.of.measure', string='Unit of Measure', required=True)
@@ -64,6 +59,27 @@ class ServiceType(models.Model):
     active_services_count = fields.Integer(string='Active Services', compute='_compute_counts')
 
     active = fields.Boolean(string='Active', default=True)
+
+    @api.model
+    def _get_service_classifications(self):
+        """Получаем классификации из справочника с fallback"""
+        try:
+            return self.env['service.classification'].get_selection_list()
+        except:
+            # Fallback на время установки модуля
+            return [
+                ('workstation', 'Workstation'),
+                ('server', 'Server'),
+                ('printer', 'Printer'),
+                ('network', 'Network Equipment'),
+                ('software', 'Software License'),
+                ('user', 'User Support'),
+                ('project', 'Project Work'),
+                ('consulting', 'Consulting'),
+                ('hardware', 'Hardware'),
+                ('support', 'Support'),
+                ('other', 'Other')
+            ]
 
     @api.depends('catalog_ids', 'client_service_ids.status')
     def _compute_counts(self):

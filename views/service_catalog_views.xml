@@ -32,7 +32,7 @@
                         <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
                             <field name="active" widget="boolean_toggle"/>
                         </button>
-                        <button type="object" class="oe_stat_button" icon="fa-users">
+                        <button name="action_view_clients" type="object" class="oe_stat_button" icon="fa-users">
                             <field name="client_count" widget="statinfo" string="Clients"/>
                         </button>
                     </div>
@@ -62,32 +62,32 @@
                             <field name="description" nolabel="1"/>
                         </page>
 
-                        <page string="Technical Details">
+<!--                        <page string="Technical Details">
                             <group>
                                 <group string="Product Information">
                                     <field name="vendor"/>
                                     <field name="model_version"/>
+                                    <field name="category"/>
                                 </group>
-                                <group string="Support">
-                                    <field name="support_hours"/>
+                                <group string="Specifications">
+                                    <field name="specifications"/>
+                                    <field name="additional_info"/>
                                 </group>
                             </group>
+                        </page> -->
 
-                            <group string="Technical Specifications">
-                                <field name="specifications" nolabel="1"/>
+                        <page string="Cost Analysis">
+                            <group>
+                                <group string="Base Costs">
+                                    <field name="base_cost"/>
+                                    <field name="currency_id"/>
+                                </group>
+                                <group string="Client Statistics">
+                                    <field name="client_count" readonly="1"/>
+                                    <field name="total_quantity" readonly="1"/>
+                                    <field name="average_quantity_per_client" readonly="1"/>
+                                </group>
                             </group>
-                        </page>
-
-                        <page string="Client Services">
-                            <field name="client_service_ids" readonly="1">
-                                <tree>
-                                    <field name="client_id"/>
-                                    <field name="name"/>
-                                    <field name="quantity"/>
-                                    <field name="status"/>
-                                    <field name="installation_date"/>
-                                </tree>
-                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -104,25 +104,24 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="service_type_id"/>
-                <field name="category_id"/>
                 <field name="vendor"/>
-                <field name="model_version"/>
 
                 <separator/>
                 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
                 <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
 
+                <searchpanel>
+                    <field name="service_type_id" string="Service Type" select="multi" groupby="service_type"/>
+                </searchpanel>
+
                 <separator/>
-                <filter name="low_complexity" string="Low Complexity" domain="[('complexity_level', '=', 'low')]"/>
-                <filter name="medium_complexity" string="Medium Complexity" domain="[('complexity_level', '=', 'medium')]"/>
-                <filter name="high_complexity" string="High Complexity" domain="[('complexity_level', '=', 'high')]"/>
-                <filter name="critical_complexity" string="Critical Complexity" domain="[('complexity_level', '=', 'critical')]"/>
+                <filter name="has_clients" string="Has Clients" domain="[('client_count', '>', 0)]"/>
+                <filter name="no_clients" string="No Clients" domain="[('client_count', '=', 0)]"/>
 
                 <group expand="0" string="Group By">
-                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type_id'}"/>
-                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
-                    <filter name="group_complexity" string="Complexity" context="{'group_by': 'complexity_level'}"/>
-                    <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor'}"/>
+                    <filter name="group_service_type" string="Service Type" domain="[]" context="{'group_by':'service_type_id'}"/>
+                    <filter name="group_vendor" string="Vendor" domain="[]" context="{'group_by':'vendor'}"/>
+                    <filter name="group_complexity" string="Complexity" domain="[]" context="{'group_by':'complexity_level'}"/>
                 </group>
             </search>
         </field>

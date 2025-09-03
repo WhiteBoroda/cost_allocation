@@ -12,9 +12,12 @@ from . import cost_pool
 from . import cost_driver
 from . import client_allocation
 
+# ДОБАВЛЕНО: справочник классификации сервисов (должен быть первым)
+from . import service_classification
+
 # Service catalog hierarchy (ПРАВИЛЬНЫЙ ПОРЯДОК!)
-from . import service_category      # ServiceCategory (базовый)
-from . import service_type          # ServiceType (ссылается на category)
+from . import service_category      # ServiceCategory (ссылается на classification)
+from . import service_type          # ServiceType (ссылается на category + classification)
 from . import service_catalog       # ServiceCatalog (ссылается на type)
 from . import client_service        # ClientService (ссылается на type + catalog)
 

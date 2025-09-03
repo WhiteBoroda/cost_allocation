@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- views/service_category_views.xml -->
 <odoo>
+
     <!-- Service Category Tree View -->
     <record id="view_service_category_tree" model="ir.ui.view">
         <field name="name">service.category.tree</field>
@@ -48,20 +49,31 @@
                         </group>
                     </group>
 
-                    <group string="Description">
-                        <field name="description" nolabel="1"/>
-                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" nolabel="1"/>
+                        </page>
 
-                    <group string="Default Team">
-                        <field name="default_responsible_ids" nolabel="1"/>
-                    </group>
+                        <page string="Default Team">
+                            <!-- ИСПРАВЛЕНО: Убрал group wrapper для правильного отображения таблицы -->
+                            <field name="default_responsible_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="work_phone"/>
+                                    <field name="work_email"/>
+                                </tree>
+                            </field>
+                        </page>
 
-                    <group string="Statistics">
-                        <group>
-                            <field name="service_type_count" readonly="1"/>
-                            <field name="active_services_count" readonly="1"/>
-                        </group>
-                    </group>
+                        <page string="Statistics">
+                            <group>
+                                <group>
+                                    <field name="service_type_count" readonly="1"/>
+                                    <field name="active_services_count" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -83,8 +95,8 @@
                 <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
 
                 <group expand="0" string="Group By">
-                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type'}"/>
-                    <filter name="group_responsible" string="Responsible" context="{'group_by': 'primary_responsible_id'}"/>
+                    <filter name="group_service_type" string="Service Type" domain="[]" context="{'group_by':'service_type'}"/>
+                    <filter name="group_responsible" string="Primary Responsible" domain="[]" context="{'group_by':'primary_responsible_id'}"/>
                 </group>
             </search>
         </field>

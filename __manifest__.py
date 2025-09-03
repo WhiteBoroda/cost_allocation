@@ -1,7 +1,7 @@
 # __manifest__.py
 {
     'name': 'Розподіл витрат / Service Cost Allocation',
-    'version': '17.0.1.6.0',  # ВЕРСИЯ ПОВЫШЕНА после реструктуризации
+    'version': '17.0.1.6.1',  # ВЕРСИЯ ПОВЫШЕНА - добавлен конфигурируемый справочник
     'category': 'Accounting',
     'summary': 'ABC Cost Allocation for Service Companies',
     'description': """
@@ -9,6 +9,12 @@
                                                                  Activity-Based Costing module for service companies.
                                                                  Allocates direct and indirect costs to clients based on cost drivers.
                                                                  Supports subscription billing and interactive dashboard with KPI analytics.
+
+                                                                 v1.6.1 CONFIGURABLE SERVICE CLASSIFICATIONS:
+                                                                 - Added service.classification model for flexible service type management
+                                                                 - Replaced hardcoded Selection fields with configurable dictionary
+                                                                 - UI for managing service classifications with icons and colors
+                                                                 - Service categories and types now use dynamic selection from database
 
                                                                  v1.6.0 MAJOR RESTRUCTURING:
                                                                  - Complete file structure reorganization
@@ -34,11 +40,12 @@
         'security/security_rules.xml',
         'security/ir.model.access.csv',
 
-        # Data files
+        # Data files (ВАЖЕН ПОРЯДОК!)
         'data/sequence_data.xml',
         'data/config_data.xml',
         'data/working_hours_cron.xml',
         'data/unit_measure_data.xml',
+        'data/service_classification_data.xml',  # ДОБАВЛЕНО: должно быть ДО service_data.xml
         'data/service_data.xml',
         'data/service_catalog_data.xml',
         'data/service_templates_data.xml',
@@ -57,11 +64,12 @@
         'views/client_allocation_views.xml',
 
         # Service catalog views (ПРАВИЛЬНЫЙ ПОРЯДОК!)
-        'views/service_category_views.xml',      # ServiceCategory
-        'views/service_type_views.xml',          # ServiceType
-        'views/service_catalog_views.xml',       # ServiceCatalog
-        'views/client_service_views.xml',        # ClientService
-        'views/employee_workload_views.xml',     # EmployeeWorkload
+        'views/service_classification_views.xml', # ДОБАВЛЕНО: справочник классификаций (первым)
+        'views/service_category_views.xml',        # ServiceCategory
+        'views/service_type_views.xml',            # ServiceType
+        'views/service_catalog_views.xml',         # ServiceCatalog
+        'views/client_service_views.xml',          # ClientService
+        'views/employee_workload_views.xml',       # EmployeeWorkload
 
         # Partner and company views
         'views/res_partner_views.xml',
@@ -107,4 +115,6 @@
     'author': 'HD DS LLC',
     'website': 'https://github.com/WhiteBoroda/cost_allocation.git',
     'support': 'y.varaksin@hlibodar.com.ua',
+    'pre_init_hook': 'pre_init_hook',
+    'post_install_hook': 'post_install_hook',
 }

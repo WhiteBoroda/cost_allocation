@@ -14,14 +14,16 @@ class ServiceCategory(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     description = fields.Text(string='Description')
 
-    service_type = fields.Selection([
-        ('hardware', 'Hardware'),
-        ('software', 'Software'),
-        ('support', 'Support'),
-        ('consulting', 'Consulting')
-    ], string='Service Type', default='support', required=True)
+    # ИСПРАВЛЕНО: используем справочник вместо захардкоженных значений
+    service_type = fields.Selection(
+        selection='_get_service_types',
+        string='Service Classification',
+        default='support',
+        required=True,
+        help='Service classification from configurable dictionary'
+    )
 
-    # Relations - ИСПРАВЛЕНО: правильные связи
+    # Relations
     service_type_ids = fields.One2many('service.type', 'category_id', string='Service Types')
     cost_pool_id = fields.Many2one('cost.pool', string='Related Cost Pool')
 
@@ -32,20 +34,43 @@ class ServiceCategory(models.Model):
                                                string='Default Responsible Team')
     primary_responsible_id = fields.Many2one('hr.employee', string='Primary Responsible')
 
-    # Statistics - ИСПРАВЛЕНО: правильные вычисления
+    # Statistics
     service_type_count = fields.Integer(string='Service Types', compute='_compute_counts')
     active_services_count = fields.Integer(string='Active Services', compute='_compute_counts')
 
     active = fields.Boolean(string='Active', default=True)
 
+    @api.model
+    def _get_service_types(self):
+        """Получаем типы из справочника с fallback"""
+        try:
+            return self.env['service.classification'].get_selection_list()
+        except:
+            # Fallback на время установки модуля
+            return [
+                ('workstation', 'Workstation'),
+                ('server', 'Server'),
+                ('printer', 'Printer'),
+                ('network', 'Network Equipment'),
+                ('software', 'Software License'),
+                ('user', 'User Support'),
+                ('project', 'Project Work'),
+                ('consulting', 'Consulting'),
+                ('hardware', 'Hardware'),
+                ('support', 'Support'),
+                ('other', 'Other')
+            ]
+
     @api.depends('service_type_ids')
     def _compute_counts(self):
         for category in self:
             category.service_type_count = len(category.service_type_ids)
-            category.active_services_count = len(self.env['client.service'].search([
-                ('service_type_id.category_id', '=', category.id),
-                ('status', '=', 'active')
-            ]))
+
+            # Считаем активные сервисы через service.type
+            active_count = 0
+            for service_type in category.service_type_ids:
+                active_count += len(service_type.client_service_ids.filtered(lambda s: s.status == 'active'))
+            category.active_services_count = active_count
 
     @api.model_create_multi
     def create(self, vals_list):

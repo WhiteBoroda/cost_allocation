@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Service Classifications -->
+        <record id="classification_workstation" model="service.classification">
+            <field name="name">Workstation</field>
+            <field name="code">workstation</field>
+            <field name="description">Desktop computers, laptops, workstations</field>
+            <field name="sequence">10</field>
+            <field name="icon">fa-desktop</field>
+            <field name="color">#1f77b4</field>
+        </record>
+
+        <record id="classification_server" model="service.classification">
+            <field name="name">Server</field>
+            <field name="code">server</field>
+            <field name="description">Servers, data centers, hosting</field>
+            <field name="sequence">20</field>
+            <field name="icon">fa-server</field>
+            <field name="color">#ff7f0e</field>
+        </record>
+
+        <record id="classification_printer" model="service.classification">
+            <field name="name">Printer</field>
+            <field name="code">printer</field>
+            <field name="description">Printers, scanners, multifunction devices</field>
+            <field name="sequence">30</field>
+            <field name="icon">fa-print</field>
+            <field name="color">#2ca02c</field>
+        </record>
+
+        <record id="classification_network" model="service.classification">
+            <field name="name">Network Equipment</field>
+            <field name="code">network</field>
+            <field name="description">Routers, switches, network infrastructure</field>
+            <field name="sequence">40</field>
+            <field name="icon">fa-network-wired</field>
+            <field name="color">#d62728</field>
+        </record>
+
+        <record id="classification_software" model="service.classification">
+            <field name="name">Software License</field>
+            <field name="code">software</field>
+            <field name="description">Software licenses, SaaS subscriptions</field>
+            <field name="sequence">50</field>
+            <field name="icon">fa-code</field>
+            <field name="color">#9467bd</field>
+        </record>
+
+        <record id="classification_user" model="service.classification">
+            <field name="name">User Support</field>
+            <field name="code">user</field>
+            <field name="description">End user support, helpdesk</field>
+            <field name="sequence">60</field>
+            <field name="icon">fa-users</field>
+            <field name="color">#8c564b</field>
+        </record>
+
+        <record id="classification_project" model="service.classification">
+            <field name="name">Project Work</field>
+            <field name="code">project</field>
+            <field name="description">Project-based services, implementations</field>
+            <field name="sequence">70</field>
+            <field name="icon">fa-project-diagram</field>
+            <field name="color">#e377c2</field>
+        </record>
+
+        <record id="classification_consulting" model="service.classification">
+            <field name="name">Consulting</field>
+            <field name="code">consulting</field>
+            <field name="description">Consulting services, advisory</field>
+            <field name="sequence">80</field>
+            <field name="icon">fa-lightbulb</field>
+            <field name="color">#7f7f7f</field>
+        </record>
+
+        <record id="classification_hardware" model="service.classification">
+            <field name="name">Hardware</field>
+            <field name="code">hardware</field>
+            <field name="description">General hardware equipment</field>
+            <field name="sequence">90</field>
+            <field name="icon">fa-microchip</field>
+            <field name="color">#bcbd22</field>
+        </record>
+
+        <record id="classification_support" model="service.classification">
+            <field name="name">Support</field>
+            <field name="code">support</field>
+            <field name="description">General support services</field>
+            <field name="sequence">100</field>
+            <field name="icon">fa-life-ring</field>
+            <field name="color">#17becf</field>
+        </record>
+
+        <record id="classification_other" model="service.classification">
+            <field name="name">Other</field>
+            <field name="code">other</field>
+            <field name="description">Other services not classified above</field>
+            <field name="sequence">999</field>
+            <field name="icon">fa-question</field>
+            <field name="color">#aec7e8</field>
+        </record>
+
+    </data>
+</odoo>

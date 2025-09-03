@@ -7,13 +7,12 @@
         <field name="name">Office Workstation</field>
         <field name="code">TEMPLATE_WS</field>
         <field name="category_id" ref="category_example_workstation"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">PC</field>
+        <field name="service_type">workstation</field>
+        <field name="unit_id" ref="unit_workstation"/>
         <field name="base_price">120.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">4</field>
         <field name="resolution_time">24</field>
-        <field name="workload_factor">1.5</field>
+        <field name="base_workload_factor">1.5</field>
         <field name="description">Standard office workstation support</field>
     </record>
 
@@ -22,12 +21,11 @@
         <field name="code">TEMPLATE_USER</field>
         <field name="category_id" ref="category_example_workstation"/>
         <field name="service_type">user</field>
-        <field name="unit_name">User</field>
+        <field name="unit_id" ref="unit_user"/>
         <field name="base_price">80.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">2</field>
         <field name="resolution_time">8</field>
-        <field name="workload_factor">1.0</field>
+        <field name="base_workload_factor">1.0</field>
         <field name="description">End user technical support</field>
     </record>
 
@@ -35,13 +33,12 @@
         <field name="name">Printer Support</field>
         <field name="code">TEMPLATE_PRINTER</field>
         <field name="category_id" ref="category_example_workstation"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">Printer</field>
+        <field name="service_type">printer</field>
+        <field name="unit_id" ref="unit_printer"/>
         <field name="base_price">60.00</field>
-        <field name="support_level">basic</field>
         <field name="response_time">8</field>
         <field name="resolution_time">24</field>
-        <field name="workload_factor">0.5</field>
+        <field name="base_workload_factor">0.5</field>
         <field name="description">Printer and MFP support</field>
     </record>
 
@@ -49,13 +46,12 @@
         <field name="name">Network Switch</field>
         <field name="code">TEMPLATE_SWITCH</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">Switch</field>
+        <field name="service_type">network</field>
+        <field name="unit_id" ref="unit_piece"/>
         <field name="base_price">200.00</field>
-        <field name="support_level">premium</field>
         <field name="response_time">1</field>
         <field name="resolution_time">4</field>
-        <field name="workload_factor">2.0</field>
+        <field name="base_workload_factor">2.0</field>
         <field name="description">Managed network switch support</field>
     </record>
 
@@ -63,13 +59,12 @@
         <field name="name">Server Support</field>
         <field name="code">TEMPLATE_SERVER</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">Server</field>
+        <field name="service_type">server</field>
+        <field name="unit_id" ref="unit_server"/>
         <field name="base_price">500.00</field>
-        <field name="support_level">enterprise</field>
         <field name="response_time">0.5</field>
         <field name="resolution_time">2</field>
-        <field name="workload_factor">4.0</field>
+        <field name="base_workload_factor">4.0</field>
         <field name="description">Critical server infrastructure support</field>
     </record>
 
@@ -77,13 +72,12 @@
         <field name="name">WiFi Access Point</field>
         <field name="code">TEMPLATE_WIFI</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">AP</field>
+        <field name="service_type">network</field>
+        <field name="unit_id" ref="unit_piece"/>
         <field name="base_price">100.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">4</field>
         <field name="resolution_time">12</field>
-        <field name="workload_factor">1.0</field>
+        <field name="base_workload_factor">1.0</field>
         <field name="description">Wireless access point support</field>
     </record>
 
@@ -91,13 +85,12 @@
         <field name="name">Network Router</field>
         <field name="code">TEMPLATE_ROUTER</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">Router</field>
+        <field name="service_type">network</field>
+        <field name="unit_id" ref="unit_piece"/>
         <field name="base_price">250.00</field>
-        <field name="support_level">premium</field>
         <field name="response_time">1</field>
         <field name="resolution_time">4</field>
-        <field name="workload_factor">2.5</field>
+        <field name="base_workload_factor">2.5</field>
         <field name="description">Network router and firewall support</field>
     </record>
 
@@ -105,13 +98,12 @@
         <field name="name">UPS System</field>
         <field name="code">TEMPLATE_UPS</field>
         <field name="category_id" ref="category_example_network"/>
-        <field name="service_type">equipment</field>
-        <field name="unit_name">UPS</field>
+        <field name="service_type">hardware</field>
+        <field name="unit_id" ref="unit_piece"/>
         <field name="base_price">150.00</field>
-        <field name="support_level">standard</field>
         <field name="response_time">4</field>
         <field name="resolution_time">8</field>
-        <field name="workload_factor">1.0</field>
+        <field name="base_workload_factor">1.0</field>
         <field name="description">Uninterruptible power supply monitoring</field>
     </record>
 
