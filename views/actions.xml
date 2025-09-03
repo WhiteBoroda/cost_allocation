@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- views/actions.xml -->
 <odoo>
     <!-- Employee Cost Actions -->
     <record id="action_employee_cost" model="ir.actions.act_window">
@@ -33,13 +34,15 @@
         <field name="name">Service Categories</field>
         <field name="res_model">service.category</field>
         <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- Service Catalog Actions -->
-    <record id="action_service_catalog" model="ir.actions.act_window">
-        <field name="name">Service Catalog</field>
-        <field name="res_model">service.catalog</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Service Category!
+            </p>
+            <p>
+                Service categories group related service types together.
+                They help organize your service catalog and link to cost pools for cost allocation.
+            </p>
+        </field>
     </record>
 
     <!-- Service Type Actions -->
@@ -47,6 +50,31 @@
         <field name="name">Service Types</field>
         <field name="res_model">service.type</field>
         <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Service Type!
+            </p>
+            <p>
+                Service types define the basic characteristics of services: pricing model,
+                unit of measure, SLA parameters, and workload factors.
+            </p>
+        </field>
+    </record>
+
+    <!-- Service Catalog Actions -->
+    <record id="action_service_catalog" model="ir.actions.act_window">
+        <field name="name">Service Catalog</field>
+        <field name="res_model">service.catalog</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Service!
+            </p>
+            <p>
+                The service catalog contains specific service offerings that clients can subscribe to.
+                Each catalog item is based on a service type but can have specific pricing and characteristics.
+            </p>
+        </field>
     </record>
 
     <!-- Client Service Actions -->
@@ -54,6 +82,17 @@
         <field name="name">Client Services</field>
         <field name="res_model">client.service</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first Client Service!
+            </p>
+            <p>
+                Client services represent the actual IT equipment and services
+                provided to your clients. Link them to service types and catalog items
+                for proper cost allocation and billing.
+            </p>
+        </field>
     </record>
 
     <!-- Employee Workload Actions -->
@@ -61,9 +100,18 @@
         <field name="name">Employee Workload</field>
         <field name="res_model">employee.workload</field>
         <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create workload analysis!
+            </p>
+            <p>
+                Analyze employee workload distribution across cost pools and client services
+                to optimize resource allocation and identify overloaded staff.
+            </p>
+        </field>
     </record>
 
-    <!-- Client Service Subscription Actions (MAIN) -->
+    <!-- Client Service Subscription Actions -->
     <record id="action_client_service_subscription" model="ir.actions.act_window">
         <field name="name">Service Subscriptions</field>
         <field name="res_model">client.service.subscription</field>
@@ -103,58 +151,47 @@
         </field>
     </record>
 
+    <!-- Bulk Services Wizard Action -->
+    <record id="action_bulk_services_wizard" model="ir.actions.act_window">
+        <field name="name">Bulk Add Services</field>
+        <field name="res_model">bulk.services.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Company Overhead Cost Action -->
+    <record id="action_company_overhead_cost" model="ir.actions.act_window">
+        <field name="name">Company Overhead Costs</field>
+        <field name="res_model">company.overhead.cost</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Cost Report Wizard -->
     <record id="action_cost_report_wizard" model="ir.actions.act_window">
-        <field name="name">Cost Allocation Report</field>
+        <field name="name">Cost Report</field>
         <field name="res_model">cost.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
-
-     <!-- Action -->
+    <!-- Setup Wizard Action -->
     <record id="action_service_costing_setup_wizard" model="ir.actions.act_window">
         <field name="name">Service Costing Setup</field>
         <field name="res_model">service.costing.setup.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Quick Setup for Service Costing
-            </p>
-            <p>
-                Configure your service costing module based on your business type.
-                This wizard will create cost pools, drivers, and categories automatically.
-            </p>
-        </field>
     </record>
 
-    <!-- Action for Sequence Configuration -->
+    <!-- Sequence Configuration Action -->
     <record id="action_sequence_config" model="ir.actions.act_window">
-        <field name="name">Code Sequence Configuration</field>
+        <field name="name">Sequence Configuration</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">sequence.config</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
+        <field name="target">inline</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Configure automatic code generation!
-            </p>
-            <p>
-                Set custom prefixes for all automatic codes in the system.
-                This helps maintain consistent numbering across your organization.
-            </p>
-        </field>
-    </record>
-
-    <!-- Sequences Management Menu -->
-    <record id="action_ir_sequence_cost_allocation" model="ir.actions.act_window">
-        <field name="name">Sequences</field>
-        <field name="res_model">ir.sequence</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('code', 'like', 'cost_allocation.%'), '|', ('code', 'like', 'service.%'), ('code', 'like', 'client.%')]</field>
-        <field name="context">{'search_default_code': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Manage sequence numbering!
             </p>
             <p>
                 View and edit sequence configurations for automatic code generation.
@@ -163,6 +200,7 @@
         </field>
     </record>
 
+    <!-- Cost Allocation Settings Action -->
     <record id="action_cost_allocation_settings" model="ir.actions.act_window">
         <field name="name">Cost Allocation Settings</field>
         <field name="type">ir.actions.act_window</field>
@@ -172,6 +210,7 @@
         <field name="context">{'module': 'cost_allocation'}</field>
     </record>
 
+    <!-- Holding Companies Action -->
     <record id="action_holding_companies" model="ir.actions.act_window">
         <field name="name">Holding Companies</field>
         <field name="res_model">res.partner</field>
@@ -192,7 +231,7 @@
         </field>
     </record>
 
-    <!-- Actions -->
+    <!-- Units of Measure Actions -->
     <record id="action_unit_measure" model="ir.actions.act_window">
         <field name="name">Units of Measure</field>
         <field name="type">ir.actions.act_window</field>
@@ -225,22 +264,26 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Cost Driver Category Action -->
     <record id="action_cost_driver_category" model="ir.actions.act_window">
         <field name="name">Driver Categories</field>
         <field name="res_model">cost.driver.category</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="action_update_all_workloads" model="ir.actions.server">
-        <field name="name">Update All Employee Workloads</field>
-        <field name="model_id" ref="model_employee_workload"/>
-        <field name="state">code</field>
-        <field name="code">
-model.update_workload_from_pools()
-env.user.notify_info(message="Employee workloads updated from cost pools!")
-        </field>
-</record>
+    <!-- Advanced IR Sequences for cost allocation -->
+    <record id="action_ir_sequence_cost_allocation" model="ir.actions.act_window">
+        <field name="name">Advanced Sequence Configuration</field>
+        <field name="res_model">ir.sequence</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('code', 'in', [
+            'service.category.code', 'service.catalog.code', 'service.type.code',
+            'client.service.code', 'client.service.subscription.code',
+            'cost.pool.code', 'cost.driver.code', 'client.cost.allocation.code'
+        ])]</field>
+        <field name="context">{'default_implementation': 'standard'}</field>
+    </record>
 
+    <!-- УДАЛЕН: action_update_all_workloads - несуществующие методы -->
 
 </odoo>

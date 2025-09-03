@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- views/add_multiple_services_wizard_views.xml -->
 <odoo>
     <!-- Add Multiple Services Wizard Form -->
     <record id="view_add_multiple_services_wizard_form" model="ir.ui.view">
@@ -23,7 +24,6 @@
 
                     <notebook>
                         <page string="Select Services">
-                            <!-- ИСПРАВЛЕНО: использование правильного widget для множественного выбора -->
                             <field name="service_ids" widget="many2many_checkboxes">
                                 <tree string="Available Services"
                                       decoration-info="complexity_level == 'low'"
@@ -33,8 +33,8 @@
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="complexity_level" widget="badge"/>
-                                    <field name="sales_price" widget="monetary"/>
-                                    <field name="unit_of_measure"/>
+                                    <field name="base_cost" widget="monetary"/>
+                                    <field name="service_type_id" string="Service Type"/>
                                     <field name="currency_id"/>
                                 </tree>
                             </field>
@@ -46,8 +46,8 @@
                                     <field name="category_id"/>
                                     <field name="name"/>
                                     <field name="code"/>
-                                    <field name="sales_price" widget="monetary"/>
-                                    <field name="unit_of_measure"/>
+                                    <field name="base_cost" widget="monetary"/>
+                                    <field name="service_type_id" string="Unit of Measure"/>
                                     <field name="currency_id"/>
                                 </tree>
                             </field>

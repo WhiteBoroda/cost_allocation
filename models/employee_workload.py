@@ -132,6 +132,37 @@ class EmployeePoolWorkload(models.Model):
             )
         return result
 
+    @api.model
+    def update_workload_from_pools(self):
+        """Update employee workload records from cost pool allocations (CRON method)"""
+        # Этот метод вызывается cron'ом для автообновления workload
+        current_date = fields.Date.today()
+        current_month = current_date.replace(day=1)
+
+        # Получаем всех активных сотрудников
+        employees = self.env['hr.employee'].search([('active', '=', True)])
+
+        updated_count = 0
+        for employee in employees:
+            # Ищем или создаем запись workload для текущего месяца
+            workload = self.search([
+                ('employee_id', '=', employee.id),
+                ('period_date', '=', current_month)
+            ])
+
+            if not workload:
+                workload = self.create({
+                    'employee_id': employee.id,
+                    'period_date': current_month,
+                })
+                updated_count += 1
+
+            # Здесь можно добавить логику автоматического обновления
+            # pool_allocation_ids на основе данных из cost.pool.allocation
+            # Пока просто убеждаемся, что записи существуют
+
+        return updated_count
+
     def write(self, vals):
         result = super().write(vals)
         if 'percentage' in vals:

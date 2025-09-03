@@ -1,3 +1,5 @@
+# wizards/add_multiple_services_wizard.py
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -25,7 +27,7 @@ class AddMultipleServicesWizard(models.TransientModel):
         for service in self.service_ids:
             # Check if service already exists in subscription
             existing_line = self.subscription_id.service_line_ids.filtered(
-                lambda l: l.service_id.id == service.id
+                lambda l: l.service_catalog_id.id == service.id  # ИСПРАВЛЕНО: правильное поле
             )
 
             if existing_line:
@@ -33,11 +35,12 @@ class AddMultipleServicesWizard(models.TransientModel):
                 existing_line.quantity += self.default_quantity
             else:
                 # Create new subscription line
-                unit_price = self.default_unit_price or service.sales_price or 0.0
+                # ИСПРАВЛЕНО: используем base_cost вместо sales_price
+                unit_price = self.default_unit_price or service.base_cost or 0.0
 
                 vals = {
                     'subscription_id': self.subscription_id.id,
-                    'service_id': service.id,
+                    'service_catalog_id': service.id,  # ИСПРАВЛЕНО: правильное поле
                     'name': service.name,
                     'quantity': self.default_quantity,
                     'unit_price': unit_price,
