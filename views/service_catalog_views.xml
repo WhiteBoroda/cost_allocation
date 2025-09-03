@@ -1,65 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- views/service_catalog_views.xml -->
 <odoo>
     <!-- Service Catalog Tree View -->
     <record id="view_service_catalog_tree" model="ir.ui.view">
         <field name="name">service.catalog.tree</field>
         <field name="model">service.catalog</field>
         <field name="arch" type="xml">
-            <tree string="Service Catalog">
-                <field name="category_id"/>
-                <field name="name"/>
+            <tree string="Service Catalog" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
                 <field name="code"/>
-                <field name="service_type"/>
-                <field name="unit_of_measure"/>
-                <field name="base_cost" widget="monetary"/>
-                <field name="markup_percent"/>
-                <field name="sales_price" widget="monetary"/>
+                <field name="name"/>
+                <field name="service_type_id"/>
                 <field name="complexity_level"/>
-                <field name="currency_id"/>
+                <field name="vendor"/>
+                <field name="base_cost"/>
+                <field name="client_count"/>
+                <field name="total_quantity"/>
+                <field name="active"/>
             </tree>
         </field>
     </record>
 
+    <!-- Service Catalog Form View -->
     <record id="view_service_catalog_form" model="ir.ui.view">
         <field name="name">service.catalog.form</field>
         <field name="model">service.catalog</field>
         <field name="arch" type="xml">
-            <form string="Service">
+            <form string="Service Catalog">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                        <button name="action_view_client_services" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="client_count" widget="statinfo" string="Clients"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" required="1" placeholder="Service Name"/></h1>
+                    </div>
+
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="code"/>
-                            <field name="category_id"/>
-                            <field name="service_type" readonly="1"/>
+                            <field name="code" readonly="1"/>
+                            <field name="service_type_id"/>
+                            <field name="category_id" readonly="1"/>
                             <field name="sequence"/>
                         </group>
                         <group>
-                            <field name="unit_of_measure"/>
                             <field name="complexity_level"/>
-                            <field name="currency_id"/>
-                            <field name="active"/>
+                            <field name="base_cost"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="total_quantity"/>
                         </group>
                     </group>
-                    <group string="Pricing" name="pricing">
-                        <group>
-                            <field name="base_cost" widget="monetary"/>
-                            <field name="markup_percent"/>
-                        </group>
-                        <group>
-                            <field name="sales_price" widget="monetary" readonly="1"/>
-                        </group>
-                    </group>
-                    <group string="Accounting">
-                        <field name="property_account_income_id"/>
-                    </group>
-                    <field name="description" placeholder="Service description..."/>
+
                     <notebook>
-                        <page string="Service Details">
+                        <page string="Description">
+                            <field name="description" nolabel="1"/>
+                        </page>
+
+                        <page string="Technical Details">
                             <group>
-                                <field name="support_hours"/>
-                                <field name="sla_response_time"/>
+                                <group string="Product Information">
+                                    <field name="vendor"/>
+                                    <field name="model_version"/>
+                                </group>
+                                <group string="Support">
+                                    <field name="support_hours"/>
+                                </group>
                             </group>
+
+                            <group string="Technical Specifications">
+                                <field name="specifications" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Client Services">
+                            <field name="client_service_ids" readonly="1">
+                                <tree>
+                                    <field name="client_id"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="status"/>
+                                    <field name="installation_date"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -67,49 +95,37 @@
         </field>
     </record>
 
+    <!-- Service Catalog Search View -->
     <record id="view_service_catalog_search" model="ir.ui.view">
         <field name="name">service.catalog.search</field>
         <field name="model">service.catalog</field>
         <field name="arch" type="xml">
-            <search string="Search Services">
+            <search string="Service Catalog">
                 <field name="name"/>
                 <field name="code"/>
+                <field name="service_type_id"/>
                 <field name="category_id"/>
-                <field name="service_type"/>
+                <field name="vendor"/>
+                <field name="model_version"/>
 
                 <separator/>
-                <filter string="Hardware" name="hardware" domain="[('service_type', '=', 'hardware')]"/>
-                <filter string="Software" name="software" domain="[('service_type', '=', 'saas')]"/>
-                <filter string="Support" name="support" domain="[('service_type', '=', 'support')]"/>
-                <filter string="Infrastructure" name="infrastructure" domain="[('service_type', '=', 'iaas')]"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="Low Complexity" name="low_complexity" domain="[('complexity_level', '=', 'low')]"/>
-                <filter string="Medium Complexity" name="medium_complexity" domain="[('complexity_level', '=', 'medium')]"/>
-                <filter string="High Complexity" name="high_complexity" domain="[('complexity_level', '=', 'high')]"/>
+                <filter name="low_complexity" string="Low Complexity" domain="[('complexity_level', '=', 'low')]"/>
+                <filter name="medium_complexity" string="Medium Complexity" domain="[('complexity_level', '=', 'medium')]"/>
+                <filter name="high_complexity" string="High Complexity" domain="[('complexity_level', '=', 'high')]"/>
+                <filter name="critical_complexity" string="Critical Complexity" domain="[('complexity_level', '=', 'critical')]"/>
 
-                <group expand="1" string="Group By">
-                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
-                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type'}"/>
-                    <filter string="Complexity" name="group_complexity" context="{'group_by': 'complexity_level'}"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_complexity" string="Complexity" context="{'group_by': 'complexity_level'}"/>
+                    <filter name="group_vendor" string="Vendor" context="{'group_by': 'vendor'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Service Catalog Action -->
-    <record id="action_service_catalog" model="ir.actions.act_window">
-        <field name="name">Service Catalog</field>
-        <field name="res_model">service.catalog</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your first service!
-            </p>
-            <p>
-                Define services that your company provides to clients.
-                Each service can have different pricing models and complexity levels.
-            </p>
-        </field>
-    </record>
 </odoo>

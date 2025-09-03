@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- views/service_type_views.xml -->
+<odoo>
+    <!-- Service Type Tree View -->
+    <record id="view_service_type_tree" model="ir.ui.view">
+        <field name="name">service.type.tree</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <tree string="Service Types" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="unit_id"/>
+                <field name="base_price"/>
+                <field name="catalog_count"/>
+                <field name="active_services_count"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Service Type Form View -->
+    <record id="view_service_type_form" model="ir.ui.view">
+        <field name="name">service.type.form</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <form string="Service Type">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" required="1" placeholder="Service Type Name"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="code" readonly="1"/>
+                            <field name="category_id"/>
+                            <field name="service_type"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="unit_id"/>
+                            <field name="base_price"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" nolabel="1"/>
+                        </page>
+
+                        <page string="SLA &amp; Workload">
+                            <group string="Service Level Agreement">
+                                <group>
+                                    <field name="response_time"/>
+                                    <field name="resolution_time"/>
+                                </group>
+                                <group>
+                                    <field name="availability_sla"/>
+                                    <field name="requires_onsite"/>
+                                </group>
+                            </group>
+
+                            <group string="Workload">
+                                <field name="base_workload_factor"/>
+                            </group>
+                        </page>
+
+                        <page string="Responsible Team">
+                            <group>
+                                <field name="primary_responsible_id"/>
+                            </group>
+                            <group>
+                                <field name="default_responsible_ids" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Statistics">
+                            <group>
+                                <group>
+                                    <field name="catalog_count" readonly="1"/>
+                                    <field name="active_services_count" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Type Search View -->
+    <record id="view_service_type_search" model="ir.ui.view">
+        <field name="name">service.type.search</field>
+        <field name="model">service.type</field>
+        <field name="arch" type="xml">
+            <search string="Service Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category_id"/>
+                <field name="service_type"/>
+                <field name="primary_responsible_id"/>
+
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                    <filter name="group_service_type" string="Service Type" domain="[]" context="{'group_by':'service_type'}"/>
+                    <filter name="group_responsible" string="Responsible" domain="[]" context="{'group_by':'primary_responsible_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- views/client_service_views.xml -->
+<odoo>
+    <!-- Client Service Tree View -->
+    <record id="view_client_service_tree" model="ir.ui.view">
+        <field name="name">client.service.tree</field>
+        <field name="model">client.service</field>
+        <field name="arch" type="xml">
+            <tree string="Client Services"
+                  decoration-success="status=='active'"
+                  decoration-warning="status=='suspended'"
+                  decoration-muted="status=='inactive'"
+                  decoration-danger="status=='terminated'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="service_type_id"/>
+                <field name="service_catalog_id"/>
+                <field name="category_id"/>
+                <field name="quantity"/>
+                <field name="location"/>
+                <field name="status"/>
+                <field name="responsible_employee_id"/>
+                <field name="installation_date"/>
+                <field name="warranty_end"/>
+                <field name="effective_workload_factor"
+                       decoration-info="effective_workload_factor != 1.0"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Client Service Form View -->
+    <record id="view_client_service_form" model="ir.ui.view">
+        <field name="name">client.service.form</field>
+        <field name="model">client.service</field>
+        <field name="arch" type="xml">
+            <form string="Client Service">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="active,suspended,inactive,terminated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" required="1" placeholder="Service/Equipment Name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Service Information">
+                            <field name="code" readonly="1"/>
+                            <field name="client_id"/>
+                            <field name="service_type_id"/>
+                            <field name="service_catalog_id" options="{'no_create': True}"
+                                   domain="[('service_type_id', '=', service_type_id)]"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Quantity &amp; Details">
+                            <field name="quantity"/>
+                            <field name="location"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Technical Details">
+                            <group>
+                                <group string="Equipment Info">
+                                    <field name="brand"/>
+                                    <field name="model"/>
+                                    <field name="serial_number"/>
+                                    <field name="inventory_number"/>
+                                </group>
+                                <group string="Network Info">
+                                    <field name="ip_address"/>
+                                    <field name="mac_address"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Service Dates">
+                            <group>
+                                <group>
+                                    <field name="installation_date"/>
+                                    <field name="warranty_end"/>
+                                </group>
+                                <group>
+                                    <field name="last_maintenance"/>
+                                    <field name="next_maintenance"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="SLA &amp; Support">
+                            <group string="Service Level Agreement">
+                                <group>
+                                    <field name="effective_response_time" readonly="1"/>
+                                    <field name="effective_resolution_time" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="effective_workload_factor" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <group string="Responsible Team">
+                                <field name="responsible_employee_id"/>
+                                <field name="support_team_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Client Service Search View -->
+    <record id="view_client_service_search" model="ir.ui.view">
+        <field name="name">client.service.search</field>
+        <field name="model">client.service</field>
+        <field name="arch" type="xml">
+            <search string="Client Services">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="service_type_id"/>
+                <field name="service_catalog_id"/>
+                <field name="category_id"/>
+                <field name="location"/>
+                <field name="brand"/>
+                <field name="model"/>
+                <field name="ip_address"/>
+                <field name="serial_number"/>
+
+                <separator/>
+                <filter name="active" string="Active" domain="[('status', '=', 'active')]"/>
+                <filter name="inactive" string="Inactive" domain="[('status', '=', 'inactive')]"/>
+                <filter name="suspended" string="Suspended" domain="[('status', '=', 'suspended')]"/>
+                <filter name="terminated" string="Terminated" domain="[('status', '=', 'terminated')]"/>
+
+                <separator/>
+                <filter name="high_workload" string="High Workload (>2.0)"
+                        domain="[('effective_workload_factor', '>', 2.0)]"/>
+                <filter name="workload_adjusted" string="Support Level Adjusted"
+                        domain="[('effective_workload_factor', '>', 1.2)]"/>
+
+                <separator/>
+                <filter name="warranty_ending" string="Warranty Ending Soon"
+                        domain="[('warranty_end', '&lt;=', (context_today() + datetime.timedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_responsible" string="Responsible" context="{'group_by': 'responsible_employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

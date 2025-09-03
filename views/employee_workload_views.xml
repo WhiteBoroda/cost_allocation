@@ -1,36 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- views/employee_workload_views.xml -->
 <odoo>
     <!-- Employee Workload Tree View -->
     <record id="view_employee_workload_tree" model="ir.ui.view">
         <field name="name">employee.workload.tree</field>
         <field name="model">employee.workload</field>
         <field name="arch" type="xml">
-            <tree string="Employee Workload" decoration-danger="is_overloaded==True">
+            <tree string="Employee Workload Analysis"
+                  decoration-danger="is_overloaded"
+                  decoration-warning="overload_percentage > 10 and not is_overloaded"
+                  decoration-success="overload_percentage &lt;= 10">
                 <field name="employee_id"/>
                 <field name="period_date"/>
-                <!-- НОВЫЕ ПОЛЯ из пулов -->
-                <field name="total_pool_percentage" string="Pool %" widget="float"/>
-                <!-- СУЩЕСТВУЮЩИЕ ПОЛЯ из сервисов -->
                 <field name="active_services_count"/>
                 <field name="total_workload_factor"/>
+                <field name="total_pool_percentage"/>
                 <field name="target_workload"/>
-                <field name="overload_percentage"/>
-                <field name="is_overloaded" widget="boolean_toggle"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_employee_pool_workload_tree" model="ir.ui.view">
-        <field name="name">employee.pool.workload.tree</field>
-        <field name="model">employee.pool.workload</field>
-        <field name="arch" type="xml">
-            <tree string="Employee Pool Workload">
-                <field name="workload_id"/>
-                <field name="pool_name"/>
-                <field name="pool_type" widget="badge"/>
-                <field name="percentage" string="%" widget="float"/>
-                <field name="monthly_cost" widget="monetary"
-                       groups="cost_allocation.group_cost_allocation_financial"/>
+                <field name="overload_percentage" widget="percentage"/>
+                <field name="is_overloaded"/>
             </tree>
         </field>
     </record>
@@ -41,66 +28,112 @@
         <field name="model">employee.workload</field>
         <field name="arch" type="xml">
             <form string="Employee Workload">
-                <header>
-                    <!-- КНОПКА для ручной синхронизации -->
-                    <button name="action_update_from_pools" type="object"
-                            string="Sync from Cost Pools"
-                            class="btn-primary"
-                            help="Update workload data from cost pool allocations"/>
-                </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name"/></h1>
+                    </div>
+
                     <group>
                         <group>
                             <field name="employee_id"/>
                             <field name="period_date"/>
+                            <field name="target_workload"/>
                         </group>
                         <group>
-                            <field name="target_workload"/>
-                            <field name="is_overloaded" widget="boolean_toggle"/>
+                            <field name="total_workload_factor" readonly="1"/>
+                            <field name="overload_percentage" widget="percentage" readonly="1"/>
+                            <field name="is_overloaded" readonly="1"/>
                         </group>
                     </group>
 
-                    <!-- НОВАЯ ВКЛАДКА: Cost Pool Allocations -->
                     <notebook>
-                        <page string="Cost Pool Allocations">
-                            <div class="alert alert-info" role="status">
-                                <h4><i class="fa fa-info-circle"/> Cost Pool Distribution</h4>
-                                <p>This data is automatically synchronized from Cost Pool employee allocations.</p>
-                            </div>
-
-                            <group>
-                                <field name="total_pool_percentage" widget="float"
-                                       string="Total Pool Allocation %" readonly="1"/>
-                            </group>
-
-                            <field name="pool_allocation_ids" readonly="1">
-                                <tree>
-                                    <field name="pool_name"/>
-                                    <field name="pool_type" widget="badge"/>
-                                    <field name="percentage" string="%" widget="float"/>
-                                    <field name="monthly_cost" widget="monetary"
-                                           groups="cost_allocation.group_cost_allocation_financial"/>
+                        <page string="Pool Allocations">
+                            <field name="pool_allocation_ids">
+                                <tree editable="bottom">
+                                    <field name="pool_id"/>
+                                    <field name="percentage"/>
                                 </tree>
                             </field>
-                        </page>
-
-                        <!-- СУЩЕСТВУЮЩИЕ ВКЛАДКИ -->
-                        <page string="Service Workload">
-                            <group string="Service-based Workload (Legacy)">
+                            <group>
                                 <group>
-                                    <field name="active_services_count"/>
-                                    <field name="total_workload_factor"/>
-                                </group>
-                                <group>
-                                    <field name="overload_percentage"/>
+                                    <field name="total_pool_percentage" readonly="1"/>
                                 </group>
                             </group>
+                        </page>
 
-                            <field name="workload_by_category" string="Category Breakdown" readonly="1"/>
+                        <page string="Service Analysis">
+                            <group>
+                                <field name="active_services_count" readonly="1"/>
+                                <field name="total_workload_factor" readonly="1"/>
+                            </group>
+
+                            <group string="Workload by Category">
+                                <field name="workload_by_category" nolabel="1" readonly="1"/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
             </form>
         </field>
     </record>
+
+    <!-- Employee Workload Search View -->
+    <record id="view_employee_workload_search" model="ir.ui.view">
+        <field name="name">employee.workload.search</field>
+        <field name="model">employee.workload</field>
+        <field name="arch" type="xml">
+            <search string="Employee Workload">
+                <field name="employee_id"/>
+                <field name="period_date"/>
+
+                <separator/>
+                <filter name="overloaded" string="Overloaded" domain="[('is_overloaded', '=', True)]"/>
+                <filter name="optimal" string="Optimal Load" domain="[('overload_percentage', '&lt;=', 10), ('overload_percentage', '&gt;=', -10)]"/>
+                <filter name="underutilized" string="Underutilized" domain="[('overload_percentage', '&lt;', -10)]"/>
+
+                <separator/>
+                <filter name="this_month" string="This Month"
+                        domain="[('period_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="last_month" string="Last Month"
+                        domain="[('period_date', '&gt;=', (context_today().replace(day=1) - relativedelta(months=1)).strftime('%Y-%m-%d')),
+                                 ('period_date', '&lt;', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_period" string="Period" context="{'group_by': 'period_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Employee Pool Workload Views -->
+    <record id="view_employee_pool_workload_tree" model="ir.ui.view">
+        <field name="name">employee.pool.workload.tree</field>
+        <field name="model">employee.pool.workload</field>
+        <field name="arch" type="xml">
+            <tree string="Pool Workload Allocations">
+                <field name="employee_id"/>
+                <field name="pool_id"/>
+                <field name="percentage"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_employee_pool_workload_form" model="ir.ui.view">
+        <field name="name">employee.pool.workload.form</field>
+        <field name="model">employee.pool.workload</field>
+        <field name="arch" type="xml">
+            <form string="Pool Allocation">
+                <sheet>
+                    <group>
+                        <field name="workload_id"/>
+                        <field name="employee_id" readonly="1"/>
+                        <field name="pool_id"/>
+                        <field name="percentage"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
 </odoo>
