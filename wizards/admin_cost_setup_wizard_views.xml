@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Admin Cost Setup Wizard Form -->
+    <record id="view_admin_cost_setup_wizard" model="ir.ui.view">
+        <field name="name">admin.cost.setup.wizard.form</field>
+        <field name="model">admin.cost.setup.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Administrative Costs Setup">
+                <div class="alert alert-info" role="status">
+                    <h3>Quick Setup for Administrative Costs</h3>
+                    <p>This wizard will help you configure administrative cost allocation for Service Cost Calculation.</p>
+                </div>
+
+                <sheet>
+                    <group string="Setup Method">
+                        <field name="setup_method" widget="radio"/>
+                    </group>
+
+                    <group string="Simple Setup" invisible="setup_method != 'simple'">
+                        <div class="alert alert-success">
+                            <p><strong>Simple Method:</strong> Admin costs will be calculated as a percentage of direct + indirect costs.</p>
+                            <p><strong>Formula:</strong> Admin Cost = (Direct Cost + Indirect Cost) × Percentage</p>
+                        </div>
+                        <field name="admin_percentage"/>
+                    </group>
+
+                    <group string="Driver-Based Setup" invisible="setup_method != 'driver_based'">
+                        <div class="alert alert-info">
+                            <p><strong>Driver-Based Method:</strong> Creates cost pools, drivers, and client allocations for detailed admin cost tracking.</p>
+                            <p><strong>Formula:</strong> Admin Cost = Driver Cost per Unit × Client Quantity</p>
+                        </div>
+
+                        <group string="Cost Pool">
+                            <field name="create_admin_pool"/>
+                            <field name="admin_pool_name" invisible="not create_admin_pool"/>
+                        </group>
+
+                        <group string="Cost Driver">
+                            <field name="create_admin_driver"/>
+                            <field name="admin_driver_name" invisible="not create_admin_driver"/>
+                            <field name="admin_cost_per_hour" widget="monetary"
+                                   invisible="not create_admin_driver"/>
+                        </group>
+
+                        <group string="Client Allocations">
+                            <field name="setup_client_allocations"/>
+                            <field name="default_admin_hours_per_client"
+                                   invisible="not setup_client_allocations"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_setup_simple" string="Setup Simple Method"
+                            type="object" class="btn-primary"
+                            invisible="setup_method != 'simple'"/>
+                    <button name="action_setup_driver_based" string="Setup Driver-Based Method"
+                            type="object" class="btn-primary"
+                            invisible="setup_method != 'driver_based'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Admin Cost Setup Wizard -->
+    <record id="action_admin_cost_setup_wizard" model="ir.actions.act_window">
+        <field name="name">Setup Administrative Costs</field>
+        <field name="res_model">admin.cost.setup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

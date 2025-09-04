@@ -15,88 +15,102 @@
                 </header>
 
                 <sheet>
-                    <div class="alert alert-info" role="status">
-                        <h3><i class="fa fa-calculator"/> ABC Costing Breakdown</h3>
-                        <p>This analysis shows how the <strong>base cost</strong> is calculated from employee expenses using Activity-Based Costing methodology.</p>
+                    <div class="oe_title">
+                        <h1>Cost Breakdown Analysis</h1>
+                        <h2><field name="service_name" readonly="1"/></h2>
                     </div>
 
-                    <group string="Service Information">
-                        <group>
-                            <field name="service_name"/>
-                            <field name="service_code"/>
-                            <field name="support_hours_per_unit"
-                                   decoration-warning="support_hours_per_unit == 0"/>
-                        </group>
-                        <group>
-                            <field name="team_count"/>
-                            <field name="average_hourly_cost" widget="monetary"
-                                   decoration-danger="average_hourly_cost == 0"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
-                        </group>
-                    </group>
-
-                    <group string="Cost Calculation">
-                        <div class="alert alert-success">
-                            <h5>Formula: Base Cost = Average Hourly Cost × Support Hours per Unit</h5>
-                            <p><strong><field name="average_hourly_cost" widget="monetary"/> × <field name="support_hours_per_unit"/> hours = <field name="base_cost" widget="monetary"/></strong></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <group string="Service Information">
+                                <field name="service_code"/>
+                                <field name="support_hours_per_unit"/>
+                                <field name="team_count"/>
+                                <field name="currency_id" groups="base.group_multi_currency"/>
+                            </group>
                         </div>
-                        <group>
-                            <field name="base_cost" widget="monetary" readonly="1"
-                                   decoration-danger="base_cost == 0"
-                                   decoration-success="base_cost > 0"/>
-                            <field name="markup_percentage"/>
-                            <field name="sales_price" widget="monetary" readonly="1"
-                                   class="oe_subtotal_footer_separator"/>
-                        </group>
-                    </group>
+                        <div class="col-md-6">
+                            <group string="Cost Results">
+                                <field name="average_hourly_cost" widget="monetary"/>
+                                <field name="base_cost" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                <field name="markup_percentage"/>
+                                <field name="sales_price" widget="monetary" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </div>
+                    </div>
 
-                    <group string="Responsible Team Cost Details">
-                        <field name="employee_cost_line_ids" nolabel="1">
-                            <tree string="Employee Costs"
-                                  decoration-danger="not has_cost_record"
-                                  decoration-success="has_cost_record and hourly_cost > 0">
-                                <field name="employee_id"/>
-                                <field name="monthly_cost" widget="monetary" sum="Total Monthly"/>
-                                <field name="hourly_cost" sum="Total Hourly"/>
-                                <field name="cost_per_service_unit" widget="monetary"
-                                       sum="Total per Unit"/>
-                                <field name="has_cost_record" widget="boolean_toggle"
-                                       string="Has Cost Record"/>
-                                <field name="currency_id" column_invisible="1"/>
-                            </tree>
-                        </field>
-                    </group>
+                    <div class="alert alert-success mt-3" role="status">
+                        <h4>ABC Costing Formula</h4>
+                        <p><strong>Base Cost = Average Team Hourly Cost × Support Hours per Unit</strong></p>
+                        <p class="mb-0">
+                            <field name="average_hourly_cost" widget="monetary"/> ×
+                            <field name="support_hours_per_unit"/> hours =
+                            <strong><field name="base_cost" widget="monetary"/></strong>
+                        </p>
+                    </div>
 
                     <div class="alert alert-warning" invisible="not has_missing_records">
-                        <h5><i class="fa fa-exclamation-triangle"/> Missing Cost Records</h5>
-                        <p>Some team members don't have cost records. Click <strong>"Create Missing Cost Records"</strong> to create them with default values, then update with actual salary data.</p>
+                        <h5>⚠️ Missing Employee Cost Records</h5>
+                        <p>Some team members don't have cost records. Click "Create Missing Cost Records" to fix this.</p>
                         <field name="has_missing_records" invisible="1"/>
                     </div>
 
-                    <group string="Cost Analysis Summary">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="alert alert-info">
-                                    <h6><i class="fa fa-users"/> Team Information</h6>
-                                    <ul>
-                                        <li><strong>Team Size:</strong> <field name="team_count"/> employees</li>
-                                        <li><strong>Average Hourly Cost:</strong> <field name="average_hourly_cost" widget="monetary"/></li>
-                                        <li><strong>Service Hours Required:</strong> <field name="support_hours_per_unit"/> hours</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="alert alert-success">
-                                    <h6><i class="fa fa-money"/> Pricing Structure</h6>
-                                    <ul>
-                                        <li><strong>Base Cost (ABC):</strong> <field name="base_cost" widget="monetary"/></li>
-                                        <li><strong>Markup:</strong> <field name="markup_percentage"/>%</li>
-                                        <li><strong>Sales Price:</strong> <field name="sales_price" widget="monetary"/></li>
-                                    </ul>
-                                </div>
+                    <separator string="Team Cost Breakdown"/>
+
+                    <field name="employee_cost_line_ids" nolabel="1">
+                        <tree string="Team Members"
+                              decoration-danger="not has_cost_record"
+                              decoration-success="has_cost_record and hourly_cost > 0"
+                              decoration-warning="has_cost_record and hourly_cost == 0">
+                            <field name="employee_id" string="Employee"/>
+                            <field name="monthly_cost" widget="monetary" string="Monthly Cost"/>
+                            <field name="hourly_cost" string="Hourly Rate"/>
+                            <field name="cost_per_service_unit" widget="monetary" string="Cost per Service Unit"/>
+                            <field name="has_cost_record" widget="boolean_toggle" string="Has Cost Record"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </tree>
+                    </field>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="alert alert-info">
+                                <h6>📊 Team Analysis</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Team Size:</strong></td>
+                                        <td><field name="team_count"/> employees</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Avg Hourly Cost:</strong></td>
+                                        <td><field name="average_hourly_cost" widget="monetary"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Service Hours:</strong></td>
+                                        <td><field name="support_hours_per_unit"/> hours</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                    </group>
+                        <div class="col-md-6">
+                            <div class="alert alert-primary">
+                                <h6>💰 Pricing Structure</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Base Cost (ABC):</strong></td>
+                                        <td><field name="base_cost" widget="monetary"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Markup:</strong></td>
+                                        <td><field name="markup_percentage"/>%</td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td><strong>Sales Price:</strong></td>
+                                        <td><strong><field name="sales_price" widget="monetary"/></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </sheet>
             </form>
         </field>
@@ -108,5 +122,6 @@
         <field name="res_model">service.cost.breakdown.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="context">{'dialog_size': 'extra-large'}</field>
     </record>
 </odoo>

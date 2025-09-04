@@ -183,7 +183,7 @@ class ServiceCostCalculation(models.Model):
 
             calc.indirect_cost_per_unit = total_indirect_cost
 
-    @api.depends('service_type_id', 'actual_units_required', 'calculation_date')
+    @api.depends('service_type_id', 'actual_units_required', 'calculation_date', 'client_id')
     def _compute_admin_cost_per_unit(self):
         """Calculate admin costs from administrative cost pools"""
         for calc in self:
@@ -191,25 +191,68 @@ class ServiceCostCalculation(models.Model):
                 calc.admin_cost_per_unit = 0.0
                 continue
 
-            # Найти admin cost pools
+            # НАЙТИ admin cost pools
             admin_pools = self.env['cost.pool'].search([
                 ('pool_type', '=', 'admin'),
                 ('active', '=', True)
             ])
 
+            # DEBUG: логирование
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.info(f"=== ADMIN COST DEBUG for {calc.service_catalog_id.name} ===")
+            _logger.info(f"Found {len(admin_pools)} admin pools: {admin_pools.mapped('name')}")
+
+            if not admin_pools:
+                _logger.warning("No admin cost pools found! Create pools with pool_type='admin'")
+                calc.admin_cost_per_unit = 0.0
+                continue
+
             total_admin_cost = 0.0
             for pool in admin_pools:
+                pool_cost = 0.0
                 drivers = pool.driver_id
+
+                _logger.info(f"Pool '{pool.name}' has {len(drivers)} drivers: {drivers.mapped('name')}")
+
+                if not drivers:
+                    _logger.warning(f"Admin pool '{pool.name}' has NO DRIVERS attached!")
+                    continue
+
                 for driver in drivers:
+                    driver_cost = 0.0
+                    _logger.info(f"  Driver '{driver.name}': cost_per_unit = {driver.cost_per_unit}")
+
+                    if driver.cost_per_unit == 0:
+                        _logger.warning(f"    Driver '{driver.name}' has ZERO cost_per_unit!")
+                        continue
+
                     if calc.client_id:
                         client_allocation = self.env['client.cost.driver'].search([
                             ('driver_id', '=', driver.id),
                             ('client_id', '=', calc.client_id.id)
                         ])
-                        if client_allocation:
-                            service_cost = driver.cost_per_unit * calc.actual_units_required
-                            total_admin_cost += service_cost
 
+                        if client_allocation:
+                            # ИСПРАВЛЕНО: используем количество из client_allocation, а не actual_units_required
+                            driver_quantity = client_allocation.quantity or 0.0
+                            driver_cost = driver.cost_per_unit * driver_quantity
+                            _logger.info(f"    Client allocation found: quantity={driver_quantity}, cost={driver_cost}")
+                        else:
+                            _logger.warning(
+                                f"    NO client allocation for driver '{driver.name}' and client '{calc.client_id.name}'")
+                            # Можно добавить fallback логику
+                            if calc.actual_units_required > 0:
+                                driver_cost = driver.cost_per_unit * calc.actual_units_required
+                                _logger.info(
+                                    f"    Using fallback: actual_units={calc.actual_units_required}, cost={driver_cost}")
+
+                    pool_cost += driver_cost
+
+                _logger.info(f"  Pool '{pool.name}' total cost: {pool_cost}")
+                total_admin_cost += pool_cost
+
+            _logger.info(f"Total admin cost for service: {total_admin_cost}")
             calc.admin_cost_per_unit = total_admin_cost
 
     @api.depends('service_type_id', 'actual_units_required', 'calculation_date')
@@ -321,4 +364,120 @@ class ServiceCostCalculation(models.Model):
             'service_name': self.service_catalog_id.name,
             'client_name': self.client_id.name if self.client_id else '',
             'calculation_method': self.calculation_method
+        }
+
+    def diagnose_admin_costs(self):
+        """Диагностика проблем с расчетом административных затрат"""
+        self.ensure_one()
+
+        diagnosis = {
+            'status': 'OK',
+            'issues': [],
+            'recommendations': [],
+            'data': {}
+        }
+
+        # 1. Проверить наличие admin pools
+        admin_pools = self.env['cost.pool'].search([
+            ('pool_type', '=', 'admin'),
+            ('active', '=', True)
+        ])
+
+        diagnosis['data']['admin_pools_count'] = len(admin_pools)
+        diagnosis['data']['admin_pools'] = admin_pools.mapped('name')
+
+        if not admin_pools:
+            diagnosis['status'] = 'ERROR'
+            diagnosis['issues'].append('No admin cost pools found')
+            diagnosis['recommendations'].append('Create cost pools with type "Administrative Costs"')
+            return diagnosis
+
+        # 2. Проверить драйверы у admin pools
+        total_drivers = 0
+        pools_without_drivers = []
+
+        for pool in admin_pools:
+            drivers = pool.driver_id
+            diagnosis['data'][f'pool_{pool.name}_drivers'] = drivers.mapped('name')
+
+            if not drivers:
+                pools_without_drivers.append(pool.name)
+            else:
+                total_drivers += len(drivers)
+
+        if pools_without_drivers:
+            diagnosis['status'] = 'WARNING'
+            diagnosis['issues'].append(f'Pools without drivers: {", ".join(pools_without_drivers)}')
+            diagnosis['recommendations'].append('Assign cost drivers to admin pools')
+
+        # 3. Проверить client allocations
+        if self.client_id and total_drivers > 0:
+            missing_allocations = []
+            zero_cost_drivers = []
+
+            for pool in admin_pools:
+                for driver in pool.driver_id:
+                    # Проверить cost_per_unit
+                    if driver.cost_per_unit == 0:
+                        zero_cost_drivers.append(driver.name)
+
+                    # Проверить client allocation
+                    client_allocation = self.env['client.cost.driver'].search([
+                        ('driver_id', '=', driver.id),
+                        ('client_id', '=', self.client_id.id)
+                    ])
+
+                    if not client_allocation:
+                        missing_allocations.append(f'{driver.name} for {self.client_id.name}')
+                    else:
+                        diagnosis['data'][f'allocation_{driver.name}'] = client_allocation.quantity
+
+            if zero_cost_drivers:
+                diagnosis['status'] = 'WARNING'
+                diagnosis['issues'].append(f'Drivers with zero cost: {", ".join(zero_cost_drivers)}')
+                diagnosis['recommendations'].append('Configure cost_per_unit for admin drivers')
+
+            if missing_allocations:
+                diagnosis['status'] = 'WARNING'
+                diagnosis['issues'].append(
+                    f'Missing client allocations: {", ".join(missing_allocations[:3])}{"..." if len(missing_allocations) > 3 else ""}')
+                diagnosis['recommendations'].append(f'Create client cost driver records for {self.client_id.name}')
+
+        # 4. Итоговый расчет
+        diagnosis['data']['current_admin_cost'] = self.admin_cost_per_unit
+        diagnosis['data']['actual_units_required'] = self.actual_units_required
+
+        return diagnosis
+
+    def action_diagnose_admin_costs(self):
+        """Action для диагностики админских затрат"""
+        diagnosis = self.diagnose_admin_costs()
+
+        message = f"<h4>Admin Cost Diagnosis: {diagnosis['status']}</h4>"
+
+        if diagnosis['issues']:
+            message += "<h5>Issues Found:</h5><ul>"
+            for issue in diagnosis['issues']:
+                message += f"<li>{issue}</li>"
+            message += "</ul>"
+
+        if diagnosis['recommendations']:
+            message += "<h5>Recommendations:</h5><ul>"
+            for rec in diagnosis['recommendations']:
+                message += f"<li>{rec}</li>"
+            message += "</ul>"
+
+        message += f"<h5>Current Data:</h5>"
+        message += f"<p><strong>Admin Pools:</strong> {diagnosis['data'].get('admin_pools_count', 0)}</p>"
+        message += f"<p><strong>Current Admin Cost:</strong> {diagnosis['data'].get('current_admin_cost', 0)}</p>"
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Admin Cost Diagnosis',
+                'message': message,
+                'sticky': True,
+                'type': 'warning' if diagnosis['status'] != 'OK' else 'success',
+            }
         }
